@@ -1,0 +1,16 @@
+{
+  "storeStatus": {
+    "isOpen": false,
+    "deliveredCount": 68
+  },
+  "shipping": {
+    "cairoGiza": 70,
+    "alexandria": 75,
+    "other": 85,
+    "upper": 120
+  },
+  "owner": {
+    "user": "Nonaowner",
+    "pass": "N0na22336453"
+  }
+}

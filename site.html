@@ -1,0 +1,2696 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Apply saved theme + language before first paint so there is no flash -->
+    <script>
+        (function () {
+            try {
+                var theme = localStorage.getItem('theme') || 'dark';
+                var lang = localStorage.getItem('lang') || 'en';
+                var root = document.documentElement;
+                root.setAttribute('data-theme', theme);
+                root.setAttribute('lang', lang);
+                root.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
+            } catch (e) {}
+        })();
+    </script>
+
+    <!-- Add to Home Screen / standalone app (no browser chrome) -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#08080a">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Kuromi Store">
+    <link rel="apple-touch-icon" href="images/x.jpg">
+
+    <!-- Dynamic Title & SEO Meta Tags -->
+    <title>Kuromi Store</title>
+    <meta name="description" content="Be aesthetic, be yourself, ALWAYS!! Get the best anime stickers and crafts from Kuromi Store.">
+
+    <!-- Open Graph / SEO Meta Tags -->
+    <meta property="og:title" content="Kuromi Store" />
+    <meta property="og:description" content="Be aesthetic, be yourself, ALWAYS!!" />
+    <meta property="og:image" content="https://kuromis.site.je/images/x.jpg" />
+    <meta property="og:url" content="https://kuromis.site.je" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- EmailJS SDK -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <script type="text/javascript">
+        (function() {
+            emailjs.init({ publicKey: "4D71kDnkCjhLE4eAd" });
+        })();
+    </script>
+
+    <!-- No Firebase: this build talks to its own tiny Node server (index.js) which
+         reads/writes plain JSON files under /data and serves images from /images.
+         The `db` object below mimics just enough of the old Firestore API shape
+         (collection/doc/get/set/update/delete/add + a poll-based onSnapshot) so the
+         rest of the app's code did not need to be rewritten. -->
+    <script>
+        const API_BASE = ""; // same-origin; change to "http://localhost:3000" if serving site.html separately
+
+        // ---- Connection tracking -------------------------------------------------
+        // Every request goes through apiFetch(). If the server can't be reached we
+        // show a banner (once, not a console flood), back the background polling
+        // off instead of retrying every few seconds, and resume on its own when the
+        // server answers again.
+        let apiFailCount = 0, apiBackoffUntil = 0;
+        function apiIsBackedOff() { return Date.now() < apiBackoffUntil; }
+        function setApiBanner(show) {
+            const banner = document.getElementById('api-down-banner');
+            if (banner) banner.classList.toggle('hidden', !show);
+            const origin = document.getElementById('api-down-origin');
+            if (origin && show) origin.textContent = 'You are viewing this page from ' + location.origin + '.';
+        }
+        function noteApiSuccess() { if (apiFailCount) { apiFailCount = 0; apiBackoffUntil = 0; setApiBanner(false); } }
+        function noteApiFailure() { apiFailCount++; apiBackoffUntil = Date.now() + Math.min(30000, 5000 * apiFailCount); setApiBanner(true); }
+        function retryConnection() {
+            apiBackoffUntil = 0;
+            apiFetch('/api/settings/storeStatus').then(() => { if (typeof currentUser !== 'undefined' && !currentUser && typeof initAuth === 'function') initAuth(); }).catch(() => {});
+        }
+
+        async function apiFetch(path, options) {
+            let r;
+            try { r = await fetch(API_BASE + path, options); }
+            catch (err) {
+                noteApiFailure();
+                const e = new Error("Can't reach the server."); e.isNetwork = true; throw e;
+            }
+            noteApiSuccess();
+            return r;
+        }
+        async function readApiError(r) {
+            const text = await r.text();
+            try { const j = JSON.parse(text); return j.error || text; } catch (e) { return text || ("Request failed (" + r.status + ")"); }
+        }
+        async function throwApiError(r) { const e = new Error(await readApiError(r)); e.status = r.status; throw e; }
+        async function apiGet(path) { const r = await apiFetch(path); if (!r.ok) await throwApiError(r); return r.json(); }
+        async function apiSend(path, method, body) {
+            const r = await apiFetch(path, { method, headers: { "Content-Type": "application/json" }, body: body !== undefined ? JSON.stringify(body) : undefined });
+            if (!r.ok) await throwApiError(r);
+            return r.json();
+        }
+        // Same as apiGet/apiSend but attaches the logged-in user's session token.
+        async function authGet(path) {
+            const r = await apiFetch(path, { headers: { "Authorization": "Bearer " + (authToken || "") } });
+            if (!r.ok) await throwApiError(r);
+            return r.json();
+        }
+        async function authSend(path, method, body) {
+            const r = await apiFetch(path, { method, headers: { "Content-Type": "application/json", "Authorization": "Bearer " + (authToken || "") }, body: body !== undefined ? JSON.stringify(body) : undefined });
+            if (!r.ok) await throwApiError(r);
+            return r.json();
+        }
+
+        function makeDocRef(collection, id) {
+            return {
+                id,
+                get: async () => {
+                    try {
+                        const data = await apiGet(`/api/${collection}/${id}`);
+                        if (data === null) return { exists: false, id, data: () => undefined };
+                        return { exists: true, id, data: () => data };
+                    }
+                    catch (e) { return { exists: false, id, error: !!e.isNetwork, data: () => undefined }; }
+                },
+                set: async (data, opts) => { await apiSend(`/api/${collection}/${id}`, "PUT", data); },
+                update: async (data) => { await apiSend(`/api/${collection}/${id}`, "PUT", data); },
+                delete: async () => { await apiSend(`/api/${collection}/${id}`, "DELETE"); },
+                onSnapshot: (cb) => {
+                    let lastSnapshot; // JSON string of the last data we actually delivered
+                    const poll = async () => {
+                        if (apiIsBackedOff()) return;
+                        try {
+                            const d = await makeDocRef(collection, id).get();
+                            if (d.error) return; // server unreachable: keep what is on screen
+                            const snapshot = JSON.stringify(d.exists ? d.data() : null);
+                            if (snapshot === lastSnapshot) return; // nothing changed — skip re-render, no flicker
+                            lastSnapshot = snapshot;
+                            cb(d);
+                        } catch (e) {}
+                    };
+                    poll(); const t = setInterval(poll, collection === "orders" || collection === "settings" ? 4000 : 6000);
+                    return () => clearInterval(t);
+                }
+            };
+        }
+
+        function makeCollectionRef(collection) {
+            let whereFilters = [];
+            const ref = {
+                doc: (id) => makeDocRef(collection, id),
+                add: async (data) => { const created = await apiSend(`/api/${collection}`, "POST", data); return { id: created.id }; },
+                where: (field, op, value) => { whereFilters.push([field, value]); return ref; },
+                get: async () => {
+                    let qs = "";
+                    if (whereFilters.length) qs = "?" + whereFilters.map(([f, v]) => `${encodeURIComponent(f)}=${encodeURIComponent(v)}`).join("&");
+                    const docs = await apiGet(`/api/${collection}${qs}`);
+                    return {
+                        docs: docs.map(d => ({ id: d.id, exists: true, data: () => d, ref: makeDocRef(collection, d.id) })),
+                        empty: docs.length === 0,
+                        size: docs.length
+                    };
+                },
+                onSnapshot: (cb) => {
+                    let lastSnapshot; // JSON string of the last doc list we actually delivered
+                    const poll = async () => {
+                        if (apiIsBackedOff()) return;
+                        try {
+                            const s = await ref.get();
+                            const snapshot = JSON.stringify(s.docs.map(d => d.data()));
+                            if (snapshot === lastSnapshot) return; // nothing changed — skip re-render, no flicker
+                            lastSnapshot = snapshot;
+                            cb(s);
+                        } catch (e) {}
+                    };
+                    poll(); const t = setInterval(poll, collection === "orders" ? 4000 : 6000);
+                    return () => clearInterval(t);
+                }
+            };
+            return ref;
+        }
+
+        // Fake "batch" object: our server has no multi-doc transactions, so a batch
+        // just remembers the operations and fires them one by one on commit().
+        function makeBatch() {
+            const ops = [];
+            return {
+                update: (ref, data) => ops.push({ type: "update", ref, data }),
+                set: (ref, data, opts) => ops.push({ type: "set", ref, data }),
+                delete: (ref) => ops.push({ type: "delete", ref }),
+                commit: async () => { for (const op of ops) { if (op.type === "delete") await op.ref.delete(); else await op.ref.update(op.data); } }
+            };
+        }
+
+        const db = {
+            collection: (name) => makeCollectionRef(name),
+            batch: () => makeBatch()
+        };
+
+        // Tiny stand-in for firebase.firestore.FieldValue.increment(n): our server
+        // applies increments atomically via POST /api/<collection>/:id/increment,
+        // so here we just tag the delta and special-case it inside update()/set().
+        const firebase = {
+            firestore: {
+                FieldValue: { increment: (n) => ({ __increment: n }) }
+            }
+        };
+
+        // Patch makeDocRef's update/set to route any {__increment:n} field through
+        // the dedicated increment endpoint instead of a plain overwrite.
+        const _origMakeDocRef = makeDocRef;
+        makeDocRef = function (collection, id) {
+            const base = _origMakeDocRef(collection, id);
+            async function applyWithIncrements(data) {
+                const incFields = {}; const plainFields = {};
+                Object.entries(data).forEach(([k, v]) => { if (v && typeof v === "object" && "__increment" in v) incFields[k] = v.__increment; else plainFields[k] = v; });
+                if (Object.keys(incFields).length) {
+                    const endpoint = collection === "settings" ? `/api/settings/${id}/increment` : `/api/${collection}/${id}/increment`;
+                    await apiSend(endpoint, "POST", incFields);
+                }
+                if (Object.keys(plainFields).length) await apiSend(`/api/${collection}/${id}`, "PUT", plainFields);
+            }
+            return { ...base, set: applyWithIncrements, update: applyWithIncrements };
+        };
+
+        // Upload a base64 data URL to the server and get back a real file path.
+        async function uploadImage(dataUrl) {
+            const res = await apiSend("/api/upload", "POST", { dataUrl });
+            return res.url;
+        }
+    </script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Original Kuromi Store palette: near-black base + glass panels + single hot-pink accent */
+            --bg-black: #08080a;
+            --bg-panel: rgba(255, 255, 255, 0.04);
+            --violet-deep: rgba(125, 60, 255, 0.1);
+            --violet-mid: #ff7ab9;
+            --lime: #ff5ea8;
+            --pink-cta: #ff5ea8;
+            --line: rgba(255, 94, 168, 0.15);
+            --line-soft: rgba(255,255,255,0.1);
+            --text-main: #ffffff;
+            --text-muted: #8b8b95;
+            --bg-overlay: rgba(8, 8, 10, 0.62);
+        }
+
+        /* ---------- Light theme ---------- */
+        :root[data-theme="light"] {
+            --bg-black: #f6f3f7;
+            --bg-panel: rgba(255, 255, 255, 0.78);
+            --violet-deep: rgba(125, 60, 255, 0.08);
+            --violet-mid: #d6609f;
+            --lime: #e0407f;
+            --pink-cta: #e0407f;
+            --line: rgba(224, 64, 127, 0.25);
+            --line-soft: rgba(0, 0, 0, 0.12);
+            --text-main: #1a1a1f;
+            --text-muted: #5f5f6b;
+            --bg-overlay: rgba(246, 243, 247, 0.72);
+        }
+        /* The page uses several fixed Tailwind colors written for a dark background;
+           these re-map them for light mode. */
+        :root[data-theme="light"] .text-white { color: #1a1a1f !important; }
+        :root[data-theme="light"] .text-gray-300,
+        :root[data-theme="light"] .text-gray-400,
+        :root[data-theme="light"] .text-gray-500,
+        :root[data-theme="light"] .text-gray-600 { color: #5f5f6b !important; }
+        :root[data-theme="light"] .bg-white\/5 { background-color: rgba(0, 0, 0, 0.04) !important; }
+        :root[data-theme="light"] .hover\:bg-white\/10:hover { background-color: rgba(0, 0, 0, 0.08) !important; }
+        :root[data-theme="light"] .border-white\/10 { border-color: rgba(0, 0, 0, 0.12) !important; }
+        :root[data-theme="light"] .divide-white\/10 > :not([hidden]) ~ :not([hidden]) { border-color: rgba(0, 0, 0, 0.1) !important; }
+        :root[data-theme="light"] .border-gray-700 { border-color: rgba(0, 0, 0, 0.15) !important; }
+        :root[data-theme="light"] #mobile-menu { background: #ffffff !important; border-color: rgba(0, 0, 0, 0.1) !important; }
+        :root[data-theme="light"] .panel { box-shadow: 0 8px 28px rgba(60, 30, 80, 0.12); }
+        :root[data-theme="light"] input,
+        :root[data-theme="light"] textarea,
+        :root[data-theme="light"] select { background: rgba(0, 0, 0, 0.04); }
+        :root[data-theme="light"] select option { background: #ffffff; color: #1a1a1f; }
+        :root[data-theme="light"] .skeleton { background: linear-gradient(-90deg, #e9e4ec 0%, #f4f0f6 50%, #e9e4ec 100%); background-size: 400% 400%; }
+        :root[data-theme="light"] .toast { background: #ffffff; color: #1a1a1f; }
+        :root[data-theme="light"] #store-closed-banner,
+        :root[data-theme="light"] #api-down-banner,
+        :root[data-theme="light"] #api-down-banner * { color: #ffffff !important; }
+        :root[data-theme="light"] .wish-btn { background: rgba(255, 255, 255, 0.85); color: #1a1a1f; }
+        :root[data-theme="light"] .wish-btn:hover,
+        :root[data-theme="light"] .wish-btn.active { background: var(--pink-cta); color: #ffffff; }
+        :root[data-theme="light"] .btn-cta,
+        :root[data-theme="light"] .btn-pink { color: #ffffff; }
+        :root[data-theme="light"] .priority-ribbon,
+        :root[data-theme="light"] .card-price-tag,
+        :root[data-theme="light"] .promo-banner,
+        :root[data-theme="light"] #scroll-top { color: #ffffff; }
+        :root[data-theme="light"] .dash-tab-btn.active { color: #ffffff !important; }
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: var(--bg-black);
+            color: var(--text-main);
+            margin: 0;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+        h1, h2, h3, .display-font { font-family: 'Baloo 2', 'Tajawal', sans-serif; }
+
+        .bg-mesh {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2;
+            background-color: var(--bg-black);
+            background-image: url('images/bg.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+        /* Tint layer on top of the photo so text stays readable and the pink theme still shows through */
+        .bg-mesh::before {
+            content: ""; position: absolute; inset: 0;
+            background:
+                radial-gradient(circle at 10% 20%, rgba(255, 94, 168, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(125, 60, 255, 0.1) 0%, transparent 40%),
+                var(--bg-overlay);
+        }
+        .bg-mesh::after {
+            content: ""; position: absolute; inset: 0; opacity: 0.5;
+            background-image: radial-gradient(rgba(255,255,255,0.035) 1px, transparent 1px);
+            background-size: 26px 26px;
+        }
+
+        .panel {
+            background: var(--bg-panel);
+            border: 1px solid var(--line-soft);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 4px 18px 4px 18px;
+        }
+        .panel-sq { border-radius: 4px !important; }
+
+        /* Section header: left-aligned with a small accent tab instead of centered emoji banners */
+        .section-head { display: flex; align-items: center; gap: 14px; margin-bottom: 2rem; }
+        .section-head .tag { width: 10px; height: 34px; background: var(--lime); border-radius: 2px; flex-shrink: 0; transform: skewX(-8deg); }
+        .section-head h3, .section-head h2 { margin: 0; text-align: start; }
+        [dir="rtl"] .section-head .tag { transform: skewX(8deg); }
+
+        .text-lime { color: var(--lime); }
+        .text-punk { color: var(--violet-mid); }
+
+        .btn-cta {
+            background: var(--lime);
+            color: #171018;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 3px 3px 0 var(--pink-cta);
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        .btn-cta:hover { transform: translate(-2px, -2px); box-shadow: 5px 5px 0 var(--pink-cta); }
+        .btn-cta:active { transform: translate(0,0); box-shadow: 1px 1px 0 var(--pink-cta); }
+        .btn-cta:disabled { background: #2a2a2e; box-shadow: none; cursor: not-allowed; transform: none; color: #666; }
+
+        .btn-outline {
+            background: transparent;
+            border: 1.5px solid var(--line-soft);
+            color: var(--text-main);
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        .btn-outline:hover { border-color: var(--lime); color: var(--lime); background: rgba(198,255,77,0.06); }
+        .btn-outline:disabled { cursor: not-allowed; opacity: 0.5; }
+
+        .btn-pink { background: var(--pink-cta); color: #1a0d14; border: none; padding: 12px 24px; border-radius: 10px; font-weight: 700; cursor: pointer; transition: all 0.2s; box-shadow: 3px 3px 0 var(--violet-mid); display: inline-flex; align-items:center; justify-content:center; gap:8px; }
+        .btn-pink:hover { transform: translate(-2px,-2px); box-shadow: 5px 5px 0 var(--violet-mid); }
+        .btn-pink:disabled { background: #2a2a2e; box-shadow:none; cursor: not-allowed; transform:none; color:#666; }
+
+        /* Inputs */
+        input, textarea, select {
+            background: rgba(255,255,255,0.03);
+            border: 1.5px solid var(--line-soft);
+            outline: none;
+            transition: all 0.15s ease-in-out;
+            padding: 13px 16px;
+            border-radius: 10px;
+            color: var(--text-main);
+            width: 100%;
+            font-family: inherit;
+            font-size: 0.95rem;
+        }
+        input::placeholder, textarea::placeholder { color: #6f6480; font-weight: 500; }
+        input:hover, textarea:hover, select:hover { border-color: rgba(255,255,255,0.2); }
+        input:focus, textarea:focus, select:focus {
+            border-color: var(--lime);
+            box-shadow: 0 0 0 3px rgba(198, 255, 77, 0.18);
+        }
+        input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--lime); cursor: pointer; }
+        select { cursor: pointer; }
+        select option { background: #1a1522; }
+
+        .hidden { display: none !important; }
+
+        /* Product cards -- sticker/patch look: asymmetric corners, torn photo edge, corner price tag */
+        .product-card {
+            background: var(--bg-panel);
+            border: 1.5px solid var(--line-soft);
+            border-radius: 2px 16px 2px 16px;
+            overflow: hidden;
+            transition: transform 0.2s ease, border-color 0.2s ease;
+            position: relative;
+        }
+        .product-card:hover { transform: translateY(-4px) rotate(-0.4deg); border-color: var(--violet-mid); }
+        .product-card .card-photo-wrap { position: relative; overflow: hidden; }
+        .product-card .card-photo-wrap::after {
+            content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 10px;
+            background: var(--bg-panel);
+            clip-path: polygon(0% 100%, 4% 30%, 9% 90%, 14% 20%, 19% 85%, 24% 15%, 29% 90%, 34% 25%, 39% 80%, 44% 10%, 49% 85%, 54% 20%, 59% 90%, 64% 15%, 69% 85%, 74% 25%, 79% 90%, 84% 10%, 89% 85%, 94% 20%, 100% 100%, 100% 100%, 0 100%);
+        }
+        .card-price-tag {
+            position: absolute; top: -2px; left: 10px; background: var(--lime); color: #171018;
+            font-weight: 900; font-size: 0.78rem; padding: 3px 10px 5px;
+            border-radius: 0 0 8px 8px; z-index: 5; box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+        .card-body { padding: 14px; padding-top: 20px; }
+
+        .nav-link { cursor: pointer; padding: 8px 4px; margin: 0 8px; position: relative; transition: 0.2s; font-weight: 700; color: var(--text-muted); }
+        .nav-link::after { content: ""; position: absolute; left: 0; right: 0; bottom: -2px; height: 3px; background: var(--lime); transform: scaleX(0); transition: transform 0.2s; border-radius: 2px; }
+        .nav-link:hover, .nav-link.active { color: var(--lime); }
+        .nav-link:hover::after, .nav-link.active::after { transform: scaleX(1); }
+        .dash-tab-btn.active { background: var(--lime) !important; color: #171018 !important; border: none !important; }
+
+        .site-header { border-radius: 4px 22px 4px 22px !important; }
+
+        .skeleton { background: linear-gradient(-90deg, #171122 0%, #221a30 50%, #171122 100%); background-size: 400% 400%; animation: shimmer 1.5s infinite linear; height: 300px; border-radius: 14px; }
+        @keyframes shimmer { 0% { background-position: 100% 0; } 100% { background-position: -100% 0; } }
+
+        #toast-container { position: fixed; top: 20px; right: 20px; z-index: 9999; }
+        .toast { background: #17111f; color: #fff; padding: 16px 24px; border-radius: 10px; margin-bottom: 10px; border-left: 4px solid var(--lime); box-shadow: 0 10px 30px rgba(0,0,0,0.6); animation: slideInRight 0.3s ease, fadeOut 0.5s ease 2.5s forwards; display: flex; align-items: center; gap: 10px; min-width: 250px; }
+        .toast.success { border-color: var(--lime); } .toast.error { border-color: var(--pink-cta); }
+        @keyframes slideInRight { from { transform: translateX(120%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        @keyframes fadeOut { to { opacity: 0; transform: translateX(120px); } }
+        @keyframes bounce { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.4); color: var(--lime); } }
+        .bounce { animation: bounce 0.3s ease; }
+
+        ::-webkit-scrollbar { width: 6px; height: 6px; } ::-webkit-scrollbar-track { background: var(--bg-black); } ::-webkit-scrollbar-thumb { background: var(--violet-deep); border-radius: 4px; } ::-webkit-scrollbar-thumb:hover { background: var(--violet-mid); }
+
+        #scroll-top { position: fixed; bottom: 20px; left: 20px; background: var(--lime); color: #171018; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; opacity: 0; transition: 0.3s; z-index: 50; box-shadow: 0 5px 15px rgba(198,255,77,0.35); }
+        #scroll-top.visible { opacity: 1; }
+
+        #lightbox { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 200; display: flex; align-items: center; justify-content: center; cursor: zoom-out; }
+
+        .wish-btn { position: absolute; top: 10px; right: 10px; background: rgba(12,9,16,0.7); color: white; border: 1px solid var(--line-soft); width: 36px; height: 36px; border-radius: 50%; cursor: pointer; z-index: 10; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
+        .wish-btn:hover, .wish-btn.active { background: var(--pink-cta); border-color: var(--pink-cta); color: #1a0d14; }
+
+        .star-rating i { cursor: pointer; transition: 0.2s; } .star-rating i:hover { transform: scale(1.2); }
+        .modal-container { animation: modalFadeIn 0.25s ease forwards; }
+        @keyframes modalFadeIn { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: scale(1); } }
+
+        /* Mobile Menu Animation -- untouched behavior */
+        .mobile-menu { transition: transform 0.3s ease-in-out; transform: translateX(100%); }
+        .mobile-menu.open { transform: translateX(0); }
+        .menu-overlay { transition: opacity 0.3s; opacity: 0; pointer-events: none; }
+        .menu-overlay.open { opacity: 1; pointer-events: auto; }
+
+        /* Promo Banner Styles */
+        .promo-banner {
+            background: var(--pink-cta);
+            color: #1a0d14; padding: 8px 16px; border-radius: 8px;
+            font-weight: 800; font-size: 0.9rem; text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .search-wrap { position: relative; flex: 1; min-width: 200px; }
+
+        /* Cute empty state (empty cart / wishlist) */
+        .empty-state { text-align: center; padding: 50px 20px 30px; }
+        .empty-state img { width: 96px; height: 96px; object-fit: cover; border-radius: 50%; border: 3px solid var(--lime); margin: 0 auto 20px; opacity: 0.95; }
+        .empty-state h4 { font-size: 1.35rem; font-weight: 800; color: #fff; margin-bottom: 8px; }
+        .empty-state p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 22px; }
+        .empty-state .es-foot { margin-top: 26px; padding-top: 18px; border-top: 1px solid var(--line-soft); color: #555; font-size: 0.75rem; }
+        .empty-state .es-foot a { color: var(--lime); font-weight: 700; text-decoration: none; }
+        .empty-state .es-foot a:hover { text-decoration: underline; }
+
+        /* Priority Ribbon */
+        .priority-ribbon {
+            background: var(--lime);
+            color: #171018; text-align: center; font-weight: 900; font-size: 0.72rem;
+            padding: 5px 8px; letter-spacing: 0.3px;
+        }
+        .priority-card-wrap { display: flex; flex-direction: column; border-radius: 14px; overflow: hidden; }
+        .priority-card-wrap .product-card { border-radius: 0 0 14px 14px; }
+
+        /* Store-status controlled nav items: toggled via class, not inline style,
+           so tailwind's "hidden md:flex" on the parent keeps working. */
+        .store-gated.is-closed { display: none !important; }
+
+        /* Modal close buttons were positioned for RTL (left); mirror them in LTR */
+        [dir="ltr"] .absolute.left-4 { left: auto; right: 1rem; }
+        [dir="ltr"] .absolute.left-2 { left: auto; right: 0.5rem; }
+        @media (min-width: 768px) { [dir="ltr"] .absolute.md\:left-4 { left: auto; right: 1rem; } }
+        /* Wishlist heart sits on the opposite corner from the price tag in both directions */
+        [dir="rtl"] .toast { border-left: none; border-right: 4px solid var(--lime); }
+    </style>
+</head>
+<body>
+    <div class="bg-mesh"></div>
+
+    <!-- Shown only when the server cannot be reached -->
+    <div id="api-down-banner" class="hidden fixed top-0 left-0 right-0 z-[300] bg-[#b3261e] text-white text-sm p-3 text-center">
+        <span class="font-bold">Can't reach the server.</span>
+        <span id="api-down-origin"></span>
+        <span>If this site is hosted, open it from your host's public address, not localhost.</span>
+        <button onclick="retryConnection()" class="underline font-bold mx-2">Retry</button>
+    </div>
+
+    <!-- Mandatory account wall: shown until the visitor is signed in -->
+    <div id="auth-wall" class="hidden fixed inset-0 bg-black/95 z-[200] flex items-center justify-center p-4 backdrop-blur-md">
+        <div class="panel p-8 w-full max-w-md rounded-2xl modal-container">
+            <div class="flex justify-end gap-2 mb-2">
+                <button onclick="toggleLanguage()" class="lang-toggle-btn btn-outline text-xs py-1 px-3" title="Language">AR</button>
+                <button onclick="toggleTheme()" class="btn-outline text-xs py-1 px-3" title="Theme"><i class="theme-toggle-icon fas fa-sun"></i></button>
+            </div>
+            <div class="text-center mb-6">
+                <img src="images/x.jpg" class="w-16 h-16 rounded-full object-cover border-2 border-[var(--lime)] mx-auto mb-3" onerror="this.src='https://placehold.co/100x100/08080a/ff5ea8?text=K'">
+                <h2 class="text-2xl font-black text-lime display-font">Kuromi Store</h2>
+                <p class="text-[var(--text-muted)] text-sm mt-1">Sign in or create an account to continue</p>
+            </div>
+            <div class="flex gap-2 mb-6">
+                <button id="auth-tab-signin" onclick="switchAuthTab('signin')" class="dash-tab-btn active btn-outline flex-1 text-sm py-2">Sign In</button>
+                <button id="auth-tab-signup" onclick="switchAuthTab('signup')" class="dash-tab-btn btn-outline flex-1 text-sm py-2">Sign Up</button>
+            </div>
+            <div id="auth-signin-form">
+                <input type="text" id="auth-signin-username" placeholder="Username" class="mb-4">
+                <input type="password" id="auth-signin-password" placeholder="Password" class="mb-6">
+                <button onclick="this.disabled=true; this.innerText='Signing in...'; handleUserSignIn(this);" class="btn-cta w-full">Sign In</button>
+            </div>
+            <div id="auth-signup-form" class="hidden">
+                <input type="text" id="auth-signup-username" placeholder="Username" class="mb-4">
+                <input type="password" id="auth-signup-password" placeholder="Password" class="mb-4">
+                <input type="email" id="auth-signup-email" placeholder="Email" class="mb-4">
+                <input type="text" id="auth-signup-phone" placeholder="Mobile Number" class="mb-6">
+                <button onclick="this.disabled=true; this.innerText='Creating account...'; handleUserSignUp(this);" class="btn-cta w-full">Create Account</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="store-closed-banner" class="hidden bg-red-500/80 backdrop-blur-md text-white text-center py-3 font-bold text-sm md:text-base sticky top-0 z-[60]">
+        <i class="fas fa-exclamation-circle"></i> Orders are currently closed. We'll let you know as soon as we're back!
+    </div>
+
+    <div id="toast-container"></div>
+    <div id="lightbox" class="hidden" onclick="closeLightbox()"><img src="" id="lightbox-img" class="max-w-[90%] max-h-[90%] object-contain rounded-lg"></div>
+    <button id="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})"><i class="fas fa-arrow-up"></i></button>
+
+    <!-- Header -->
+    <header class="panel site-header m-3 md:m-6 p-3 md:p-4 flex justify-between items-center sticky top-2 md:top-4 z-50 gap-3">
+        <div class="flex items-center gap-3 cursor-pointer" onclick="navigate('home')">
+            <img src="images/x.jpg" class="w-10 h-10 md:w-12 md:h-12 rounded-full object-cover border-2 border-[var(--lime)]" onerror="this.src='https://placehold.co/100x100/15111c/c6ff4d?text=K'">
+            <h1 class="text-lg md:text-xl font-black text-lime tracking-wide display-font truncate max-w-[110px] sm:max-w-none">Kuromi Store</h1>
+        </div>
+
+        <!-- Desktop Nav -->
+        <nav class="hidden md:flex gap-2">
+            <div class="nav-link text-sm md:text-base" onclick="navigate('home')">Home</div>
+            <div id="nav-store" class="nav-link text-sm md:text-base store-gated" onclick="navigate('store')">Store</div>
+            <div id="nav-cart" class="nav-link text-sm md:text-base store-gated" onclick="navigate('cart')">Cart <span id="cart-count" class="text-lime">0</span></div>
+            <div id="nav-wishlist" class="nav-link text-sm md:text-base store-gated" onclick="navigate('wishlist')">Wishlist <span id="wish-count" class="text-lime">0</span></div>
+            <div class="nav-link text-sm md:text-base" onclick="navigate('reviews')">Rate us!</div>
+            <div class="nav-link text-sm md:text-base" onclick="navigate('me')">Me</div>
+        </nav>
+
+        <div class="flex gap-2 items-center">
+            <button id="dashboard-btn" onclick="openDashboard()" class="btn-pink text-xs md:text-sm py-2 px-3 md:px-4 hidden"><i class="fas fa-tachometer-alt"></i> <span class="hidden md:inline">Dashboard</span></button>
+            <button id="lang-toggle" onclick="toggleLanguage()" class="lang-toggle-btn btn-outline text-xs md:text-sm py-2 px-3" title="Language">AR</button>
+            <button id="theme-toggle" onclick="toggleTheme()" class="btn-outline text-xs md:text-sm py-2 px-3" title="Theme"><i id="theme-toggle-icon" class="theme-toggle-icon fas fa-sun"></i></button>
+            <button id="hamburger-btn" class="md:hidden btn-outline p-2" onclick="toggleMobileMenu(true)">
+                <i class="fas fa-bars text-xl"></i>
+            </button>
+        </div>
+    </header>
+
+    <div id="menu-overlay" class="menu-overlay fixed inset-0 bg-black/60 z-[55] md:hidden" onclick="toggleMobileMenu(false)"></div>
+
+    <div id="mobile-menu" class="mobile-menu fixed top-0 right-0 h-full w-64 bg-[#120e18] z-[56] md:hidden flex flex-col p-6 border-l border-white/10">
+        <div class="flex justify-between items-center mb-8">
+            <h2 class="text-xl font-black text-lime display-font">Menu</h2>
+            <button onclick="toggleMobileMenu(false)" class="text-2xl text-gray-400"><i class="fas fa-times"></i></button>
+        </div>
+        <nav class="flex flex-col gap-4 text-lg">
+            <div class="nav-link" onclick="navigate('home'); toggleMobileMenu(false)">Home</div>
+            <div class="nav-link" onclick="navigate('store'); toggleMobileMenu(false)">Store</div>
+            <div class="nav-link" onclick="navigate('cart'); toggleMobileMenu(false)">Cart <span id="cart-count-mobile" class="text-lime">0</span></div>
+            <div class="nav-link" onclick="navigate('wishlist'); toggleMobileMenu(false)">Wishlist <span id="wish-count-mobile" class="text-lime">0</span></div>
+            <div class="nav-link" onclick="navigate('reviews'); toggleMobileMenu(false)">Rate us!</div>
+            <div class="nav-link" onclick="navigate('me'); toggleMobileMenu(false)">Me</div>
+        </nav>
+        <div class="mt-auto text-center text-xs text-gray-500 pt-8 border-t border-white/10">
+            <p>&copy; 2026 Kuromi Store.</p>
+            <p class="mt-2">made by <a href="https://n--.nekoweb.org" target="_blank" rel="noopener noreferrer" class="text-lime font-bold hover:underline transition">none</a></p>
+        </div>
+    </div>
+
+    <main class="max-w-7xl mx-auto p-4 md:p-6 pb-20">
+        <section id="home-page" class="block">
+            <div class="grid md:grid-cols-[1.1fr_0.9fr] gap-8 md:gap-4 items-center py-10 md:py-16" data-aos="fade-down">
+                <div class="text-center md:text-start order-2 md:order-1">
+                    <h2 class="text-4xl md:text-6xl font-black text-lime mb-3 tracking-tight display-font leading-none">Kuromi Store</h2>
+                    <p class="text-base md:text-xl text-[var(--text-muted)] mb-8 font-medium max-w-md mx-auto md:mx-0">Be aesthetic, be yourself, ALWAYS!!</p>
+                    <div class="flex flex-wrap justify-center md:justify-start gap-4">
+                        <a href="https://www.instagram.com/kuromistore.eg" target="_blank" class="btn-pink"><i class="fab fa-instagram"></i> Instagram</a>
+                        <a href="https://chat.whatsapp.com/J9C1UQqFKajLFS5TSEA7Hg" target="_blank" class="btn-outline"><i class="fab fa-whatsapp"></i> WhatsApp Group</a>
+                    </div>
+                </div>
+                <div class="order-1 md:order-2 relative flex justify-center">
+                    <div class="absolute w-40 h-40 md:w-56 md:h-56 bg-[var(--violet-deep)] rounded-full blur-3xl opacity-50"></div>
+                    <img src="images/x.jpg" class="relative w-48 h-48 md:w-72 md:h-72 object-cover border-4 border-[var(--lime)] rotate-3" style="border-radius: 8px 40px 8px 40px;" alt="Kuromi Logo" onerror="this.src='https://placehold.co/400x400/15111c/c6ff4d?text=Kuromi+Store'">
+                </div>
+            </div>
+
+            <div class="panel panel-sq p-4 md:p-6 mt-6 text-center max-w-2xl mx-auto" data-aos="zoom-in">
+                <img src="https://z-cdn-media.chatglm.cn/files/a231a7df-0a1d-4dee-825f-778dd25bec3a.jpg?auth_key=1885956629-a6cfb49966dd4bfcad8d9134ac685c88-0-f4d9d9146d7e8b34e6f8d7a026dd3a71" alt="Store Rules" class="w-full rounded-sm">
+            </div>
+
+            <!-- Shipping Prices Section -->
+            <div class="mt-16 max-w-2xl mx-auto" data-aos="fade-up">
+                <div class="section-head justify-center md:justify-start"><span class="tag"></span><h3 class="text-xl font-bold text-white display-font">Shipping & delivery</h3></div>
+                <div class="panel panel-sq divide-y divide-white/10 overflow-hidden">
+                    <div class="flex justify-between items-center px-6 py-4"><span class="text-[var(--text-muted)] font-bold">Cairo & Giza</span><span class="text-lg font-black text-lime"><span id="home-ship-cairoGiza">70</span> EGP</span></div>
+                    <div class="flex justify-between items-center px-6 py-4"><span class="text-[var(--text-muted)] font-bold">Alexandria</span><span class="text-lg font-black text-lime"><span id="home-ship-alexandria">75</span> EGP</span></div>
+                    <div class="flex justify-between items-center px-6 py-4"><span class="text-[var(--text-muted)] font-bold">Other Governorates</span><span class="text-lg font-black text-lime"><span id="home-ship-other">85</span> EGP</span></div>
+                    <div class="flex justify-between items-center px-6 py-4"><span class="text-[var(--text-muted)] font-bold">Upper Egypt & Coastal</span><span class="text-lg font-black text-lime"><span id="home-ship-upper">120</span> EGP</span></div>
+                </div>
+            </div>
+
+            <div class="panel panel-sq mt-16 grid grid-cols-3 divide-x divide-white/10 rtl:divide-x-reverse">
+                <div class="p-6 text-center" data-aos="fade-up"><h3 class="text-3xl font-black text-lime display-font" id="stat-products">0</h3><p class="text-[var(--text-muted)] text-sm mt-1">Products</p></div>
+                <div class="p-6 text-center" data-aos="fade-up" data-aos-delay="100"><h3 class="text-3xl font-black text-lime display-font" id="stat-orders">0</h3><p class="text-[var(--text-muted)] text-sm mt-1">Orders delivered</p></div>
+                <div class="p-6 text-center" data-aos="fade-up" data-aos-delay="200"><h3 class="text-3xl font-black text-lime display-font" id="stat-happy">0</h3><p class="text-[var(--text-muted)] text-sm mt-1">Happy customers</p></div>
+            </div>
+
+            <section class="mt-20">
+                <div class="section-head"><span class="tag" style="background: var(--pink-cta);"></span><h3 class="text-2xl font-black text-white tracking-wide display-font">Top customers</h3></div>
+                <div id="top-clients-grid" class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6"></div>
+            </section>
+
+            <section class="mt-16">
+                <div class="section-head" data-aos="fade-up"><span class="tag"></span><h3 class="text-2xl font-black text-white tracking-wide display-font">Most bought</h3></div>
+                <div id="most-bought-grid" class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6"></div>
+            </section>
+            <section class="mt-16 mb-10">
+                <div class="section-head" data-aos="fade-up"><span class="tag" style="background: var(--pink-cta);"></span><h3 class="text-2xl font-black text-white tracking-wide display-font">Newest arrivals</h3></div>
+                <div id="newest-grid" class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6"></div>
+            </section>
+        </section>
+
+        <section id="store-page" class="hidden">
+            <div class="section-head"><span class="tag"></span><h2 class="text-3xl md:text-4xl font-black text-white tracking-tight display-font">Store</h2></div>
+
+            <!-- Global Promo Banner Container -->
+
+            <div class="panel panel-sq p-4 mb-6 flex flex-wrap gap-4 items-center relative">
+                <div class="search-wrap">
+                    <input type="text" id="search-input" placeholder="Search..." class="mb-0" autocomplete="off" oninput="debouncedRenderStore()">
+                </div>
+                <select id="filter-category" class="mb-0 w-auto" onchange="renderStore()"><option value="">All Categories</option></select>
+                <select id="sort-by" class="mb-0 w-auto" onchange="renderStore()">
+                    <option value="default">Default</option><option value="newest">Newest</option>
+                    <option value="price-asc">Price: Low to High</option><option value="price-desc">Price: High to Low</option>
+                </select>
+            </div>
+            <p id="product-count" class="text-[var(--text-muted)] text-sm mb-4"></p>
+            <div id="products-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6"></div>
+        </section>
+
+        <section id="cart-page" class="hidden">
+            <div class="section-head"><span class="tag"></span><h2 class="text-3xl md:text-4xl font-black text-white tracking-tight display-font">Shopping Cart</h2></div>
+            <div id="cart-items" class="space-y-4 mb-6"></div>
+            <div class="panel p-6 rounded-2xl">
+                <div class="flex gap-2 mb-4"><input type="text" id="coupon-input" placeholder="Discount Code"><button onclick="applyCoupon()" class="btn-outline">Apply</button></div>
+                <div class="flex justify-between items-center text-xl font-bold mb-6"><span>Subtotal:</span><span id="cart-total" class="text-lime">0 EGP</span></div>
+                <button onclick="proceedToCheckout()" class="btn-cta w-full text-lg py-4">Place Order</button>
+            </div>
+        </section>
+
+        <section id="wishlist-page" class="hidden">
+            <div class="section-head"><span class="tag" style="background: var(--pink-cta);"></span><h2 class="text-3xl md:text-4xl font-black text-white tracking-tight display-font">Wishlist</h2></div>
+            <div id="wishlist-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6"></div>
+        </section>
+
+        <section id="reviews-page" class="hidden">
+            <div class="section-head"><span class="tag" style="background: var(--violet-mid);"></span><h2 class="text-3xl md:text-4xl font-black text-white tracking-tight display-font">Rate us!</h2></div>
+            <div id="reviews-list" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+        </section>
+
+        <section id="me-page" class="hidden">
+            <div class="section-head"><span class="tag"></span><h2 class="text-3xl md:text-4xl font-black text-white tracking-tight display-font">Me</h2></div>
+
+            <div class="panel p-6 rounded-2xl max-w-2xl mx-auto mb-10 text-center">
+                <div class="relative inline-block mb-4">
+                    <img id="me-avatar" src="" class="w-28 h-28 rounded-full object-cover border-4 border-[var(--lime)] mx-auto" onerror="this.src='https://placehold.co/200x200/08080a/ff5ea8?text=K'">
+                    <label class="absolute bottom-0 left-0 bg-[var(--lime)] text-[#171018] w-9 h-9 rounded-full flex items-center justify-center cursor-pointer" title="Change profile photo">
+                        <i class="fas fa-camera text-sm"></i>
+                        <input type="file" accept="image/*" class="hidden" onchange="changeAvatar(event)">
+                    </label>
+                </div>
+                <h3 id="me-username" class="text-xl font-black text-white"></h3>
+                <p id="me-email" class="text-[var(--text-muted)] text-sm"></p>
+                <p id="me-phone" class="text-[var(--text-muted)] text-sm"></p>
+                <div class="grid grid-cols-2 gap-4 mt-6">
+                    <div class="bg-white/5 border border-white/10 rounded-xl p-4">
+                        <p class="text-2xl font-black text-lime" id="me-order-count">0</p>
+                        <p class="text-xs text-[var(--text-muted)] mt-1">Orders placed</p>
+                    </div>
+                    <div class="bg-white/5 border border-white/10 rounded-xl p-4">
+                        <p class="text-2xl font-black text-lime" id="me-total-spent">0 EGP</p>
+                        <p class="text-xs text-[var(--text-muted)] mt-1">Total spent</p>
+                    </div>
+                </div>
+                <button onclick="logoutUser()" class="btn-outline w-full mt-6 text-[var(--pink-cta)] border-[var(--pink-cta)]/50 hover:bg-[var(--pink-cta)]/10"><i class="fas fa-sign-out-alt"></i> Log Out</button>
+            </div>
+
+            <div class="section-head"><span class="tag" style="background: var(--pink-cta);"></span><h3 class="text-xl font-bold text-white display-font">My order history</h3></div>
+            <div id="me-orders-list" class="space-y-4 max-w-3xl mx-auto"></div>
+        </section>
+
+        <section id="checkout-page" class="hidden">
+            <button onclick="navigate('cart')" class="text-lime mb-4 font-bold flex items-center gap-2"><i id="back-arrow-icon" class="fas fa-arrow-left"></i> <span>Back to Cart</span></button>
+            <div class="section-head"><span class="tag"></span><h2 class="text-3xl md:text-4xl font-black text-white tracking-tight display-font">Shipping Details</h2></div>
+            <div class="panel p-6 md:p-8 max-w-2xl mx-auto rounded-2xl">
+                <div class="grid grid-cols-2 gap-4 mb-4"><input type="text" id="order-firstName" placeholder="First Name"><input type="text" id="order-lastName" placeholder="Last Name"></div>
+                <input type="text" id="order-whatsapp" placeholder="WhatsApp Number" class="mb-4">
+                <input type="email" id="order-email" placeholder="Email" class="mb-4">
+                <select id="order-governorate" class="mb-4" onchange="updateCheckoutTotals()"><option value="">Select Governorate</option></select>
+                <textarea id="order-address" placeholder="Detailed Address" class="mb-6 h-24"></textarea>
+
+                <div class="border-t border-white/10 pt-4 mb-6">
+                    <div class="flex justify-between text-[var(--text-muted)] mb-2"><span>Subtotal:</span><span id="checkout-subtotal">0 EGP</span></div>
+                    <div class="flex justify-between text-[var(--text-muted)] mb-4"><span>Shipping:</span><span id="checkout-shipping">0 EGP</span></div>
+                    <div class="flex justify-between items-center text-xl font-bold"><span>Grand Total:</span><span id="checkout-grand-total" class="text-lime">0 EGP</span></div>
+                </div>
+
+                <button onclick="this.disabled=true; this.innerText='Processing...'; submitOrder(this);" class="btn-cta w-full text-lg py-4">Confirm Order</button>
+            </div>
+        </section>
+
+        <section id="success-page" class="hidden text-center py-16">
+            <div class="panel p-10 max-w-md mx-auto rounded-2xl modal-container">
+                <div class="w-20 h-20 bg-[rgba(198,255,77,0.1)] rounded-full flex items-center justify-center mx-auto mb-6 border border-[var(--lime)]/30"><i class="fas fa-check text-4xl text-lime"></i></div>
+                <h2 class="text-2xl font-black text-white mb-3">Message us on WhatsApp to complete your order</h2>
+                <p class="text-xs text-gray-500 mb-6">Order ID: <span id="order-id-display" class="font-bold text-lime"></span></p>
+                <a id="whatsapp-link" href="#" target="_blank" class="btn-cta w-full mb-3"><i class="fab fa-whatsapp"></i> WhatsApp (+20 11 50634256)</a>
+                <button onclick="navigate('home')" class="btn-outline w-full">Back to Home</button>
+            </div>
+        </section>
+
+        <footer class="text-center py-10 mt-10 text-gray-600 text-sm">
+            <p>&copy; 2026 Kuromi Store.</p>
+            <p class="mt-2">made by <a href="https://n--.nekoweb.org" target="_blank" rel="noopener noreferrer" class="text-lime font-bold hover:underline transition">none</a></p>
+        </footer>
+    </main>
+
+    <!-- Product Modal -->
+    <div id="product-details-modal" class="hidden fixed inset-0 bg-black/85 z-[100] flex items-center justify-center p-2 md:p-4 backdrop-blur-md">
+        <div class="panel p-4 md:p-8 w-full max-w-3xl max-h-[90vh] overflow-y-auto relative rounded-2xl modal-container" style="-webkit-overflow-scrolling: touch;">
+            <button onclick="closeProductModal()" class="absolute top-2 left-2 md:top-4 md:left-4 text-gray-400 hover:text-lime text-2xl z-10 transition"><i class="fas fa-times-circle"></i></button>
+            <div class="grid md:grid-cols-2 gap-4 md:gap-8 mt-4">
+                <div>
+                    <img id="details-main-img" src="" class="w-full h-60 md:h-72 object-cover rounded-xl mb-3 border border-white/10 cursor-zoom-in" onclick="openLightbox(this.src)">
+                    <div id="details-gallery" class="grid grid-cols-4 gap-2"></div>
+                </div>
+                <div>
+                    <div id="details-promo-bar" class="hidden promo-banner"></div>
+                    <h2 id="details-name" class="text-xl md:text-3xl font-black mb-3 text-white display-font"></h2>
+                    <p id="details-desc" class="text-[var(--text-muted)] mb-5 leading-relaxed text-sm"></p>
+                    <div class="flex justify-between items-center mb-6"><span class="text-xl md:text-2xl font-black text-lime" id="details-price"></span></div>
+                    <div id="details-action-area"></div>
+                    <div class="flex gap-2 mt-4">
+                        <button onclick="shareProduct('whatsapp')" class="btn-outline flex-1 text-sm py-2"><i class="fab fa-whatsapp"></i> WhatsApp</button>
+                        <button onclick="shareProduct('copy')" class="btn-outline flex-1 text-sm py-2"><i class="fas fa-link"></i> Copy</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-10"><h3 class="text-xl font-bold mb-4 text-lime display-font">You might also like</h3><div id="related-products" class="grid grid-cols-2 md:grid-cols-4 gap-4"></div></div>
+        </div>
+    </div>
+
+    <!-- Notify Me Modal -->
+    <div id="notify-modal" class="hidden fixed inset-0 bg-black/90 z-[120] flex items-center justify-center p-4 backdrop-blur-md">
+        <div class="panel p-8 w-full max-w-md relative text-center rounded-2xl modal-container">
+            <button onclick="closeNotify()" class="absolute top-4 left-4 text-gray-400 hover:text-lime text-2xl"><i class="fas fa-times-circle"></i></button>
+            <h2 class="text-2xl font-black mb-2 text-lime display-font">Notify Me</h2>
+            <p class="text-[var(--text-muted)] mb-6 text-sm">Enter your email address. We will email you the moment this product is back in stock!</p>
+            <input type="hidden" id="notify-product-id">
+            <input type="email" id="notify-email" placeholder="Your Email Address" class="mb-6">
+            <button id="submit-notify-btn" onclick="this.disabled=true; this.innerText='Submitting...'; submitNotify(this);" class="btn-cta w-full">Notify Me</button>
+        </div>
+    </div>
+
+    <!-- Feedback Modal -->
+    <div id="feedback-modal" class="hidden fixed inset-0 bg-black/90 z-[120] flex items-center justify-center p-4 backdrop-blur-md">
+        <div class="panel p-8 w-full max-w-md relative text-center rounded-2xl modal-container">
+            <h2 class="text-2xl font-black mb-2 text-lime display-font">Rate us!</h2>
+            <p class="text-[var(--text-muted)] mb-6 text-sm">How was your experience with Kuromi Store?</p>
+            <div id="star-rating" class="flex justify-center gap-2 mb-6 text-3xl text-gray-600">
+                <i class="fas fa-star star-rating" onclick="setRating(1)"></i><i class="fas fa-star star-rating" onclick="setRating(2)"></i><i class="fas fa-star star-rating" onclick="setRating(3)"></i><i class="fas fa-star star-rating" onclick="setRating(4)"></i><i class="fas fa-star star-rating" onclick="setRating(5)"></i>
+            </div>
+            <textarea id="feedback-comment" placeholder="Your opinion (optional)" class="mb-6 h-24"></textarea>
+            <button onclick="this.disabled=true; this.innerText='Submitting...'; submitFeedback(this);" class="btn-cta w-full">Submit Review</button>
+        </div>
+    </div>
+
+    <!-- Restock Modal -->
+    <div id="restock-modal" class="hidden fixed inset-0 bg-black/90 z-[120] flex items-center justify-center p-4 backdrop-blur-md">
+        <div class="panel p-8 w-full max-w-md relative text-center rounded-2xl modal-container">
+            <button onclick="closeRestock()" class="absolute top-4 left-4 text-gray-400 hover:text-lime text-2xl"><i class="fas fa-times-circle"></i></button>
+            <h2 class="text-2xl font-black mb-2 text-lime display-font">Restock Product</h2>
+            <p class="text-[var(--text-muted)] mb-6 text-sm">Enter the new available quantity for <strong id="restock-name" class="text-white"></strong></p>
+            <input type="number" id="restock-qty" placeholder="e.g. 50" class="mb-6" min="1">
+            <button onclick="this.disabled=true; this.innerText='Processing...'; submitRestock(this);" class="btn-cta w-full">Confirm Restock</button>
+        </div>
+    </div>
+
+    <!-- Dashboard -->
+    <section id="dashboard-page" class="hidden fixed inset-0 bg-[var(--bg-black)] z-[90] overflow-y-auto">
+        <div class="max-w-6xl mx-auto p-4 md:p-8">
+            <div class="flex justify-between items-center mb-8 flex-wrap gap-3">
+                <h2 class="text-2xl md:text-3xl font-black text-lime tracking-tight display-font">Owner Dashboard</h2>
+                <div class="flex gap-2">
+                    <button onclick="closeDashboard()" class="btn-outline text-sm py-2 px-4"><i class="fas fa-store"></i> View Site</button>
+                    <button onclick="logout()" class="btn-outline text-sm py-2 px-4 text-[var(--pink-cta)] border-[var(--pink-cta)]/50 hover:bg-[var(--pink-cta)]/10"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                </div>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                <div class="panel p-4 text-center rounded-xl"><h3 class="text-2xl font-black text-lime" id="dash-stat-products">0</h3><p class="text-xs text-[var(--text-muted)]">Products</p></div>
+                <div class="panel p-4 text-center rounded-xl"><h3 class="text-2xl font-black text-[var(--lime)]" id="dash-stat-sales">0 EGP</h3><p class="text-xs text-[var(--text-muted)]">Total Sales</p></div>
+                <div class="panel p-4 text-center rounded-xl"><h3 class="text-2xl font-black text-yellow-400" id="dash-stat-pending">0</h3><p class="text-xs text-[var(--text-muted)]">Pending Orders</p></div>
+                <div class="panel p-4 text-center rounded-xl"><h3 class="text-2xl font-black text-[var(--pink-cta)]" id="dash-stat-outstock">0</h3><p class="text-xs text-[var(--text-muted)]">Out of Stock</p></div>
+            </div>
+            <div class="flex gap-2 mb-8 flex-wrap">
+                <button onclick="showDashTab('analytics', this)" class="dash-tab-btn active btn-outline text-sm py-2 px-4">Analytics</button>
+                <button onclick="showDashTab('products', this)" class="dash-tab-btn btn-outline text-sm py-2 px-4">Products</button>
+                <button onclick="showDashTab('categories', this)" class="dash-tab-btn btn-outline text-sm py-2 px-4">Categories</button>
+                <button onclick="showDashTab('outstock', this)" class="dash-tab-btn btn-outline text-sm py-2 px-4">Out of Stock</button>
+                <button onclick="showDashTab('coupons', this)" class="dash-tab-btn btn-outline text-sm py-2 px-4">Coupons</button>
+                <button onclick="showDashTab('incoming', this)" class="dash-tab-btn btn-outline text-sm py-2 px-4">Incoming Orders <span id="incoming-badge" class="bg-[var(--pink-cta)] text-[#1a0d14] text-xs px-2 rounded-full mr-1 hidden">0</span></button>
+                <button onclick="showDashTab('done', this)" class="dash-tab-btn btn-outline text-sm py-2 px-4">Done Orders</button>
+                <button onclick="showDashTab('priority', this)" class="dash-tab-btn btn-outline text-sm py-2 px-4">Priority</button>
+                <button onclick="showDashTab('users', this)" class="dash-tab-btn btn-outline text-sm py-2 px-4">Users</button>
+                <button onclick="showDashTab('settings', this)" class="dash-tab-btn btn-outline text-sm py-2 px-4">Settings</button>
+            </div>
+
+            <!-- Analytics Tab -->
+            <div id="dash-analytics" class="dash-tab">
+                <div class="panel p-6 rounded-xl mb-6">
+                    <h3 class="text-xl font-bold mb-4 display-font">Sales (Last 7 Days)</h3>
+                    <canvas id="sales-chart" height="100"></canvas>
+                </div>
+                <div class="panel p-6 rounded-xl">
+                    <h3 class="text-xl font-bold mb-4 display-font">Top Governorates</h3>
+                    <canvas id="gov-chart" height="100"></canvas>
+                </div>
+            </div>
+
+            <div id="dash-products" class="dash-tab hidden">
+                <div class="panel p-6 mb-6 rounded-xl">
+                    <h3 class="text-xl font-bold mb-4 display-font">Add / Edit Product</h3>
+                    <input type="hidden" id="prod-id">
+                    <div class="grid md:grid-cols-2 gap-4 mb-4"><input type="text" id="prod-name" placeholder="Product Name"><input type="number" id="prod-price" placeholder="Price (EGP)"></div>
+                    <div class="grid md:grid-cols-4 gap-4 mb-4">
+                        <div class="md:col-span-1"><label class="block text-[var(--text-muted)] text-sm mb-2 font-bold">Category</label><select id="prod-category"><option value="">No category</option></select></div>
+                        <div><label class="block text-[var(--text-muted)] text-sm mb-2 font-bold">Min Qty</label><input type="number" id="prod-min-qty" placeholder="e.g. 1" min="1"></div>
+                        <div><label class="block text-[var(--text-muted)] text-sm mb-2 font-bold">Max Qty</label><input type="number" id="prod-max-qty" placeholder="e.g. 10" min="1"></div>
+                        <div><label class="block text-[var(--text-muted)] text-sm mb-2 font-bold">Stock (Optional)</label><input type="number" id="prod-stock" placeholder="Empty = unlimited" min="0"></div>
+                    </div>
+
+                    <!-- Promo Features in Product Form -->
+                    <div class="grid md:grid-cols-2 gap-4 mb-4 p-4 border border-white/10 rounded-xl">
+                        <div class="flex items-center gap-3">
+                            <input type="checkbox" id="prod-featured" class="w-5 h-5">
+                            <label for="prod-featured" class="text-[var(--text-muted)] text-sm font-bold cursor-pointer">Mark as Featured Product</label>
+                        </div>
+                        <div>
+                            <label class="block text-[var(--text-muted)] text-sm mb-2 font-bold">Product Promo Text (Optional)</label>
+                            <input type="text" id="prod-promo" placeholder="e.g. Limited Edition!">
+                        </div>
+                        <div class="flex items-center gap-3 md:col-span-2">
+                            <input type="checkbox" id="prod-needs-images" class="w-5 h-5">
+                            <label for="prod-needs-images" class="text-[var(--text-muted)] text-sm font-bold cursor-pointer">Needs Images (customer must upload one image per quantity ordered)</label>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-[var(--text-muted)] text-sm mb-2 font-bold">Cover Image</label>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3"><input type="text" id="prod-cover-url" placeholder="Image URL"><input type="file" id="prod-cover-file" accept="image/*" onchange="compressImage(event, 'cover')"></div>
+                        <img id="cover-preview" src="" class="hidden mt-3 w-32 h-32 object-cover rounded-lg border border-white/10">
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-[var(--text-muted)] text-sm mb-2 font-bold">Additional Images</label>
+                        <textarea id="prod-images-urls" placeholder="Image URLs (one per line)" class="mb-3 text-sm h-20"></textarea>
+                        <input type="file" id="prod-images-files" multiple accept="image/*" onchange="compressImage(event, 'gallery')">
+                        <div id="gallery-preview" class="flex flex-wrap gap-2 mt-3"></div>
+                    </div>
+                    <textarea id="prod-desc" placeholder="Product Description" class="mb-4 h-24"></textarea>
+                    <div class="flex gap-2"><button id="save-prod-btn" onclick="saveProduct()" class="btn-cta"><i class="fas fa-save"></i> Save Product</button><button onclick="clearProdForm()" class="btn-outline">Clear</button></div>
+                </div>
+                <div id="admin-products-list" class="grid grid-cols-2 md:grid-cols-4 gap-4"></div>
+            </div>
+
+            <div id="dash-outstock" class="dash-tab hidden"><h3 class="text-xl font-bold mb-4 display-font">Out of Stock Products</h3><div id="admin-outstock-list" class="grid grid-cols-2 md:grid-cols-4 gap-4"></div></div>
+
+            <!-- Categories Tab -->
+            <div id="dash-categories" class="dash-tab hidden">
+                <div class="panel p-6 mb-6 rounded-xl">
+                    <h3 class="text-xl font-bold mb-4 display-font" id="category-form-title">Create Category</h3>
+                    <input type="hidden" id="cat-id">
+                    <input type="text" id="cat-name" placeholder="Category name" class="mb-4">
+                    <p class="text-[var(--text-muted)] text-sm mb-2 font-bold">Select products for this category</p>
+                    <div id="cat-products-list" class="grid grid-cols-1 md:grid-cols-2 gap-2 mb-4 max-h-64 overflow-y-auto p-3 border border-white/10 rounded-xl"></div>
+                    <div class="flex gap-2">
+                        <button id="save-cat-btn" onclick="saveCategory()" class="btn-cta"><i class="fas fa-save"></i> Save Category</button>
+                        <button onclick="clearCategoryForm()" class="btn-outline">Clear</button>
+                    </div>
+                </div>
+                <div id="admin-categories-list" class="space-y-3"></div>
+            </div>
+            <div id="dash-coupons" class="dash-tab hidden"><div class="panel p-6 mb-6 rounded-xl"><h3 class="text-xl font-bold mb-4 display-font">Create Coupon</h3><div class="grid md:grid-cols-3 gap-4 mb-4"><input type="text" id="coupon-code" placeholder="Coupon Code"><input type="number" id="coupon-discount" placeholder="Discount %"><input type="date" id="coupon-expiry"></div><button onclick="saveCoupon()" class="btn-cta">Save Coupon</button></div><div id="admin-coupons-list" class="grid grid-cols-2 md:grid-cols-4 gap-4"></div></div>
+            <div id="dash-incoming" class="dash-tab hidden"><div class="flex justify-between items-center mb-4 gap-4 flex-wrap"><h3 class="text-xl font-bold display-font">Incoming Orders</h3><div class="flex gap-2 flex-wrap items-center"><select id="incoming-filter" class="max-w-xs" onchange="renderOrders()"><option value="today">Today's Orders</option><option value="week">This Week's Orders</option><option value="older">More Than a Week</option></select><input type="text" id="order-search" placeholder="Search by Customer Name..." class="max-w-xs" oninput="renderOrders()"></div></div><div id="admin-incoming-list" class="space-y-4"></div></div>
+            <div id="dash-done" class="dash-tab hidden"><div class="flex justify-between items-center mb-4 gap-4 flex-wrap"><h3 class="text-xl font-bold display-font">Done Orders</h3><input type="text" id="order-search-done" placeholder="Search by Customer Name..." class="max-w-xs" oninput="renderOrders()"></div><div id="admin-done-list" class="space-y-4"></div></div>
+
+            <!-- Priority Tab -->
+            <div id="dash-priority" class="dash-tab hidden">
+                <div class="panel p-6 rounded-xl mb-6">
+                    <h3 class="text-xl font-bold mb-2 display-font">Product Priority Banner</h3>
+                    <p class="text-[var(--text-muted)] text-sm mb-4">Give a product a priority ribbon with a custom text that shows on top of its card everywhere in the store, and pushes it to the very top of the listings.</p>
+                    <input type="text" id="priority-search" placeholder="Search product by name..." class="mb-0" oninput="renderPriorityTab()">
+                </div>
+                <div id="admin-priority-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+            </div>
+
+            <!-- Users Tab -->
+            <div id="dash-users" class="dash-tab hidden">
+                <div class="panel p-6 rounded-xl mb-6">
+                    <h3 class="text-xl font-bold mb-2 display-font">Customer Accounts</h3>
+                    <p class="text-[var(--text-muted)] text-sm mb-4">Suspend an account for a set number of days, ban it entirely, or delete it.</p>
+                    <input type="text" id="users-search" placeholder="Search by username or email..." class="mb-0" oninput="renderUsersTab()">
+                </div>
+                <div id="admin-users-list" class="space-y-3"></div>
+            </div>
+
+            <div id="dash-settings" class="dash-tab hidden">
+                <div class="panel p-6 max-w-md mb-6 rounded-xl"><h3 class="text-xl font-bold mb-4 display-font">Store Status</h3><p class="text-[var(--text-muted)] text-sm mb-4">Enable or disable placing new orders.</p><button id="toggle-store-btn" onclick="toggleStoreStatus(this)" class="btn-cta w-full">Toggle Store Status</button></div>
+                <div class="panel p-6 max-w-md mb-6 rounded-xl">
+                    <h3 class="text-xl font-bold mb-4 display-font">Shipping & Delivery Prices</h3>
+                    <p class="text-[var(--text-muted)] text-sm mb-4">Update the delivery price shown for each shipping zone (in EGP).</p>
+                    <div class="mb-4"><label class="block text-[var(--text-muted)] text-sm mb-2 font-bold">Cairo & Giza</label><input type="number" id="ship-price-cairoGiza" min="0"></div>
+                    <div class="mb-4"><label class="block text-[var(--text-muted)] text-sm mb-2 font-bold">Alexandria</label><input type="number" id="ship-price-alexandria" min="0"></div>
+                    <div class="mb-4"><label class="block text-[var(--text-muted)] text-sm mb-2 font-bold">Other Governorates</label><input type="number" id="ship-price-other" min="0"></div>
+                    <div class="mb-6"><label class="block text-[var(--text-muted)] text-sm mb-2 font-bold">Upper Egypt & Coastal</label><input type="number" id="ship-price-upper" min="0"></div>
+                    <button onclick="this.disabled=true; this.innerText='Saving...'; saveShippingPrices(this);" class="btn-cta w-full">Save Shipping Prices</button>
+                </div>
+                <div class="panel p-6 max-w-md rounded-xl"><h3 class="text-xl font-bold mb-4 display-font">Change Login Credentials</h3><input type="text" id="settings-user" placeholder="New Username" class="mb-4"><input type="password" id="settings-pass" placeholder="New Password" class="mb-6"><button onclick="this.disabled=true; this.innerText='Saving...'; updateOwnerCredentials(this);" class="btn-cta w-full">Save</button></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Custom Images Upload Modal (checkout) -->
+    <div id="custom-images-modal" class="hidden fixed inset-0 bg-black/90 z-[130] flex items-center justify-center p-4 backdrop-blur-md">
+        <div class="panel p-6 md:p-8 w-full max-w-lg max-h-[90vh] overflow-y-auto relative rounded-2xl modal-container">
+            <h2 class="text-2xl font-black mb-2 text-lime display-font">Upload Your Images</h2>
+            <p class="text-[var(--text-muted)] mb-6 text-sm">Some items in your order need custom images. Please upload the required number of images for each item below.</p>
+            <div id="custom-images-fields" class="space-y-6"></div>
+            <button onclick="saveCustomImagesAndClose()" class="btn-cta w-full mt-6">Save & Continue</button>
+        </div>
+    </div>
+
+    <!-- Custom Images Viewer Modal (owner dashboard) -->
+    <div id="custom-images-view-modal" class="hidden fixed inset-0 bg-black/90 z-[130] flex items-center justify-center p-4 backdrop-blur-md">
+        <div class="panel p-6 md:p-8 w-full max-w-lg max-h-[90vh] overflow-y-auto relative rounded-2xl modal-container">
+            <button onclick="closeCustomImagesView()" class="absolute top-4 left-4 text-gray-400 hover:text-lime text-2xl"><i class="fas fa-times-circle"></i></button>
+            <h2 class="text-2xl font-black mb-6 text-lime display-font">Customer's Uploaded Images</h2>
+            <div id="custom-images-view-grid" class="grid grid-cols-3 gap-3"></div>
+        </div>
+    </div>
+
+    <div id="order-details-modal" class="hidden fixed inset-0 bg-black/90 z-[110] flex items-center justify-center p-4 backdrop-blur-md">
+        <div class="panel p-6 md:p-8 w-full max-w-2xl max-h-[90vh] overflow-y-auto relative rounded-2xl modal-container">
+            <button onclick="closeOrderModal()" class="absolute top-4 left-4 text-gray-400 hover:text-lime text-2xl"><i class="fas fa-times-circle"></i></button>
+            <div id="order-details-content"></div>
+        </div>
+    </div>
+
+    <script>
+        const $ = id => document.getElementById(id);
+        const govs = ["Cairo","Giza","Alexandria","Dakahlia","Sharqia","Monufia","Gharbia","Qalyubia","Kafr El Sheikh","Damietta","Port Said","Ismailia","Suez","North Sinai","South Sinai","Faiyum","Beni Suef","Minya","Asyut","Sohag","Qena","Luxor","Aswan","Red Sea","New Valley","Matrouh"];
+
+        // Governorate -> shipping tier map (which zone each governorate belongs to)
+        const govTierMap = {
+            "Cairo": "cairoGiza", "Giza": "cairoGiza", "Alexandria": "alexandria",
+            "Dakahlia": "other", "Sharqia": "other", "Monufia": "other", "Gharbia": "other", "Qalyubia": "other", "Kafr El Sheikh": "other", "Damietta": "other", "Port Said": "other", "Ismailia": "other", "Suez": "other",
+            "Faiyum": "upper", "Beni Suef": "upper", "Minya": "upper", "Asyut": "upper", "Sohag": "upper", "Qena": "upper", "Luxor": "upper", "Aswan": "upper", "Red Sea": "upper", "New Valley": "upper", "Matrouh": "upper", "North Sinai": "upper", "South Sinai": "upper"
+        };
+        // Default/live shipping prices per tier (editable from dashboard, saved in Firestore settings/shipping)
+        let shippingConfig = { cairoGiza: 70, alexandria: 75, other: 85, upper: 120 };
+        const defaultShipping = 85;
+        function getShippingPrice(gov) {
+            const tier = govTierMap[gov] || "other";
+            return shippingConfig[tier] ?? defaultShipping;
+        }
+
+        let products = [], cart = JSON.parse(localStorage.getItem('cart') || '[]'), wishlist = JSON.parse(localStorage.getItem('wish') || '[]'), myOrders = JSON.parse(localStorage.getItem('myOrders') || '[]'), coupons = [], orders = [], feedbacks = [], appliedCoupon = null, isOwner = false, currentProductModalId = null, pendingCover = "", pendingGallery = [], lastOrderCount = 0, lastOrderData = null, currentRating = 0, pendingProductId = new URLSearchParams(window.location.search).get('product'), restockId = null, isStoreOpen = true;
+        let authToken = localStorage.getItem('authToken') || null, currentUser = null, users = [], pendingAvatar = "";
+        let categories = [];
+        let salesChartInstance = null, govChartInstance = null;
+        let storeDeliveredCount = 0;
+        let customImages = {}; // { cartItemId: [base64, ...] } for products marked "needs images"
+        
+        // EmailJS Config
+        const EJS_SERVICE_ID = "service_m6orzfe";
+        const EJS_TEMPLATE_ID = "template_4ddygkl";
+
+        function playNotiSound() { try { const ctx = new (window.AudioContext || window.webkitAudioContext)(); const osc = ctx.createOscillator(); osc.type = 'sine'; osc.frequency.value = 880; osc.connect(ctx.destination); osc.start(); osc.stop(ctx.currentTime + 0.1); } catch(e) {} }
+
+        function formatEGPhone(phone) { if (!phone) return ''; let cleaned = phone.replace(/\D/g, ''); if (cleaned.startsWith('00')) cleaned = cleaned.substring(2); if (cleaned.startsWith('20')) return cleaned; if (cleaned.startsWith('0')) return '20' + cleaned.substring(1); return '20' + cleaned; }
+
+        function showToast(msg, type = 'success') { const c = $('toast-container'); const t = document.createElement('div'); t.className = `toast ${type}`; t.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i> ${msg}`; c.appendChild(t); setTimeout(() => t.remove(), 3000); }
+
+        function emptyStateHTML(kind) {
+            const msg = kind === 'wishlist' ? "Your wishlist is empty, what are you waiting for?" : "Your cart is empty, what are you waiting for?";
+            return `
+            <div class="empty-state col-span-full">
+                <img src="images/x.jpg" onerror="this.src='https://placehold.co/200x200/15111c/ff5ea8?text=K'" alt="Kuromi Store">
+                <h4>${msg}</h4>
+                <p>Go pick something aesthetic from the store already!</p>
+                <button onclick="navigate('store')" class="btn-cta"><i class="fas fa-store"></i> Browse Store</button>
+                <div class="es-foot">
+                    <p>&copy; 2026 Kuromi Store.</p>
+                    <p class="mt-1">made by <a href="https://n--.nekoweb.org" target="_blank" rel="noopener noreferrer">none</a></p>
+                </div>
+            </div>`;
+        }
+
+        function toggleMobileMenu(open) {
+            const menu = $('mobile-menu');
+            const overlay = $('menu-overlay');
+            if (open) { menu.classList.add('open'); overlay.classList.add('open'); }
+            else { menu.classList.remove('open'); overlay.classList.remove('open'); }
+        }
+
+        function navigate(page) {
+            if (!isStoreOpen && ['store', 'cart', 'wishlist', 'checkout'].includes(page)) { showToast("Orders are currently closed.", "error"); page = 'home'; }
+            ['home', 'store', 'cart', 'wishlist', 'reviews', 'me', 'checkout', 'success'].forEach(p => $(p + '-page').classList.add('hidden'));
+            $(page + '-page').classList.remove('hidden');
+            if (page === 'store') { categoryShuffleOrder = null; renderStore(); }
+            if (page === 'cart') renderCart();
+            if (page === 'wishlist') renderWishlist();
+            if (page === 'reviews') renderReviews();
+            if (page === 'me') renderMePage();
+            if (page === 'checkout') {
+                if (currentUser) {
+                    if (!$('order-whatsapp').value) $('order-whatsapp').value = currentUser.phone || '';
+                    if (!$('order-email').value) $('order-email').value = currentUser.email || '';
+                }
+                updateCheckoutTotals(); checkCustomImagesNeeded();
+            }
+            window.scrollTo(0, 0);
+            toggleMobileMenu(false);
+        }
+
+        function compressImage(e, type) {
+            const files = e.target.files; if (!files.length) return;
+            if (type === 'cover') { pendingCover = ""; $('prod-cover-url').value = ""; } else { pendingGallery = []; $('prod-images-urls').value = ""; }
+            Array.from(files).forEach(file => {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const img = new Image();
+                    img.onload = async function() {
+                        const canvas = document.createElement('canvas'); const ctx = canvas.getContext('2d');
+                        let w = img.width, h = img.height; const MAX = 600;
+                        if (w > MAX) { h = Math.round((h * MAX) / w); w = MAX; }
+                        canvas.width = w; canvas.height = h; ctx.drawImage(img, 0, 0, w, h);
+                        const b64 = canvas.toDataURL('image/jpeg', 0.7);
+                        // Upload immediately so the product record stores a real file path
+                        // (images/uploads/xxx.jpg) instead of a giant base64 string.
+                        let url;
+                        try { url = await uploadImage(b64); } catch (err) { showToast("Image upload failed: " + err.message, "error"); return; }
+                        if (type === 'cover') { pendingCover = url; $('cover-preview').src = url; $('cover-preview').classList.remove('hidden'); }
+                        else { pendingGallery.push(url); const d = $('gallery-preview'); const im = document.createElement('img'); im.src = url; im.className = "w-20 h-20 object-cover rounded-lg border border-white/10"; d.appendChild(im); }
+                    };
+                    img.src = event.target.result;
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function checkCustomImagesNeeded() {
+            const needed = cart.filter(item => { const p = products.find(x => x.id === item.id); return p && p.needsImages; });
+            if (needed.length === 0) { $('custom-images-modal').classList.add('hidden'); return; }
+            openCustomImagesModal(needed);
+        }
+
+        function openCustomImagesModal(neededItems) {
+            const container = $('custom-images-fields');
+            container.innerHTML = neededItems.map(item => {
+                const p = products.find(x => x.id === item.id);
+                const existing = customImages[item.id] || [];
+                const previews = existing.map(src => `<img src="${src}" class="w-16 h-16 object-cover rounded-lg border border-white/10">`).join('');
+                return `
+                <div class="border-t border-white/10 pt-4 first:border-t-0 first:pt-0">
+                    <p class="font-bold text-white text-sm mb-1">${p ? p.name : 'Product'}</p>
+                    <p class="text-xs text-[var(--text-muted)] mb-3">Please upload exactly ${item.qty} image(s) for this item.</p>
+                    <input type="file" accept="image/*" multiple onchange="handleCustomImageFiles(event, '${item.id}', ${item.qty})" class="mb-3">
+                    <div id="custom-images-preview-${item.id}" class="flex flex-wrap gap-2">${previews}</div>
+                </div>`;
+            }).join('');
+            $('custom-images-modal').classList.remove('hidden');
+        }
+
+        function handleCustomImageFiles(e, itemId, qty) {
+            const files = Array.from(e.target.files || []);
+            if (files.length === 0) return;
+            if (files.length > qty) { showToast(`Please select exactly ${qty} image(s) for this item.`, 'error'); e.target.value = ''; return; }
+            customImages[itemId] = [];
+            const preview = $('custom-images-preview-' + itemId);
+            preview.innerHTML = '';
+            let loaded = 0;
+            files.forEach(file => {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const img = new Image();
+                    img.onload = async function() {
+                        const canvas = document.createElement('canvas'); const ctx = canvas.getContext('2d');
+                        let w = img.width, h = img.height; const MAX = 800;
+                        if (w > MAX) { h = Math.round((h * MAX) / w); w = MAX; }
+                        canvas.width = w; canvas.height = h; ctx.drawImage(img, 0, 0, w, h);
+                        const b64 = canvas.toDataURL('image/jpeg', 0.8);
+                        // Upload so the order document stores a real file path, not base64.
+                        let url;
+                        try { url = await uploadImage(b64); } catch (err) { showToast("Image upload failed: " + err.message, "error"); loaded++; return; }
+                        customImages[itemId].push(url);
+                        const im = document.createElement('img'); im.src = url; im.className = "w-16 h-16 object-cover rounded-lg border border-white/10"; preview.appendChild(im);
+                        loaded++;
+                        if (loaded === files.length && customImages[itemId].length < qty) { showToast(`Only ${customImages[itemId].length}/${qty} uploaded for this item.`, 'error'); }
+                    };
+                    img.src = event.target.result;
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function saveCustomImagesAndClose() {
+            const needed = cart.filter(item => { const p = products.find(x => x.id === item.id); return p && p.needsImages; });
+            const missing = needed.find(item => (customImages[item.id] || []).length !== item.qty);
+            if (missing) { showToast(`Please upload exactly ${missing.qty} image(s) for all customizable items.`, 'error'); return; }
+            $('custom-images-modal').classList.add('hidden');
+            showToast('Images saved!');
+        }
+
+        function viewCustomImages(orderId, itemId) {
+            const o = orders.find(x => x.id === orderId); if (!o) return;
+            const item = (o.items || []).find(i => i.id === itemId); if (!item) return;
+            const imgs = item.customImages || [];
+            const grid = $('custom-images-view-grid');
+            grid.innerHTML = imgs.length
+                ? imgs.map(src => `<img src="${src}" class="w-full h-24 object-cover rounded-lg border border-white/10 cursor-zoom-in" onclick="openLightbox('${src}')">`).join('')
+                : '<p class="text-gray-500 col-span-full text-center py-6">No images uploaded.</p>';
+            $('custom-images-view-modal').classList.remove('hidden');
+        }
+        function closeCustomImagesView() { $('custom-images-view-modal').classList.add('hidden'); }
+
+        async function checkPendingOrders() {
+            if (myOrders.length === 0) return false;
+            try {
+                const promises = myOrders.map(id => db.collection("orders").doc(id).get());
+                const docs = await Promise.all(promises);
+                let hasPending = false; let validOrders = [];
+                docs.forEach(docSnap => { if (docSnap.exists) { validOrders.push(docSnap.id); if (docSnap.data().status === 'incoming') hasPending = true; } });
+                if (validOrders.length !== myOrders.length) { myOrders = validOrders; localStorage.setItem('myOrders', JSON.stringify(myOrders)); }
+                return hasPending;
+            } catch (e) { return false; }
+        }
+
+        db.collection("settings").doc("storeStatus").onSnapshot(doc => {
+            if (doc.exists) {
+                isStoreOpen = doc.data().isOpen || false;
+                storeDeliveredCount = doc.data().deliveredCount || 0;
+            } else {
+                isStoreOpen = true;
+                storeDeliveredCount = 0;
+            }
+            applyStoreStatusUI();
+            updateHomeStats();
+        });
+
+        // Fetch Shipping Prices (editable from dashboard)
+        db.collection("settings").doc("shipping").onSnapshot(doc => {
+            if (doc.exists) {
+                const d = doc.data();
+                shippingConfig = {
+                    cairoGiza: d.cairoGiza ?? shippingConfig.cairoGiza,
+                    alexandria: d.alexandria ?? shippingConfig.alexandria,
+                    other: d.other ?? shippingConfig.other,
+                    upper: d.upper ?? shippingConfig.upper
+                };
+            }
+            ['cairoGiza','alexandria','other','upper'].forEach(k => { const el = $('home-ship-' + k); if (el) el.innerText = shippingConfig[k]; });
+            if (!$('checkout-page').classList.contains('hidden')) updateCheckoutTotals();
+        });
+
+        // Fixed: toggle nav visibility with classList (store-gated / is-closed) instead of
+        // inline style.display, so it never fights with Tailwind's "hidden md:flex" on
+        // the parent <nav>, which was the cause of the desktop tabs disappearing.
+        function applyStoreStatusUI() {
+            const banner = $('store-closed-banner');
+            const gated = document.querySelectorAll('.store-gated');
+            if (isStoreOpen) {
+                banner.classList.add('hidden');
+                gated.forEach(el => el.classList.remove('is-closed'));
+            } else {
+                banner.classList.remove('hidden');
+                gated.forEach(el => el.classList.add('is-closed'));
+                const restrictedPages = ['store', 'cart', 'wishlist', 'checkout'];
+                const currentlyOnRestricted = restrictedPages.some(p => !$(p + '-page').classList.contains('hidden'));
+                if (currentlyOnRestricted) navigate('home');
+            }
+            const btn = $('toggle-store-btn'); if (btn) { btn.innerText = isStoreOpen ? "Close Store (Disable Orders)" : "Open Store (Enable Orders)"; btn.style.background = isStoreOpen ? "linear-gradient(45deg, #ef4444, #ff7a7a)" : "linear-gradient(45deg, #10b981, #34d399)"; btn.style.color = "#fff"; }
+        }
+
+        async function toggleStoreStatus(btn) {
+            if(btn) btn.disabled = true;
+            try { await db.collection("settings").doc("storeStatus").set({ isOpen: !isStoreOpen }, { merge: true }); showToast(`Store has been ${!isStoreOpen ? 'opened' : 'closed'}!`); }
+            catch (e) { showToast("Error updating store status.", "error"); }
+            finally { if(btn) btn.disabled = false; }
+        }
+
+        db.collection("products").onSnapshot(s => {
+            products = s.docs.map(d => ({ id: d.id, ...d.data() }));
+            let updatedWishlist = wishlist.filter(id => products.some(p => p.id === id));
+            if (updatedWishlist.length !== wishlist.length) { wishlist = updatedWishlist; localStorage.setItem('wish', JSON.stringify(wishlist)); $('wish-count').innerText = wishlist.length; showToast("Some items were removed from your wishlist."); }
+            renderStore(); renderHomeSections(); if (isOwner) { renderAdminProducts(); renderOutStock(); if (!$('dash-priority').classList.contains('hidden')) renderPriorityTab(); } updateHomeStats(); updateDashStats();
+            if (pendingProductId) { viewProduct(pendingProductId); pendingProductId = null; window.history.replaceState({}, document.title, window.location.pathname); }
+        });
+        db.collection("coupons").onSnapshot(s => { coupons = s.docs.map(d => ({ id: d.id, ...d.data() })); if (isOwner) renderAdminCoupons(); updateDashStats(); });
+        db.collection("categories").onSnapshot(s => {
+            categories = s.docs.map(d => ({ id: d.id, ...d.data() }));
+            renderStore();
+            populateProductCategoryDropdown();
+            if (isOwner && !$('dash-categories').classList.contains('hidden')) renderCategoriesTab(false);
+        });
+
+        function populateProductCategoryDropdown() {
+            const sel = $('prod-category'); if (!sel) return;
+            const current = sel.value;
+            sel.innerHTML = '<option value="">No category</option>' + categories.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+            sel.value = current;
+        }
+        db.collection("feedbacks").onSnapshot(s => { feedbacks = s.docs.map(d => d.data()); renderReviews(); });
+
+        db.collection("orders").onSnapshot(s => {
+            orders = s.docs.map(d => ({ id: d.id, ...d.data() }));
+            updateHomeStats(); updateDashStats();
+            if (isOwner) {
+                const incoming = orders.filter(o => o.status === 'incoming').length;
+                if (incoming > lastOrderCount && lastOrderCount !== 0) { playNotiSound(); showToast(`New order received! (${incoming} pending)`); }
+                lastOrderCount = incoming;
+                $('incoming-badge').classList.toggle('hidden', incoming === 0);
+                $('incoming-badge').innerText = incoming;
+                renderOrders(); renderCharts();
+            }
+            refreshTopClients();
+        });
+
+        function updateHomeStats() { $('stat-products').innerText = products.length; $('stat-orders').innerText = storeDeliveredCount; $('stat-happy').innerText = feedbacks.length; }
+
+        function productCardHTML(p) {
+            const isUnlimited = p.stock === null || p.stock === undefined;
+            const stock = p.stock || 0;
+            const isOut = !isUnlimited && stock <= 0;
+            const stockText = isUnlimited ? `` : (isOut ? `<span class="text-[var(--pink-cta)] text-[10px] block mb-1">Out of stock</span>` : `<span class="text-lime text-[10px] block mb-1">In stock: ${stock}</span>`);
+            const safeName = p.name || 'Unknown Product'; const safeDesc = p.desc || ''; const safePrice = !isNaN(p.price) ? p.price : 0; const safeCover = p.cover || 'https://placehold.co/300x300/15111c/c6ff4d?text=Kuromi';
+
+            let actionBtnHtml = '';
+            if (isOut) {
+                actionBtnHtml = `<button onclick="event.stopPropagation(); openNotify('${p.id}')" class="btn-outline text-xs px-2 py-1 border-yellow-400/50 text-yellow-400 hover:bg-yellow-400/10"><i class="fas fa-bell"></i> Notify Me</button>`;
+            } else {
+                actionBtnHtml = `<button onclick="event.stopPropagation(); addToCart('${p.id}')" class="btn-cta text-xs px-2 py-1"><i class="fas fa-cart-plus"></i></button>`;
+            }
+
+            let promoHtml = '';
+            if (p.isFeatured) {
+                const promoText = p.promoText;
+                if (promoText) {
+                    promoHtml = `<div class="promo-banner">${promoText}</div>`;
+                }
+            }
+
+            const priorityRibbon = (p.isPriority && p.priorityText) ? `<div class="priority-ribbon"><i class="fas fa-bolt"></i> ${p.priorityText}</div>` : '';
+
+            return `
+            <div class="priority-card-wrap">
+                ${priorityRibbon}
+                <div class="product-card cursor-pointer" onclick="viewProduct('${p.id}')">
+                    <button class="wish-btn ${wishlist.includes(p.id) ? 'active' : ''}" onclick="event.stopPropagation(); toggleWish('${p.id}')"><i class="fas fa-heart"></i></button>
+                    <div class="card-photo-wrap">
+                        <div class="card-price-tag">${safePrice} EGP</div>
+                        <img src="${safeCover}" loading="lazy" class="w-full h-40 object-cover" onerror="this.src='https://placehold.co/300x300/15111c/c6ff4d?text=Kuromi'">
+                    </div>
+                    <div class="card-body">
+                        ${promoHtml}
+                        <h3 class="font-bold text-sm md:text-base mb-1 truncate text-white">${safeName}</h3>
+                        ${stockText}
+                        <p class="text-[var(--text-muted)] text-xs mb-3 truncate">${safeDesc}</p>
+                        <div class="flex justify-end items-center">
+                            ${actionBtnHtml}
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+        }
+
+        function renderHomeSections() {
+            const mostBought = [...products].sort((a, b) => (b.salesCount || 0) - (a.salesCount || 0)).sort((a, b) => (b.isPriority === true) - (a.isPriority === true)).slice(0, 4);
+            $('most-bought-grid').innerHTML = mostBought.map(productCardHTML).join('');
+            const newest = [...products].sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0)).sort((a, b) => (b.isPriority === true) - (a.isPriority === true)).slice(0, 4);
+            $('newest-grid').innerHTML = newest.map(productCardHTML).join('');
+            AOS.refresh();
+        }
+
+        async function refreshTopClients() {
+            const grid = $('top-clients-grid');
+            if (!grid || apiIsBackedOff()) return;
+            try {
+                const ranked = await apiGet('/api/top-clients');
+                if (ranked.length === 0) { grid.innerHTML = '<p class="text-gray-500 col-span-full text-center py-6">No completed orders yet.</p>'; return; }
+                const ranks = ['#1', '#2', '#3'];
+                const html = ranked.map((c, idx) => `<div class="panel p-5 rounded-2xl text-center">
+                        <div class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-[var(--lime)] text-[#171018] font-black text-sm mb-3">${ranks[idx]}</div>
+                        <img src="${c.profileImage || 'https://placehold.co/150/08080a/ff5ea8?text=K'}" onerror="this.src='https://placehold.co/150/08080a/ff5ea8?text=K'" class="w-16 h-16 rounded-full object-cover border-2 border-[var(--lime)] mx-auto mb-3 block">
+                        <p class="font-bold text-white">${c.username}</p>
+                        <p class="text-xs text-[var(--text-muted)] mt-1">${c.count} order${c.count > 1 ? 's' : ''} completed</p>
+                    </div>`).join('');
+                if (grid.dataset.rendered !== html) { grid.innerHTML = html; grid.dataset.rendered = html; }
+            } catch (e) {}
+        }
+
+        let _searchDebounceTimer = null;
+        function debouncedRenderStore() {
+            clearTimeout(_searchDebounceTimer);
+            _searchDebounceTimer = setTimeout(renderStore, 200);
+        }
+
+        let categoryShuffleOrder = null; // stable for the current visit to the Store tab; reshuffled only on fresh navigation there
+
+        function shuffleArray(arr) {
+            const a = [...arr];
+            for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1));[a[i], a[j]] = [a[j], a[i]]; }
+            return a;
+        }
+
+        const FLAT_GRID_CLASS = 'grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6';
+
+        function renderStore() {
+            const q = $('search-input').value.toLowerCase().trim();
+            const catFilter = $('filter-category').value;
+            const sort = $('sort-by').value;
+            const grid = $('products-grid');
+
+            const prevFilterValue = $('filter-category').value;
+            $('filter-category').innerHTML = '<option value="">All Categories</option>' + categories.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+            $('filter-category').value = prevFilterValue;
+
+            if (products.length === 0) { grid.className = FLAT_GRID_CLASS; grid.innerHTML = Array(8).fill('<div class="skeleton"></div>').join(''); $('product-count').innerText = ''; return; }
+
+            const hasActiveFilter = !!q || !!catFilter || (sort && sort !== 'default');
+
+            if (hasActiveFilter) {
+                let filtered = [...products];
+                if (q) filtered = filtered.filter(p => (p.name || '').toLowerCase().includes(q));
+                if (catFilter) filtered = filtered.filter(p => p.categoryId === catFilter);
+                if (sort === 'price-asc') filtered.sort((a, b) => (a.price || 0) - (b.price || 0));
+                if (sort === 'price-desc') filtered.sort((a, b) => (b.price || 0) - (a.price || 0));
+                if (sort === 'newest') filtered.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+                filtered.sort((a, b) => (b.isFeatured === true) - (a.isFeatured === true));
+                filtered.sort((a, b) => (b.isPriority === true) - (a.isPriority === true));
+
+                $('product-count').innerText = `Found ${filtered.length} products`;
+                grid.className = FLAT_GRID_CLASS;
+                grid.innerHTML = filtered.length ? filtered.map(productCardHTML).join('') : '<p class="text-gray-500 col-span-full text-center py-10">No products found.</p>';
+                AOS.refresh();
+                return;
+            }
+
+            // Default view: grouped by category, 3 products + "More products"
+            $('product-count').innerText = `${products.length} products`;
+            grid.className = 'space-y-10';
+
+            let groups = categories.map(c => ({ id: c.id, name: c.name, items: products.filter(p => p.categoryId === c.id) })).filter(g => g.items.length > 0);
+            const uncategorized = products.filter(p => !p.categoryId);
+            if (uncategorized.length) groups.push({ id: '__none__', name: 'Uncategorized', items: uncategorized });
+
+            if (groups.length === 0) { grid.innerHTML = '<p class="text-gray-500 text-center py-10">No products found.</p>'; return; }
+
+            const ids = groups.map(g => g.id);
+            if (!categoryShuffleOrder) categoryShuffleOrder = shuffleArray(ids);
+            ids.forEach(id => { if (!categoryShuffleOrder.includes(id)) { const pos = Math.floor(Math.random() * (categoryShuffleOrder.length + 1)); categoryShuffleOrder.splice(pos, 0, id); } });
+            const byId = Object.fromEntries(groups.map(g => [g.id, g]));
+            const ordered = categoryShuffleOrder.map(id => byId[id]).filter(Boolean);
+
+            grid.innerHTML = ordered.map(g => {
+                const sorted = [...g.items].sort((a, b) => (b.isPriority === true) - (a.isPriority === true));
+                const preview = sorted.slice(0, 3);
+                const rest = sorted.slice(3);
+                const restHtml = rest.length ? `<div id="cat-rest-${g.id}" class="hidden ${FLAT_GRID_CLASS} mt-4">${rest.map(productCardHTML).join('')}</div>` : '';
+                const moreBtn = rest.length ? `<button onclick="toggleCategoryExpand('${g.id}', this)" class="btn-outline mt-4">More products (${rest.length})</button>` : '';
+                return `<div>
+                    <div class="section-head"><span class="tag"></span><h3 class="text-xl font-bold text-white display-font">${g.name}</h3></div>
+                    <div class="${FLAT_GRID_CLASS}">${preview.map(productCardHTML).join('')}</div>
+                    ${restHtml}
+                    ${moreBtn}
+                </div>`;
+            }).join('');
+            AOS.refresh();
+        }
+
+        function toggleCategoryExpand(id, btn) {
+            const el = $('cat-rest-' + id); if (!el) return;
+            const wasHidden = el.classList.contains('hidden');
+            el.classList.toggle('hidden');
+            btn.innerText = wasHidden ? 'Show less' : `More products (${el.children.length})`;
+        }
+
+        function viewProduct(id) {
+            const p = products.find(x => x.id === id); if (!p) return;
+            currentProductModalId = id;
+            $('details-name').innerText = p.name || 'No Name';
+            $('details-desc').innerText = p.desc || 'No description';
+            $('details-price').innerText = `${!isNaN(p.price) ? p.price : 0} EGP`;
+
+            document.title = `${p.name} | Kuromi Store`;
+            document.querySelector('meta[property="og:title"]').setAttribute("content", p.name + ' | Kuromi Store');
+            document.querySelector('meta[property="og:description"]').setAttribute("content", p.desc || 'Buy this amazing product from Kuromi Store!');
+            document.querySelector('meta[property="og:image"]').setAttribute("content", p.cover || 'https://placehold.co/400x400/15111c/c6ff4d?text=Kuromi');
+            document.querySelector('meta[property="og:url"]').setAttribute("content", `${window.location.origin}${window.location.pathname}?product=${p.id}`);
+
+            let imgs = Array.isArray(p.images) ? p.images.filter(i => i && i.trim()) : [];
+            if (imgs.length === 0 && p.cover) imgs = [p.cover];
+            if (imgs.length === 0) imgs = ['https://placehold.co/400x400/15111c/c6ff4d?text=No+Image'];
+            $('details-main-img').src = imgs[0];
+            $('details-gallery').innerHTML = imgs.map((img, idx) => `<img src="${img}" onclick="changeMainImg(this.src)" class="w-full h-16 object-cover rounded-lg cursor-pointer border-2 transition ${idx === 0 ? 'border-[var(--lime)]' : 'border-transparent'}" onerror="this.style.display='none'">`).join('');
+
+            // Promo in Modal
+            const promoBar = $('details-promo-bar');
+            if (p.isFeatured) {
+                const promoText = p.promoText;
+                if (promoText) { promoBar.innerText = promoText; promoBar.classList.remove('hidden'); }
+                else { promoBar.classList.add('hidden'); }
+            } else { promoBar.classList.add('hidden'); }
+
+            const isUnlimited = p.stock === null || p.stock === undefined;
+            const isOut = !isUnlimited && (p.stock || 0) <= 0;
+            const actionArea = $('details-action-area');
+            if (isOut) {
+                actionArea.innerHTML = `<button onclick="openNotify('${p.id}')" class="btn-outline w-full text-lg py-3 mb-3 border-yellow-400/50 text-yellow-400 hover:bg-yellow-400/10"><i class="fas fa-bell"></i> Notify Me When Available</button>`;
+            } else {
+                actionArea.innerHTML = `<button onclick="addToCartFromModal()" class="btn-cta w-full text-lg py-3 mb-3"><i class="fas fa-cart-plus"></i> Add to Cart</button>`;
+            }
+
+            const related = products.filter(x => x.id !== id).sort(() => 0.5 - Math.random()).slice(0, 4);
+            $('related-products').innerHTML = related.map(productCardHTML).join('');
+
+            $('product-details-modal').classList.remove('hidden');
+        }
+
+        function closeProductModal() {
+            $('product-details-modal').classList.add('hidden');
+            document.title = "Kuromi Store | Anime & Crafts";
+            document.querySelector('meta[property="og:title"]').setAttribute("content", "Kuromi Store");
+            document.querySelector('meta[property="og:description"]').setAttribute("content", "Be aesthetic, be yourself, ALWAYS!! Get the best anime stickers and crafts.");
+            document.querySelector('meta[property="og:image"]').setAttribute("content", "https://kuromis.site.je/images/x.jpg");
+            document.querySelector('meta[property="og:url"]').setAttribute("content", "https://kuromis.site.je");
+        }
+
+        function changeMainImg(src) { $('details-main-img').src = src; document.querySelectorAll('#details-gallery img').forEach(img => { img.classList.remove('border-[var(--lime)]'); img.classList.add('border-transparent'); if (img.src === src) { img.classList.add('border-[var(--lime)]'); img.classList.remove('border-transparent'); } }); }
+        function openLightbox(src) { $('lightbox-img').src = src; $('lightbox').classList.remove('hidden'); }
+        function closeLightbox() { $('lightbox').classList.add('hidden'); }
+
+        function shareProduct(platform) {
+            const url = `${window.location.origin}${window.location.pathname}?product=${currentProductModalId}`;
+            const p = products.find(x => x.id === currentProductModalId);
+            const text = `Check this out from Kuromi Store: ${p.name} - ${p.price} EGP`;
+            if (platform === 'whatsapp') window.open(`https://wa.me/?text=${encodeURIComponent(text + ' ' + url)}`, '_blank');
+            if (platform === 'copy') { navigator.clipboard.writeText(url); showToast('Link copied!'); }
+        }
+
+        function toggleWish(id) { const i = wishlist.indexOf(id); if (i > -1) { wishlist.splice(i, 1); showToast('Removed from wishlist'); } else { wishlist.push(id); showToast('Added to wishlist!'); } localStorage.setItem('wish', JSON.stringify(wishlist)); $('wish-count').innerText = wishlist.length; $('wish-count-mobile').innerText = wishlist.length; renderStore(); renderWishlist(); renderHomeSections(); }
+
+        function renderWishlist() {
+            const grid = $('wishlist-grid');
+            if (wishlist.length === 0) { grid.innerHTML = emptyStateHTML('wishlist'); return; }
+            grid.innerHTML = wishlist.map(id => { const p = products.find(x => x.id === id); if (!p) return ''; return productCardHTML(p); }).join('');
+            AOS.refresh();
+        }
+
+        function addToCart(prodId) {
+            if (!isStoreOpen) return showToast("Orders are closed right now.", "error");
+            const prod = products.find(p => p.id === prodId); if (!prod) return;
+            const isUnlimited = prod.stock === null || prod.stock === undefined;
+            if (!isUnlimited && prod.stock <= 0) return showToast("Sorry, this item is out of stock.", "error");
+            const item = cart.find(i => i.id === prodId); const max = prod.maxQty || 999; const min = prod.minQty || 1; const stock = isUnlimited ? 9999 : prod.stock;
+            if (item) { if (item.qty + 1 > max) return showToast(`Max quantity for ${prod.name} is ${max}`, 'error'); if (item.qty + 1 > stock) return showToast(`Only ${stock} items left in stock.`, 'error'); item.qty++; }
+            else { const startQty = Math.min(min, stock); if (startQty > stock) return showToast(`Not enough stock.`, 'error'); cart.push({ id: prodId, qty: startQty }); }
+            localStorage.setItem('cart', JSON.stringify(cart)); updateCartUI();
+            const c = $('cart-count'); c.classList.remove('bounce'); void c.offsetWidth; c.classList.add('bounce');
+            showToast('Added to cart!');
+        }
+        function addToCartFromModal() { if (currentProductModalId) { addToCart(currentProductModalId); closeProductModal(); } }
+
+        function getCartSubtotal() {
+            let total = 0;
+            cart.forEach(item => {
+                const prod = products.find(p => p.id === item.id);
+                if (prod) total += (prod.price || 0) * item.qty;
+            });
+            if (appliedCoupon) total = total - (total * appliedCoupon.discount) / 100;
+            return total;
+        }
+
+        function updateCartUI() {
+            const cont = $('cart-items');
+            const validCart = cart.filter(item => products.some(p => p.id === item.id));
+            if (validCart.length !== cart.length) { cart = validCart; localStorage.setItem('cart', JSON.stringify(cart)); showToast("Some items from your cart are no longer available and were removed."); }
+
+            $('cart-count').innerText = cart.reduce((s, i) => s + i.qty, 0);
+            $('cart-count-mobile').innerText = cart.reduce((s, i) => s + i.qty, 0);
+
+            if (cart.length === 0) { cont.innerHTML = emptyStateHTML('cart'); } else {
+                cont.innerHTML = cart.map(item => {
+                    const prod = products.find(p => p.id === item.id); if (!prod) return '';
+                    const min = prod.minQty || 1; const max = prod.maxQty || 999; const isUnlimited = prod.stock === null || prod.stock === undefined; const stock = isUnlimited ? 0 : prod.stock;
+                    let limitsText = '';
+                    if (min > 1 || max < 999 || (!isUnlimited && stock > 0)) { limitsText = `<p class="text-[10px] text-gray-500 mt-1">${min > 1 ? `Min: ${min}` : ''} ${max < 999 ? `Max: ${max}` : ''} ${(!isUnlimited && stock > 0) ? `Available: ${stock}` : ''}</p>`; }
+                    return `<div class="panel p-4 flex justify-between items-center rounded-xl">
+                        <div class="flex items-center gap-3"><img src="${prod.cover || 'https://placehold.co/100'}" class="w-14 h-14 rounded-lg object-cover"><div><h4 class="font-bold text-sm text-white">${prod.name || 'Unknown'}</h4><p class="text-lime font-black text-sm">${prod.price || 0} EGP</p>${limitsText}</div></div>
+                        <div class="flex items-center gap-2"><button onclick="changeQty('${item.id}', -1)" class="bg-white/5 hover:bg-white/10 w-7 h-7 rounded-full font-bold text-white transition">-</button><span class="font-bold w-6 text-center text-white">${item.qty}</span><button onclick="changeQty('${item.id}', 1)" class="bg-white/5 hover:bg-white/10 w-7 h-7 rounded-full font-bold text-white transition">+</button><button onclick="removeFromCart('${item.id}')" class="text-[var(--pink-cta)] hover:opacity-80 mr-2"><i class="fas fa-trash"></i></button></div>
+                    </div>`;
+                }).join('');
+            }
+
+            $('cart-total').innerText = `${getCartSubtotal().toFixed(2)} EGP`;
+            if (!$('checkout-page').classList.contains('hidden')) updateCheckoutTotals();
+        }
+        function renderCart() { updateCartUI(); }
+
+        function updateCheckoutTotals() {
+            const gov = $('order-governorate').value;
+            const subtotal = getCartSubtotal();
+            const shipping = gov ? getShippingPrice(gov) : 0;
+            const grandTotal = subtotal + shipping;
+
+            $('checkout-subtotal').innerText = `${subtotal.toFixed(2)} EGP`;
+            $('checkout-shipping').innerText = `${shipping.toFixed(2)} EGP`;
+            $('checkout-grand-total').innerText = `${grandTotal.toFixed(2)} EGP`;
+        }
+
+        function changeQty(id, d) { let item = cart.find(x => x.id === id); if (item) { const prod = products.find(p => p.id === id); if (!prod) return; const min = prod.minQty || 1; const max = prod.maxQty || 999; const isUnlimited = prod.stock === null || prod.stock === undefined; const stock = isUnlimited ? 9999 : prod.stock; let newQty = item.qty + d; if (newQty > max) return showToast(`Max quantity is ${max}`, 'error'); if (d > 0 && newQty > stock) return showToast(`Only ${stock} items available in stock.`, 'error'); if (d < 0 && newQty < min) return showToast(`Minimum quantity is ${min}. Use the trash icon to remove it.`, 'error'); if (newQty >= 1) { item.qty = newQty; localStorage.setItem('cart', JSON.stringify(cart)); updateCartUI(); } } }
+        function removeFromCart(id) { cart = cart.filter(x => x.id !== id); localStorage.setItem('cart', JSON.stringify(cart)); updateCartUI(); }
+
+        async function proceedToCheckout() {
+            if (!isStoreOpen) return showToast("Orders are closed right now.", "error");
+            if (cart.length === 0) return showToast('Cart is empty!', 'error');
+            const hasPending = await checkPendingOrders();
+            if (hasPending) { showToast("You have a pending order. Please wait for it to be completed.", "error"); navigate('me'); return; }
+            for (let item of cart) { const prod = products.find(p => p.id === item.id); if (!prod) continue; if (prod.minQty && item.qty < prod.minQty) return showToast(`Minimum quantity for ${prod.name} is ${prod.minQty}`, 'error'); const isUnlimited = prod.stock === null || prod.stock === undefined; if (!isUnlimited && prod.stock < item.qty) return showToast(`Not enough stock for ${prod.name}.`, 'error'); }
+            navigate('checkout');
+        }
+
+        function applyCoupon() { const code = $('coupon-input').value.trim().toUpperCase(); const c = coupons.find(x => x.code === code); if (!c) return showToast('Invalid coupon code', 'error'); if (new Date() > new Date(c.expiry)) return showToast('Coupon expired', 'error'); appliedCoupon = c; showToast(`${c.discount}% discount applied!`); updateCartUI(); }
+
+        async function submitOrder(btn) {
+            if (!isStoreOpen) { showToast("Orders are closed right now.", "error"); if(btn) { btn.disabled = false; btn.innerText = "Confirm Order"; } return; }
+            const fn = $('order-firstName').value.trim(), ln = $('order-lastName').value.trim(), wa = $('order-whatsapp').value.trim(), em = $('order-email').value.trim(), gov = $('order-governorate').value, addr = $('order-address').value.trim();
+            if (!fn || !ln || !wa || !gov || !addr) { showToast("Please fill all required fields", "error"); if(btn) { btn.disabled = false; btn.innerText = "Confirm Order"; } return; }
+
+            const hasPending = await checkPendingOrders();
+            if (hasPending) { showToast("You already placed an order. Please wait for it to be completed.", "error"); navigate('me'); if(btn) { btn.disabled = false; btn.innerText = "Confirm Order"; } return; }
+
+            let subtotal = 0;
+            const validItems = [];
+            for (let item of cart) { const p = products.find(x => x.id === item.id); if (!p) continue; subtotal += (p.price || 0) * item.qty; const isUnlimited = p.stock === null || p.stock === undefined; validItems.push({ id: p.id, name: p.name, price: p.price, qty: item.qty, img: p.cover, hasStock: !isUnlimited, needsImages: !!p.needsImages, customImages: p.needsImages ? (customImages[item.id] || []) : [] }); }
+            if (validItems.length === 0) { showToast("Your cart is empty or invalid.", "error"); if(btn) { btn.disabled = false; btn.innerText = "Confirm Order"; } return; }
+
+            const missingImages = validItems.find(item => item.needsImages && item.customImages.length !== item.qty);
+            if (missingImages) { showToast(`Please upload the required images for "${missingImages.name}" before placing your order.`, "error"); if(btn) { btn.disabled = false; btn.innerText = "Confirm Order"; } checkCustomImagesNeeded(); return; }
+
+            if (appliedCoupon) subtotal = subtotal - (subtotal * appliedCoupon.discount) / 100;
+            const shippingCost = getShippingPrice(gov);
+            const grandTotal = subtotal + shippingCost;
+
+            try {
+                const docRef = await db.collection("orders").add({
+                    firstName: fn, lastName: ln, whatsapp: wa, email: em, governorate: gov, address: addr,
+                    items: validItems,
+                    subtotal: subtotal.toFixed(2),
+                    shipping: shippingCost,
+                    total: grandTotal.toFixed(2),
+                    status: 'incoming',
+                    createdAt: new Date().toISOString(),
+                    userId: currentUser ? currentUser.id : null
+                });
+
+                const batch = db.batch();
+                validItems.forEach(item => { const ref = db.collection("products").doc(item.id); const updateData = { salesCount: firebase.firestore.FieldValue.increment(item.qty) }; if (item.hasStock) updateData.stock = firebase.firestore.FieldValue.increment(-item.qty); batch.update(ref, updateData); });
+                await batch.commit();
+
+                lastOrderData = { name: `${fn} ${ln}`, items: validItems, total: grandTotal.toFixed(2), orderId: docRef.id };
+                myOrders.push(docRef.id); localStorage.setItem('myOrders', JSON.stringify(myOrders));
+                cart = []; localStorage.removeItem('cart'); appliedCoupon = null; customImages = {}; updateCartUI();
+                openFeedbackModal();
+            } catch (e) { showToast("Error: " + e.message, "error"); if(btn) { btn.disabled = false; btn.innerText = "Confirm Order"; } }
+        }
+
+        function openFeedbackModal() { currentRating = 0; $('feedback-comment').value = ''; document.querySelectorAll('.star-rating').forEach(s => s.style.color = '#4b5563'); $('feedback-modal').classList.remove('hidden'); }
+        function setRating(n) { currentRating = n; document.querySelectorAll('.star-rating').forEach((s, i) => { s.style.color = i < n ? '#f59e0b' : '#4b5563'; }); }
+        async function submitFeedback(btn) {
+            if (currentRating === 0) { showToast("Please select a rating", "error"); if(btn) { btn.disabled = false; btn.innerText = "Submit Review"; } return; }
+            const comment = $('feedback-comment').value.trim();
+            try {
+                await db.collection("feedbacks").add({ name: lastOrderData.name, rating: currentRating, comment, items: lastOrderData.items, total: lastOrderData.total, createdAt: new Date().toISOString() });
+                $('feedback-modal').classList.add('hidden');
+                $('order-id-display').innerText = lastOrderData.orderId;
+                const waText = encodeURIComponent(`Hello Kuromi Store! I just placed an order. My Order ID is: ${lastOrderData.orderId}. I would like to complete the payment and delivery.`);
+                $('whatsapp-link').href = `https://wa.me/201150634256?text=${waText}`;
+                navigate('success');
+            } catch(e) { showToast("Error submitting review: " + e.message, "error"); if(btn) { btn.disabled = false; btn.innerText = "Submit Review"; } }
+        }
+
+        function renderReviews() {
+            const c = $('reviews-list');
+            if (feedbacks.length === 0) { c.innerHTML = '<p class="text-gray-500 col-span-full text-center py-10">No reviews yet. Be the first to rate us!</p>'; return; }
+            c.innerHTML = feedbacks.map(f => `
+                <div class="panel p-5 rounded-xl" data-aos="fade-up">
+                    <div class="flex justify-between items-center mb-3"><h4 class="font-bold text-white text-lg">${f.name}</h4><div class="text-yellow-400 text-sm">${'<i class="fas fa-star"></i>'.repeat(f.rating)}${'<i class="far fa-star text-gray-600"></i>'.repeat(5 - f.rating)}</div></div>
+                    ${f.comment ? `<p class="text-[var(--text-muted)] text-sm mb-4 italic">"${f.comment}"</p>` : ''}
+                    <div class="border-t border-white/10 pt-3 mt-2"><p class="text-xs text-gray-500 mb-2">Purchased items:</p>${f.items.map(i => `<div class="flex justify-between text-xs text-[var(--text-muted)] mb-1"><span>${i.name} (${i.qty}x)</span><span>${i.price * i.qty} EGP</span></div>`).join('')}<div class="flex justify-between text-sm font-bold text-lime mt-2 pt-2 border-t border-white/10"><span>Total:</span><span>${f.total} EGP</span></div></div>
+                </div>`).join('');
+            AOS.refresh();
+        }
+
+        // Shows/hides the Dashboard button based on the signed-in account's role.
+        // Called right after every successful sign-in, sign-up, and on page load.
+        function applyRoleUI() {
+            isOwner = !!(currentUser && currentUser.role === 'owner');
+            $('dashboard-btn').classList.toggle('hidden', !isOwner);
+        }
+        function openDashboard() { $('dashboard-page').classList.remove('hidden'); renderAdminProducts(); renderOutStock(); renderAdminCoupons(); renderOrders(); updateDashStats(); applyStoreStatusUI(); renderCharts(); loadShippingPrices(); renderPriorityTab(); }
+        function closeDashboard() { $('dashboard-page').classList.add('hidden'); navigate('home'); }
+        function logout() { closeDashboard(); logoutUser(); }
+        function showDashTab(tab, btn) {
+            document.querySelectorAll('.dash-tab').forEach(t => t.classList.add('hidden'));
+            $('dash-' + tab).classList.remove('hidden');
+            document.querySelectorAll('#dashboard-page .dash-tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            if (tab === 'analytics') renderCharts();
+            if (tab === 'priority') renderPriorityTab();
+            if (tab === 'users') renderUsersTab();
+            if (tab === 'categories') renderCategoriesTab();
+            if (tab === 'settings') loadShippingPrices();
+        }
+
+        function renderCharts() {
+            if (!isOwner) return;
+            const light = document.documentElement.getAttribute('data-theme') === 'light';
+            const axisColor = light ? '#1a1a1f' : '#fff';
+            const gridColor = light ? 'rgba(0,0,0,0.08)' : 'rgba(255,255,255,0.08)';
+            const accent = light ? '#e0407f' : '#ff5ea8';
+            const loc = currentLang === 'ar' ? 'ar-EG' : 'en-US';
+            const days = []; const salesData = [];
+            for(let i=6; i>=0; i--) {
+                const d = new Date(); d.setDate(d.getDate() - i);
+                const dayStr = d.toISOString().split('T')[0];
+                days.push(d.toLocaleDateString(loc, { weekday: 'short' }));
+                const daySales = orders.filter(o => o.createdAt?.split('T')[0] === dayStr).reduce((sum, o) => sum + parseFloat(o.total), 0);
+                salesData.push(daySales);
+            }
+            const ctxSales = $('sales-chart').getContext('2d');
+            if (salesChartInstance) salesChartInstance.destroy();
+            salesChartInstance = new Chart(ctxSales, { type: 'line', data: { labels: days, datasets: [{ label: 'Sales (EGP)', data: salesData, borderColor: accent, backgroundColor: 'rgba(255,94,168,0.2)', fill: true, tension: 0.4 }] }, options: { responsive: true, plugins: { legend: { labels: { color: axisColor } } }, scales: { y: { ticks: { color: axisColor }, grid: { color: gridColor } }, x: { ticks: { color: axisColor }, grid: { color: gridColor } } } } });
+
+            const govCounts = {};
+            orders.forEach(o => { if(o.governorate) govCounts[o.governorate] = (govCounts[o.governorate] || 0) + 1; });
+            const sortedGovs = Object.entries(govCounts).sort((a,b) => b[1] - a[1]).slice(0, 5);
+            const govLabels = sortedGovs.map(g => g[0]); const govData = sortedGovs.map(g => g[1]);
+            const ctxGov = $('gov-chart').getContext('2d');
+            if (govChartInstance) govChartInstance.destroy();
+            govChartInstance = new Chart(ctxGov, { type: 'doughnut', data: { labels: govLabels, datasets: [{ data: govData, backgroundColor: [accent, '#ff7ab9', '#d4d4d8', '#71717a', '#3f3f46'], borderColor: light ? '#f6f3f7' : '#08080a', borderWidth: 2 }] }, options: { responsive: true, plugins: { legend: { labels: { color: axisColor } } } } });
+        }
+
+        function saveProduct() {
+            const id = $('prod-id').value, name = $('prod-name').value, price = parseFloat($('prod-price').value), desc = $('prod-desc').value, categoryId = $('prod-category').value || null;
+            const minQty = parseInt($('prod-min-qty').value) || 1; const maxQty = parseInt($('prod-max-qty').value) || 0;
+            const stockInput = $('prod-stock').value.trim(); const stock = stockInput === "" ? null : parseInt(stockInput);
+            const cover = pendingCover || $('prod-cover-url').value.trim();
+            const urls = $('prod-images-urls').value.trim().split('\n').filter(r => r.trim());
+            const images = [...pendingGallery, ...urls];
+            if (!name || !price) return showToast("Name and price are required", "error");
+
+            // Promo Fields
+            const isFeatured = $('prod-featured').checked;
+            const promoText = $('prod-promo').value.trim();
+            const needsImages = $('prod-needs-images').checked;
+
+            const data = { name, price, cover, desc, categoryId, images, minQty, maxQty, stock, isFeatured, promoText, needsImages };
+            if (!id) data.createdAt = new Date().toISOString();
+            const btn = $('save-prod-btn'); btn.innerText = "Saving..."; btn.disabled = true;
+            (id ? db.collection("products").doc(id).set(data, { merge: true }) : db.collection("products").add(data))
+            .then(() => { clearProdForm(); showToast("Saved successfully!"); btn.innerText = "Save Product"; btn.disabled = false; })
+            .catch(err => { showToast("Error: " + err.message, "error"); btn.innerText = "Save Product"; btn.disabled = false; });
+        }
+
+        function editProduct(p) {
+            clearProdForm(); showDashTab('products', document.querySelector('#dashboard-page .dash-tab-btn[onclick*="\'products\'"]'));
+            $('prod-id').value = p.id; $('prod-name').value = p.name || ''; $('prod-price').value = p.price || ''; populateProductCategoryDropdown(); $('prod-category').value = p.categoryId || '';
+            $('prod-min-qty').value = p.minQty || ''; $('prod-max-qty').value = p.maxQty || '';
+            $('prod-stock').value = (p.stock === null || p.stock === undefined) ? '' : p.stock;
+            $('prod-cover-url').value = p.cover || ''; $('prod-desc').value = p.desc || ''; $('prod-images-urls').value = Array.isArray(p.images) ? p.images.join('\n') : '';
+            $('prod-featured').checked = p.isFeatured || false;
+            $('prod-promo').value = p.promoText || '';
+            $('prod-needs-images').checked = p.needsImages || false;
+            if (p.cover) { $('cover-preview').src = p.cover; $('cover-preview').classList.remove('hidden'); }
+            const d = $('gallery-preview'); d.innerHTML = '';
+            if (p.images) p.images.forEach(img => { const im = document.createElement('img'); im.src = img; im.className = "w-20 h-20 object-cover rounded-lg border border-white/10"; d.appendChild(im); });
+            window.scrollTo(0, 0);
+        }
+        async function deleteProduct(id) { if (confirm(trStr("Delete this product permanently?"))) { await db.collection("products").doc(id).delete(); showToast("Product deleted"); } }
+        function clearProdForm() { ['prod-id','prod-name','prod-price','prod-category','prod-min-qty','prod-max-qty','prod-stock','prod-cover-url','prod-cover-file','prod-images-urls','prod-images-files','prod-desc','prod-promo'].forEach(id => $(id).value = ''); $('prod-featured').checked = false; $('prod-needs-images').checked = false; $('cover-preview').classList.add('hidden'); $('gallery-preview').innerHTML = ''; pendingCover = ""; pendingGallery = []; }
+        function renderAdminProducts() {
+            $('admin-products-list').innerHTML = products.map(p => {
+                const isUnlimited = p.stock === null || p.stock === undefined; const stockText = isUnlimited ? 'Unlimited' : p.stock;
+                return `<div class="panel p-3 rounded-xl">
+                    <img src="${p.cover || 'https://placehold.co/150/15111c/c6ff4d?text=Kuromi'}" class="w-full h-24 object-cover rounded-lg mb-2" onerror="this.src='https://placehold.co/150/15111c/c6ff4d?text=Kuromi'">
+                    <h4 class="font-bold text-sm truncate text-white">${p.name || 'Unknown'}</h4><p class="text-lime text-sm mb-1">${p.price || 0} EGP</p><p class="text-[10px] text-[var(--text-muted)] mb-1">Stock: ${stockText}</p>
+                    ${p.isFeatured ? '<span class="text-[10px] text-yellow-400 font-bold mb-2 block"><i class="fas fa-star"></i> Featured</span>' : '<div class="h-2"></div>'}
+                    <div class="flex gap-1"><button onclick='editProduct(${JSON.stringify(p)})' class="bg-white/5 hover:bg-white/10 text-xs py-1 px-2 rounded-lg flex-1 text-white transition">Edit</button><button onclick="deleteProduct('${p.id}')" class="bg-[var(--pink-cta)]/10 hover:bg-[var(--pink-cta)]/20 text-[var(--pink-cta)] text-xs py-1 px-2 rounded-lg flex-1 transition">Delete</button></div>
+                </div>`;
+            }).join('');
+        }
+
+        function renderOutStock() {
+            const outStock = products.filter(p => p.stock !== null && p.stock !== undefined && p.stock <= 0);
+            $('dash-stat-outstock').innerText = outStock.length;
+            const c = $('admin-outstock-list');
+            if (outStock.length === 0) { c.innerHTML = '<p class="text-gray-500 col-span-full text-center py-6">All products are in stock!</p>'; return; }
+            c.innerHTML = outStock.map(p => `<div class="panel p-3 text-center rounded-xl"><img src="${p.cover || 'https://placehold.co/150/15111c/c6ff4d?text=Kuromi'}" class="w-full h-24 object-cover rounded-lg mb-2"><h4 class="font-bold text-sm truncate text-white mb-1">${p.name}</h4><p class="text-[var(--pink-cta)] text-xs mb-3">Out of stock</p><button onclick="openRestock('${p.id}')" class="btn-cta w-full text-xs py-1 px-2"><i class="fas fa-plus"></i> Restock</button></div>`).join('');
+        }
+        function openRestock(id) { restockId = id; const p = products.find(x => x.id === id); $('restock-name').innerText = p.name; $('restock-qty').value = ''; $('restock-modal').classList.remove('hidden'); }
+        function closeRestock() { $('restock-modal').classList.add('hidden'); }
+
+        async function submitRestock(btn) {
+            const qty = parseInt($('restock-qty').value);
+            if (!qty || qty < 1) { showToast("Enter a valid quantity", "error"); if(btn) { btn.disabled = false; btn.innerText = "Confirm Restock"; } return; }
+            try {
+                await db.collection("products").doc(restockId).update({ stock: qty });
+                const p = products.find(x => x.id === restockId);
+                const pN = p ? p.name : "Your favorite product";
+
+                const nS = await db.collection("notifications").where("productId", "==", restockId).get();
+                if (!nS.empty) {
+                    showToast(`Sending ${nS.size} email notifications...`);
+                    const b = db.batch();
+                    let successCount = 0; let failCount = 0;
+                    for (const d of nS.docs) {
+                        const e = d.data().email;
+                        try { const res = await emailjs.send(EJS_SERVICE_ID, EJS_TEMPLATE_ID, { to_email: e, product_name: pN }); if (res && res.status === 200) successCount++; else failCount++;
+                        } catch (err) { console.error("Email failed for", e, err); failCount++; }
+                        b.delete(d.ref);
+                    }
+                    await b.commit();
+                    if (failCount > 0) { showToast(`Restocked! ${successCount} sent, ${failCount} failed. Check EmailJS logs or Spam folder.`, 'error'); } else { showToast(`Restocked & ${successCount} emails sent! Check Spam folder if not received.`, 'success'); }
+                } else { showToast("Product restocked successfully!"); }
+                closeRestock();
+            } catch (err) { showToast("Error restocking: " + err.message, "error"); } finally { if(btn) { btn.disabled = false; btn.innerText = "Confirm Restock"; } }
+        }
+
+        function saveCoupon() { const code = $('coupon-code').value.trim().toUpperCase(), discount = parseInt($('coupon-discount').value), expiry = $('coupon-expiry').value; if (!code || !discount || !expiry) return showToast("Fill all coupon fields", "error"); db.collection("coupons").add({ code, discount, expiry }).then(() => { ['coupon-code','coupon-discount','coupon-expiry'].forEach(id => $(id).value = ''); showToast("Coupon saved"); }); }
+        async function deleteCoupon(id) { await db.collection("coupons").doc(id).delete(); showToast("Coupon deleted"); }
+        function renderAdminCoupons() { $('admin-coupons-list').innerHTML = coupons.map(c => `<div class="panel p-3 rounded-xl"><h4 class="font-bold text-lg text-white">${c.code}</h4><p class="text-lime mb-1">${c.discount}% Discount</p><p class="text-xs text-[var(--text-muted)] mb-2">Valid until: ${c.expiry}</p><button onclick="deleteCoupon('${c.id}')" class="bg-[var(--pink-cta)]/10 hover:bg-[var(--pink-cta)]/20 text-[var(--pink-cta)] text-xs py-1 px-2 rounded-lg w-full transition">Delete</button></div>`).join(''); }
+
+        function updateDashStats() { if (!isOwner) return; $('dash-stat-products').innerText = products.length; $('dash-stat-outstock').innerText = products.filter(p => p.stock !== null && p.stock !== undefined && p.stock <= 0).length; const doneOrders = orders.filter(o => o.status === 'done'); $('dash-stat-sales').innerText = doneOrders.reduce((s, o) => s + parseFloat(o.total), 0).toFixed(0) + " EGP"; $('dash-stat-pending').innerText = orders.filter(o => o.status === 'incoming').length; }
+
+        function dayCategory(dateStr) {
+            const d = new Date(dateStr);
+            const dayStart = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+            const now = new Date();
+            const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            const diffDays = Math.round((todayStart - dayStart) / (1000 * 60 * 60 * 24));
+            if (diffDays <= 0) return 'today';
+            if (diffDays <= 7) return 'week';
+            return 'older';
+        }
+
+        function renderOrders() {
+            const searchQuery = ($('order-search')?.value || '').toLowerCase().trim(); const searchQueryDone = ($('order-search-done')?.value || '').toLowerCase().trim();
+            let incoming = orders.filter(o => o.status === 'incoming'); let done = orders.filter(o => o.status === 'done');
+            if (searchQuery) incoming = incoming.filter(o => `${o.firstName} ${o.lastName}`.toLowerCase().includes(searchQuery));
+            if (searchQueryDone) done = done.filter(o => `${o.firstName} ${o.lastName}`.toLowerCase().includes(searchQueryDone));
+
+            const orderCardHTML = (o, type) => `<div class="panel p-4 flex justify-between items-center cursor-pointer hover:border-[var(--violet-mid)] transition border border-transparent rounded-xl" onclick="viewOrder('${o.id}')"><div><h4 class="font-bold text-sm md:text-base text-white">${o.firstName} ${o.lastName}</h4><p class="text-xs text-[var(--text-muted)]">${o.governorate} - ${o.whatsapp}</p><p class="text-[10px] text-gray-500 mt-1">ID: ${o.id}</p></div><span class="font-bold text-sm ${type === 'done' ? 'text-lime' : 'text-[var(--pink-cta)]'}">${o.total} EGP</span></div>`;
+
+            const renderList = (arr, containerId, type) => {
+                const c = $(containerId);
+                if (arr.length === 0) { c.innerHTML = '<p class="text-gray-500 text-center py-6">No orders found.</p>'; return; }
+                c.innerHTML = arr.map(o => orderCardHTML(o, type)).join('');
+            };
+
+            // Incoming: grouped by the dropdown filter (today / this week by day / older than a week)
+            const filter = ($('incoming-filter')?.value) || 'today';
+            const incomingContainer = $('admin-incoming-list');
+            if (incomingContainer) {
+                incoming.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+                if (filter === 'today') {
+                    const todays = incoming.filter(o => dayCategory(o.createdAt) === 'today');
+                    incomingContainer.innerHTML = todays.length
+                        ? `<h4 class="text-sm font-bold text-lime mb-3">Today's Orders</h4><div class="space-y-4">${todays.map(o => orderCardHTML(o, 'incoming')).join('')}</div>`
+                        : '<p class="text-gray-500 text-center py-6">No orders found.</p>';
+                } else if (filter === 'week') {
+                    const weekOrders = incoming.filter(o => dayCategory(o.createdAt) === 'week');
+                    if (weekOrders.length === 0) { incomingContainer.innerHTML = '<p class="text-gray-500 text-center py-6">No orders found.</p>'; }
+                    else {
+                        const groups = {};
+                        weekOrders.forEach(o => { const key = (o.createdAt || '').split('T')[0]; if (!groups[key]) groups[key] = []; groups[key].push(o); });
+                        const sortedKeys = Object.keys(groups).sort((a, b) => new Date(b) - new Date(a));
+                        incomingContainer.innerHTML = sortedKeys.map(key => {
+                            const loc = currentLang === 'ar' ? 'ar-EG' : 'en-US'; const label = new Date(key).toLocaleDateString(loc, { weekday: 'long' }) + ' - ' + new Date(key).toLocaleDateString(currentLang === 'ar' ? 'ar-EG' : 'en-GB');
+                            return `<div class="mb-6"><h4 class="text-sm font-bold text-lime mb-3">${label}</h4><div class="space-y-4">${groups[key].map(o => orderCardHTML(o, 'incoming')).join('')}</div></div>`;
+                        }).join('');
+                    }
+                } else {
+                    const olderOrders = incoming.filter(o => dayCategory(o.createdAt) === 'older');
+                    incomingContainer.innerHTML = olderOrders.length
+                        ? `<h4 class="text-sm font-bold text-lime mb-3">More Than a Week</h4><div class="space-y-4">${olderOrders.map(o => orderCardHTML(o, 'incoming')).join('')}</div>`
+                        : '<p class="text-gray-500 text-center py-6">No orders found.</p>';
+                }
+            }
+
+            renderList(done, 'admin-done-list', 'done');
+        }
+        async function viewOrder(id) {
+            const doc = await db.collection("orders").doc(id).get(); if (!doc.exists) return;
+            const o = doc.data(); const formattedPhone = formatEGPhone(o.whatsapp);
+            $('order-details-content').innerHTML = `<h2 class="text-2xl font-black text-lime mb-4 display-font">Order Details</h2><div class="mb-6 pb-4 border-b border-white/10 text-sm text-gray-300"><p class="mb-1"><strong class="text-white">Order ID:</strong> ${id}</p><p class="mb-1"><strong class="text-white">Name:</strong> ${o.firstName} ${o.lastName}</p><p class="mb-1"><strong class="text-white">WhatsApp:</strong> ${o.whatsapp}</p><p class="mb-1"><strong class="text-white">Email:</strong> ${o.email || 'N/A'}</p><p class="mb-1"><strong class="text-white">Address:</strong> ${o.governorate} - ${o.address}</p></div><h3 class="font-bold mb-2 text-lg text-white">Items:</h3><div class="mb-6">${o.items.map(item => `<div class="flex gap-3 items-center mb-3 bg-white/5 p-2 rounded-lg"><img src="${item.img || 'https://placehold.co/100'}" class="w-12 h-12 rounded object-cover"><div class="flex-1"><p class="font-bold text-sm text-white">${item.name} ${item.needsImages ? `<span onclick="viewCustomImages('${id}','${item.id}')" class="cursor-pointer text-[10px] font-bold text-lime border border-[var(--lime)]/40 rounded-full px-2 py-0.5 ml-1"><i class="fas fa-image"></i> Customizable</span>` : ''}</p><p class="text-xs text-[var(--text-muted)]">Qty: ${item.qty}</p></div><span class="font-bold text-sm text-white">${item.price * item.qty} EGP</span></div>`).join('')}</div><div class="border-t border-white/10 pt-4 mb-6"><div class="flex justify-between text-[var(--text-muted)] mb-2"><span>Subtotal:</span><span>${o.subtotal || 'N/A'} EGP</span></div><div class="flex justify-between text-[var(--text-muted)] mb-2"><span>Shipping:</span><span>${o.shipping || 'N/A'} EGP</span></div><div class="flex justify-between font-black text-xl text-white"><span>Total:</span><span class="text-lime">${o.total} EGP</span></div></div><div class="flex gap-2">${o.status === 'incoming' ? `<button onclick="this.disabled=true; this.innerText='Processing...'; markAsDone('${id}', this)" class="btn-cta flex-1">Mark as Done</button>` : ''}<a href="https://wa.me/${formattedPhone}" target="_blank" class="btn-outline flex-1 text-center border-[var(--lime)]/50 text-lime hover:bg-[var(--lime)]/10"><i class="fab fa-whatsapp"></i> Contact</a><button onclick="removeOrder('${id}')" class="bg-[var(--pink-cta)]/10 hover:bg-[var(--pink-cta)]/20 text-[var(--pink-cta)] px-4 rounded-xl font-bold transition"><i class="fas fa-trash"></i></button></div>`;
+            $('order-details-modal').classList.remove('hidden');
+        }
+        function closeOrderModal() { $('order-details-modal').classList.add('hidden'); }
+
+        async function markAsDone(id, btn) {
+            try {
+                await db.collection("orders").doc(id).update({ status: 'done' });
+                await db.collection("settings").doc("storeStatus").set({ deliveredCount: firebase.firestore.FieldValue.increment(1) }, { merge: true });
+                closeOrderModal(); showToast("Order marked as done");
+            } catch(e) { showToast("Error: " + e.message, "error"); if(btn) { btn.disabled = false; btn.innerText = "Mark as Done"; } }
+        }
+
+        async function removeOrder(id) { if (confirm(trStr("Delete this order permanently?"))) { await db.collection("orders").doc(id).delete(); closeOrderModal(); showToast("Order deleted"); } }
+
+        async function updateOwnerCredentials(btn) {
+            const u = $('settings-user').value.trim(), p = $('settings-pass').value.trim();
+            if (!u || !p) { showToast("Please enter username and password", "error"); if(btn) { btn.disabled = false; btn.innerText = "Save"; } return; }
+            try { await db.collection("settings").doc("owner").set({ user: u, pass: p }); showToast("Credentials updated successfully!"); $('settings-user').value = ''; $('settings-pass').value = '';
+            } catch(e) { showToast("Error: " + e.message, "error"); if(btn) { btn.disabled = false; btn.innerText = "Save"; } }
+        }
+
+        // Notify Me Logic
+        async function openNotify(id) {
+            // Everyone is signed in (the whole site is behind the account wall), so
+            // we already know their email — no need to ask for it again.
+            if (currentUser && currentUser.email) {
+                try {
+                    await db.collection("notifications").add({ productId: id, email: currentUser.email, userId: currentUser.id, createdAt: new Date().toISOString() });
+                    showToast("We'll email you at " + currentUser.email + " when it's back!");
+                } catch (err) { showToast("Error: " + err.message, "error"); }
+                return;
+            }
+            $('notify-product-id').value = id; $('notify-email').value = ''; $('notify-modal').classList.remove('hidden');
+        }
+        function closeNotify() { $('notify-modal').classList.add('hidden'); }
+        async function submitNotify(btn) {
+            const e = $('notify-email').value.trim(), pId = $('notify-product-id').value;
+            if (!e || !e.includes('@')) { showToast("Enter a valid email", "error"); if(btn) { btn.disabled = false; btn.innerText = "Notify Me"; } return; }
+            try { await db.collection("notifications").add({ productId: pId, email: e, createdAt: new Date().toISOString() }); showToast("We'll email you when it's back!"); closeNotify();
+            } catch(err) { showToast("Error: " + err.message, "error"); if(btn) { btn.disabled = false; btn.innerText = "Notify Me"; } }
+        }
+
+        // Shipping Prices (Settings tab)
+        function loadShippingPrices() {
+            $('ship-price-cairoGiza').value = shippingConfig.cairoGiza;
+            $('ship-price-alexandria').value = shippingConfig.alexandria;
+            $('ship-price-other').value = shippingConfig.other;
+            $('ship-price-upper').value = shippingConfig.upper;
+        }
+        async function saveShippingPrices(btn) {
+            const cairoGiza = parseFloat($('ship-price-cairoGiza').value);
+            const alexandria = parseFloat($('ship-price-alexandria').value);
+            const other = parseFloat($('ship-price-other').value);
+            const upper = parseFloat($('ship-price-upper').value);
+            if ([cairoGiza, alexandria, other, upper].some(v => isNaN(v) || v < 0)) { showToast("Please enter valid shipping prices", "error"); if(btn) { btn.disabled = false; btn.innerText = "Save Shipping Prices"; } return; }
+            try {
+                await db.collection("settings").doc("shipping").set({ cairoGiza, alexandria, other, upper }, { merge: true });
+                showToast("Shipping prices updated successfully!");
+            } catch (e) { showToast("Error: " + e.message, "error"); }
+            finally { if(btn) { btn.disabled = false; btn.innerText = "Save Shipping Prices"; } }
+        }
+
+        // Categories Tab Logic
+        function renderCatProductsChecklist(selectedId) {
+            $('cat-products-list').innerHTML = products.map(p => `
+                <label class="flex items-center gap-2 text-sm cursor-pointer">
+                    <input type="checkbox" value="${p.id}" class="cat-product-checkbox" ${selectedId && p.categoryId === selectedId ? 'checked' : ''}>
+                    <span class="truncate">${p.name || 'Unnamed'}</span>
+                </label>`).join('');
+        }
+
+        function renderCategoriesTab(refreshChecklist = true) {
+            if (refreshChecklist) renderCatProductsChecklist($('cat-id').value || null);
+            const c = $('admin-categories-list');
+            if (categories.length === 0) { c.innerHTML = '<p class="text-gray-500 text-center py-6">No categories yet.</p>'; return; }
+            c.innerHTML = categories.map(cat => {
+                const count = products.filter(p => p.categoryId === cat.id).length;
+                return `<div class="panel p-4 rounded-xl flex justify-between items-center">
+                    <div>
+                        <p class="font-bold text-white text-sm">${cat.name}</p>
+                        <p class="text-xs text-[var(--text-muted)]">${count} product${count === 1 ? '' : 's'}</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="editCategory('${cat.id}')" class="bg-white/5 hover:bg-white/10 text-xs py-1 px-3 rounded-lg text-white transition">Edit</button>
+                        <button onclick="deleteCategory('${cat.id}')" class="bg-[var(--pink-cta)]/10 hover:bg-[var(--pink-cta)]/20 text-[var(--pink-cta)] text-xs py-1 px-3 rounded-lg transition">Delete</button>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        async function saveCategory() {
+            const id = $('cat-id').value;
+            const name = $('cat-name').value.trim();
+            if (!name) { showToast("Category name is required", "error"); return; }
+            const selectedIds = Array.from(document.querySelectorAll('.cat-product-checkbox:checked')).map(cb => cb.value);
+            const btn = $('save-cat-btn'); btn.innerText = "Saving..."; btn.disabled = true;
+            try {
+                let categoryId = id;
+                if (id) { await db.collection("categories").doc(id).set({ name }, { merge: true }); }
+                else { const ref = await db.collection("categories").add({ name, createdAt: new Date().toISOString() }); categoryId = ref.id; }
+                // Sync product membership: selected products get this category, unselected
+                // products that used to belong to it get cleared.
+                for (const p of products) {
+                    const shouldBelong = selectedIds.includes(p.id);
+                    const didBelong = p.categoryId === categoryId;
+                    if (shouldBelong && !didBelong) await db.collection("products").doc(p.id).update({ categoryId });
+                    else if (!shouldBelong && didBelong) await db.collection("products").doc(p.id).update({ categoryId: null });
+                }
+                showToast("Category saved!");
+                clearCategoryForm();
+            } catch (e) { showToast("Error: " + e.message, "error"); }
+            finally { btn.innerText = "Save Category"; btn.disabled = false; }
+        }
+
+        function editCategory(id) {
+            const cat = categories.find(c => c.id === id); if (!cat) return;
+            $('cat-id').value = cat.id;
+            $('cat-name').value = cat.name;
+            $('category-form-title').innerText = "Edit Category";
+            renderCatProductsChecklist(cat.id);
+            window.scrollTo(0, 0);
+        }
+
+        function clearCategoryForm() {
+            $('cat-id').value = ''; $('cat-name').value = '';
+            $('category-form-title').innerText = "Create Category";
+            renderCatProductsChecklist(null);
+        }
+
+        async function deleteCategory(id) {
+            if (!confirm(trStr("Delete this category? Its products will become uncategorized."))) return;
+            try {
+                for (const p of products.filter(p => p.categoryId === id)) {
+                    await db.collection("products").doc(p.id).update({ categoryId: null });
+                }
+                await db.collection("categories").doc(id).delete();
+                showToast("Category deleted");
+            } catch (e) { showToast("Error: " + e.message, "error"); }
+        }
+
+        // Priority Tab Logic
+        function renderPriorityTab() {
+            const q = ($('priority-search')?.value || '').toLowerCase().trim();
+            let list = [...products];
+            if (q) list = list.filter(p => (p.name || '').toLowerCase().includes(q));
+            list.sort((a, b) => (b.isPriority === true) - (a.isPriority === true));
+            const c = $('admin-priority-list');
+            if (list.length === 0) { c.innerHTML = '<p class="text-gray-500 col-span-full text-center py-6">No products found.</p>'; return; }
+            c.innerHTML = list.map(p => `
+                <div class="panel p-4 rounded-xl flex gap-3">
+                    <img src="${p.cover || 'https://placehold.co/100/15111c/c6ff4d?text=Kuromi'}" class="w-16 h-16 object-cover rounded-lg flex-shrink-0">
+                    <div class="flex-1 min-w-0">
+                        <h4 class="font-bold text-sm text-white truncate mb-2">${p.name || 'Unknown'} ${p.isPriority ? '<span class="text-yellow-400 text-[10px]"><i class="fas fa-bolt"></i> Priority</span>' : ''}</h4>
+                        <input type="text" id="priority-text-${p.id}" placeholder="e.g. Best Seller! / أفضل منتج!" value="${p.priorityText ? p.priorityText.replace(/"/g, '&quot;') : ''}" class="mb-2 text-sm py-2 px-3">
+                        <div class="flex gap-2">
+                            <button onclick="setPriority('${p.id}', true)" class="btn-cta text-xs py-1 px-2 flex-1">Apply Priority</button>
+                            <button onclick="setPriority('${p.id}', false)" class="btn-outline text-xs py-1 px-2 flex-1">Remove</button>
+                        </div>
+                    </div>
+                </div>`).join('');
+        }
+        async function setPriority(id, enable) {
+            const text = $('priority-text-' + id) ? $('priority-text-' + id).value.trim() : '';
+            if (enable && !text) { showToast("Please enter a priority banner text", "error"); return; }
+            try {
+                await db.collection("products").doc(id).set({ isPriority: enable, priorityText: enable ? text : "" }, { merge: true });
+                showToast(enable ? "Priority applied!" : "Priority removed");
+            } catch (e) { showToast("Error: " + e.message, "error"); }
+        }
+
+        window.addEventListener('scroll', () => { $('scroll-top').classList.toggle('visible', window.scrollY > 300); });
+        // ------------------------------------------------------------
+        // Account wall: sign in / sign up, shown before anything else
+        // ------------------------------------------------------------
+        async function initAuth() {
+            if (currentUser) return;
+            if (authToken) {
+                try {
+                    currentUser = await authGet('/api/users/me');
+                    applyRoleUI();
+                    $('auth-wall').classList.add('hidden');
+                    enterApp();
+                    return;
+                } catch (e) {
+                    if (e.isNetwork) {
+                        // Server unreachable: keep the saved session, show the sign-in screen
+                        // for now, and try again shortly.
+                        $('auth-wall').classList.remove('hidden');
+                        setTimeout(initAuth, 5000);
+                        return;
+                    }
+                    localStorage.removeItem('authToken'); authToken = null;
+                }
+            }
+            $('auth-wall').classList.remove('hidden');
+        }
+
+        let _topClientsTimer = null;
+        function enterApp() {
+            navigate('home'); renderStore(); renderCart();
+            refreshTopClients();
+            if (!_topClientsTimer) _topClientsTimer = setInterval(refreshTopClients, 30000);
+        }
+
+        function switchAuthTab(tab) {
+            const isSignin = tab === 'signin';
+            $('auth-tab-signin').classList.toggle('active', isSignin);
+            $('auth-tab-signup').classList.toggle('active', !isSignin);
+            $('auth-signin-form').classList.toggle('hidden', !isSignin);
+            $('auth-signup-form').classList.toggle('hidden', isSignin);
+        }
+
+        async function handleUserSignIn(btn) {
+            const username = $('auth-signin-username').value.trim();
+            const password = $('auth-signin-password').value;
+            if (!username || !password) { showToast("Enter your username and password", "error"); if (btn) { btn.disabled = false; btn.innerText = "Sign In"; } return; }
+            try {
+                const result = await apiSend('/api/users/login', 'POST', { username, password });
+                authToken = result.token; currentUser = result.user;
+                localStorage.setItem('authToken', authToken);
+                applyRoleUI();
+                $('auth-wall').classList.add('hidden');
+                showToast(`Welcome back, ${currentUser.username}!`);
+                enterApp();
+            } catch (e) {
+                showToast(e.message || "Sign in failed", "error");
+                if (btn) { btn.disabled = false; btn.innerText = "Sign In"; }
+            }
+        }
+
+        async function handleUserSignUp(btn) {
+            const username = $('auth-signup-username').value.trim();
+            const password = $('auth-signup-password').value;
+            const email = $('auth-signup-email').value.trim();
+            const phone = $('auth-signup-phone').value.trim();
+            if (!username || !password || !email || !phone) { showToast("Please fill all fields", "error"); if (btn) { btn.disabled = false; btn.innerText = "Create Account"; } return; }
+            try {
+                const result = await apiSend('/api/users/signup', 'POST', { username, password, email, phone });
+                authToken = result.token; currentUser = result.user;
+                localStorage.setItem('authToken', authToken);
+                applyRoleUI();
+                $('auth-wall').classList.add('hidden');
+                showToast(`Welcome, ${currentUser.username}!`);
+                enterApp();
+            } catch (e) {
+                showToast(e.message || "Sign up failed", "error");
+                if (btn) { btn.disabled = false; btn.innerText = "Create Account"; }
+            }
+        }
+
+        function logoutUser() {
+            localStorage.removeItem('authToken');
+            authToken = null; currentUser = null;
+            location.reload();
+        }
+
+        // ------------------------------------------------------------
+        // Me page: profile + order history
+        // ------------------------------------------------------------
+        async function renderMePage() {
+            if (!currentUser) return;
+            $('me-avatar').src = currentUser.profileImage || 'https://placehold.co/200x200/08080a/ff5ea8?text=K';
+            $('me-username').innerText = currentUser.username;
+            $('me-email').innerText = currentUser.email;
+            $('me-phone').innerText = currentUser.phone;
+            const list = $('me-orders-list');
+            try {
+                const myAccountOrders = await apiGet('/api/orders?userId=' + encodeURIComponent(currentUser.id));
+                $('me-order-count').innerText = myAccountOrders.length;
+                const total = myAccountOrders.reduce((s, o) => s + (parseFloat(o.total) || 0), 0);
+                $('me-total-spent').innerText = total.toFixed(2) + ' EGP';
+                if (myAccountOrders.length === 0) { list.innerHTML = '<p class="text-gray-500 text-center py-10">No orders yet. Go place one!</p>'; return; }
+                myAccountOrders.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+                list.innerHTML = myAccountOrders.map(o => `
+                    <div class="panel p-5 rounded-xl">
+                        <div class="flex justify-between items-center mb-3">
+                            <h4 class="font-bold text-white text-lg">Order #${o.id.substring(0, 8)}</h4>
+                            <span class="px-3 py-1 rounded-full text-xs font-bold ${o.status === 'done' ? 'bg-[rgba(198,255,77,0.1)] text-lime border border-[var(--lime)]/30' : 'bg-yellow-400/10 text-yellow-400 border border-yellow-400/30'}">${o.status === 'done' ? 'Completed' : 'Pending'}</span>
+                        </div>
+                        <div class="border-t border-white/10 pt-3">${(o.items || []).map(item => `<div class="flex justify-between text-xs text-[var(--text-muted)] mb-1"><span>${item.name} (${item.qty}x)</span><span>${item.price * item.qty} EGP</span></div>`).join('')}<div class="flex justify-between text-sm font-bold text-lime mt-2 pt-2 border-t border-white/10"><span>Total:</span><span>${o.total} EGP</span></div></div>
+                    </div>`).join('');
+            } catch (e) { list.innerHTML = '<p class="text-gray-500 text-center py-10">Could not load your orders.</p>'; }
+        }
+
+        function changeAvatar(e) {
+            const file = e.target.files[0]; if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function (event) {
+                const img = new Image();
+                img.onload = async function () {
+                    const canvas = document.createElement('canvas'); const ctx = canvas.getContext('2d');
+                    let w = img.width, h = img.height; const MAX = 400;
+                    if (w > MAX) { h = Math.round((h * MAX) / w); w = MAX; }
+                    canvas.width = w; canvas.height = h; ctx.drawImage(img, 0, 0, w, h);
+                    const b64 = canvas.toDataURL('image/jpeg', 0.8);
+                    try {
+                        const url = await uploadImage(b64);
+                        currentUser = await authSend('/api/users/me', 'PUT', { profileImage: url });
+                        $('me-avatar').src = url;
+                        showToast('Profile photo updated!');
+                    } catch (err) { showToast('Upload failed: ' + err.message, 'error'); }
+                };
+                img.src = event.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // ------------------------------------------------------------
+        // Owner dashboard: Users tab (suspend / ban / delete accounts)
+        // ------------------------------------------------------------
+        async function renderUsersTab() {
+            try { users = await authGet('/api/users'); } catch (e) { users = []; showToast(e.message || 'Could not load accounts', 'error'); }
+            const q = ($('users-search')?.value || '').toLowerCase().trim();
+            let list = users;
+            if (q) list = list.filter(u => u.username.toLowerCase().includes(q) || (u.email || '').toLowerCase().includes(q));
+            const c = $('admin-users-list');
+            if (list.length === 0) { c.innerHTML = '<p class="text-gray-500 text-center py-6">No accounts found.</p>'; return; }
+            c.innerHTML = list.map(u => {
+                const isBanned = u.banned;
+                const isSuspended = u.suspendedUntil && new Date(u.suspendedUntil) > new Date();
+                const statusBadge = isBanned
+                    ? '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[var(--pink-cta)]/10 text-[var(--pink-cta)] border border-[var(--pink-cta)]/30">Banned</span>'
+                    : isSuspended
+                    ? `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-yellow-400/10 text-yellow-400 border border-yellow-400/30">Suspended until ${new Date(u.suspendedUntil).toLocaleDateString()}</span>`
+                    : '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[rgba(198,255,77,0.1)] text-lime border border-[var(--lime)]/30">Active</span>';
+                const isOwnerRow = u.role === 'owner';
+                const roleBadge = isOwnerRow ? '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[var(--lime)] text-[#171018]">Owner</span>' : statusBadge;
+                const contact = [u.email, u.phone].filter(Boolean).join(' · ') || '-';
+                return `<div class="panel p-4 rounded-xl flex flex-wrap gap-3 items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <img src="${u.profileImage || 'https://placehold.co/80/08080a/ff5ea8?text=K'}" class="w-12 h-12 rounded-full object-cover border border-white/10">
+                        <div>
+                            <p class="font-bold text-white text-sm">${u.username} ${roleBadge}</p>
+                            <p class="text-xs text-[var(--text-muted)]">${contact}</p>
+                        </div>
+                    </div>
+                    ${isOwnerRow ? '' : `<div class="flex gap-2 flex-wrap">
+                        ${isSuspended ? `<button onclick="unsuspendUser('${u.id}')" class="btn-outline text-xs py-1 px-2">Unsuspend</button>` : `<button onclick="promptSuspendUser('${u.id}')" class="btn-outline text-xs py-1 px-2">Suspend</button>`}
+                        ${isBanned ? `<button onclick="unbanUser('${u.id}')" class="btn-outline text-xs py-1 px-2">Unban</button>` : `<button onclick="banUser('${u.id}')" class="btn-outline text-xs py-1 px-2 border-[var(--pink-cta)]/50 text-[var(--pink-cta)]">Ban</button>`}
+                        <button onclick="deleteUserAccount('${u.id}')" class="bg-[var(--pink-cta)]/10 hover:bg-[var(--pink-cta)]/20 text-[var(--pink-cta)] text-xs py-1 px-2 rounded-lg transition">Delete</button>
+                    </div>`}
+                </div>`;
+            }).join('');
+        }
+
+        function promptSuspendUser(id) {
+            const days = prompt(trStr('Suspend this account for how many days?'), '3');
+            if (!days) return;
+            suspendUser(id, parseInt(days) || 1);
+        }
+        async function suspendUser(id, days) { try { await authSend(`/api/users/${id}/suspend`, 'PUT', { days }); showToast('Account suspended'); renderUsersTab(); } catch (e) { showToast('Error: ' + e.message, 'error'); } }
+        async function unsuspendUser(id) { try { await authSend(`/api/users/${id}/unsuspend`, 'PUT'); showToast('Suspension removed'); renderUsersTab(); } catch (e) { showToast('Error: ' + e.message, 'error'); } }
+        async function banUser(id) { if (!confirm(trStr('Ban this account?'))) return; try { await authSend(`/api/users/${id}/ban`, 'PUT'); showToast('Account banned'); renderUsersTab(); } catch (e) { showToast('Error: ' + e.message, 'error'); } }
+        async function unbanUser(id) { try { await authSend(`/api/users/${id}/unban`, 'PUT'); showToast('Account unbanned'); renderUsersTab(); } catch (e) { showToast('Error: ' + e.message, 'error'); } }
+        async function deleteUserAccount(id) { if (!confirm(trStr('Delete this account permanently?'))) return; try { await authSend(`/api/users/${id}`, 'DELETE'); showToast('Account deleted'); renderUsersTab(); } catch (e) { showToast('Error: ' + e.message, 'error'); } }
+
+
+        // ------------------------------------------------------------
+        // Language (English / Arabic) + Theme (dark / light)
+        //
+        // Instead of hand-tagging every element, a small translator walks the
+        // page's text (and placeholder/title attributes) and swaps known
+        // English strings for Arabic, then keeps watching for new content
+        // (product cards, toasts, dashboard lists...) while Arabic is active.
+        // Switching back to English restores the original text exactly.
+        // Only the site's own interface text is translated — product names,
+        // descriptions, customer names and other data stay as entered.
+        // ------------------------------------------------------------
+        const AR_EXACT = {
+ "Kuromi Store": "كورومي ستور",
+ "Can't reach the server.": "تعذر الوصول إلى السيرفر.",
+ "If this site is hosted, open it from your host's public address, not localhost.": "إذا كان الموقع مستضافًا، افتحه من عنوان الاستضافة العام وليس من localhost.",
+ "Retry": "إعادة المحاولة",
+ "Owner": "المالك",
+ "Owner access required.": "هذا الإجراء للمالك فقط.",
+ "The owner account can't be suspended, banned or deleted.": "لا يمكن تعليق حساب المالك أو حظره أو حذفه.",
+ "© 2026 Kuromi Store.": "© 2026 كورومي ستور.",
+ "Sign in or create an account to continue": "سجّل الدخول أو أنشئ حسابًا للمتابعة",
+ "Sign In": "تسجيل الدخول",
+ "Sign Up": "إنشاء حساب",
+ "Username": "اسم المستخدم",
+ "Password": "كلمة المرور",
+ "Email": "البريد الإلكتروني",
+ "Mobile Number": "رقم الموبايل",
+ "Create Account": "إنشاء الحساب",
+ "Orders are currently closed. We'll let you know as soon as we're back!": "الطلبات مغلقة حاليًا، سنخبركم فور عودتنا للعمل!",
+ "Home": "الرئيسية",
+ "Store": "المتجر",
+ "Cart": "السلة",
+ "Wishlist": "المفضلة",
+ "Rate us!": "قيّمنا!",
+ "Me": "حسابي",
+ "Dashboard": "لوحة التحكم",
+ "Language": "اللغة",
+ "Theme": "المظهر",
+ "Menu": "القائمة",
+ "made by": "صُنع بواسطة",
+ "Be aesthetic, be yourself, ALWAYS!!": "كن أنيقًا، كن نفسك، دائمًا!!",
+ "Instagram": "إنستجرام",
+ "WhatsApp Group": "جروب واتساب",
+ "Kuromi Logo": "شعار كورومي",
+ "Store Rules": "قواعد المتجر",
+ "Shipping & delivery": "الشحن والتوصيل",
+ "Cairo & Giza": "القاهرة والجيزة",
+ "EGP": "جنيه",
+ "Other Governorates": "باقي المحافظات",
+ "Upper Egypt & Coastal": "الصعيد والمدن الساحلية",
+ "Products": "المنتجات",
+ "Orders delivered": "طلبات تم توصيلها",
+ "Happy customers": "عملاء سعداء",
+ "Top customers": "أفضل العملاء",
+ "Most bought": "الأكثر شراءً",
+ "Newest arrivals": "وصل حديثًا",
+ "Search...": "بحث...",
+ "All Categories": "كل التصنيفات",
+ "Default": "الافتراضي",
+ "Newest": "الأحدث",
+ "Price: Low to High": "السعر: من الأقل للأعلى",
+ "Price: High to Low": "السعر: من الأعلى للأقل",
+ "Add to Cart": "أضف للسلة",
+ "Notify Me When Available": "أبلغني عند التوفر",
+ "Notify Me": "أبلغني",
+ "Out of stock": "نفد المخزون",
+ "Out of Stock": "نفد المخزون",
+ "No products found.": "لا توجد منتجات.",
+ "Show less": "عرض أقل",
+ "Uncategorized": "بدون تصنيف",
+ "Unknown Product": "منتج غير معروف",
+ "You might also like": "قد يعجبك أيضًا",
+ "WhatsApp": "واتساب",
+ "Copy": "نسخ",
+ "Shopping Cart": "سلة التسوق",
+ "Discount Code": "كود الخصم",
+ "Apply": "تطبيق",
+ "Subtotal:": "المجموع الفرعي:",
+ "Place Order": "إتمام الطلب",
+ "Back to Cart": "العودة للسلة",
+ "Shipping Details": "بيانات الشحن",
+ "First Name": "الاسم الأول",
+ "Last Name": "اسم العائلة",
+ "WhatsApp Number": "رقم الواتساب",
+ "Select Governorate": "اختر المحافظة",
+ "Detailed Address": "العنوان بالتفصيل",
+ "Shipping:": "الشحن:",
+ "Grand Total:": "الإجمالي:",
+ "Confirm Order": "تأكيد الطلب",
+ "Message us on WhatsApp to complete your order": "راسلنا على واتساب لإتمام طلبك",
+ "Order ID:": "رقم الطلب:",
+ "WhatsApp (+20 11 50634256)": "واتساب (+20 11 50634256)",
+ "Back to Home": "العودة للرئيسية",
+ "Go pick something aesthetic from the store already!": "اذهب واختر شيئًا أنيقًا من المتجر الآن!",
+ "Browse Store": "تصفح المتجر",
+ "Your cart is empty, what are you waiting for?": "سلتك فارغة، ماذا تنتظر؟",
+ "Your wishlist is empty, what are you waiting for?": "قائمة المفضلة فارغة، ماذا تنتظر؟",
+ "Change profile photo": "تغيير صورة الملف الشخصي",
+ "Orders placed": "الطلبات المنفذة",
+ "Total spent": "إجمالي المدفوع",
+ "Log Out": "تسجيل الخروج",
+ "My order history": "سجل طلباتي",
+ "Completed": "مكتمل",
+ "Pending": "قيد الانتظار",
+ "Name:": "الاسم:",
+ "Address:": "العنوان:",
+ "Total (incl. shipping):": "الإجمالي (شامل الشحن):",
+ "Total:": "الإجمالي:",
+ "You have no orders yet.": "ليس لديك طلبات بعد.",
+ "No orders yet. Go place one!": "لا توجد طلبات بعد. اطلب الآن!",
+ "Could not load your orders.": "تعذر تحميل طلباتك.",
+ "No completed orders yet.": "لا توجد طلبات مكتملة بعد.",
+ "No reviews yet. Be the first to rate us!": "لا توجد تقييمات بعد. كن أول من يقيّمنا!",
+ "Purchased items:": "المنتجات المشتراة:",
+ "Enter your email address. We will email you the moment this product is back in stock!": "أدخل بريدك الإلكتروني وسنراسلك فور توفر المنتج مجددًا!",
+ "Your Email Address": "بريدك الإلكتروني",
+ "How was your experience with Kuromi Store?": "كيف كانت تجربتك مع كورومي ستور؟",
+ "Your opinion (optional)": "رأيك (اختياري)",
+ "Submit Review": "إرسال التقييم",
+ "Restock Product": "إعادة تخزين المنتج",
+ "Enter the new available quantity for": "أدخل الكمية الجديدة المتاحة لـ",
+ "e.g. 50": "مثال: 50",
+ "Confirm Restock": "تأكيد التخزين",
+ "Upload Your Images": "ارفع صورك",
+ "Some items in your order need custom images. Please upload the required number of images for each item below.": "بعض المنتجات في طلبك تحتاج صورًا مخصصة. من فضلك ارفع العدد المطلوب من الصور لكل منتج.",
+ "Save & Continue": "حفظ ومتابعة",
+ "Customer's Uploaded Images": "الصور التي رفعها العميل",
+ "No images uploaded.": "لم يتم رفع صور.",
+ "Owner Dashboard": "لوحة تحكم المالك",
+ "View Site": "عرض الموقع",
+ "Logout": "تسجيل الخروج",
+ "Total Sales": "إجمالي المبيعات",
+ "Pending Orders": "طلبات قيد الانتظار",
+ "Analytics": "التحليلات",
+ "Categories": "التصنيفات",
+ "Coupons": "الكوبونات",
+ "Incoming Orders": "الطلبات الواردة",
+ "Done Orders": "الطلبات المكتملة",
+ "Priority": "الأولوية",
+ "Users": "المستخدمون",
+ "Settings": "الإعدادات",
+ "Sales (Last 7 Days)": "المبيعات (آخر 7 أيام)",
+ "Top Governorates": "أعلى المحافظات",
+ "Add / Edit Product": "إضافة / تعديل منتج",
+ "Product Name": "اسم المنتج",
+ "Price (EGP)": "السعر (جنيه)",
+ "Category": "التصنيف",
+ "No category": "بدون تصنيف",
+ "Min Qty": "أقل كمية",
+ "e.g. 1": "مثال: 1",
+ "Max Qty": "أقصى كمية",
+ "e.g. 10": "مثال: 10",
+ "Stock (Optional)": "المخزون (اختياري)",
+ "Empty = unlimited": "فارغ = غير محدود",
+ "Mark as Featured Product": "تحديد كمنتج مميز",
+ "Product Promo Text (Optional)": "نص ترويجي للمنتج (اختياري)",
+ "e.g. Limited Edition!": "مثال: إصدار محدود!",
+ "Needs Images (customer must upload one image per quantity ordered)": "يحتاج صورًا (على العميل رفع صورة لكل قطعة مطلوبة)",
+ "Cover Image": "صورة الغلاف",
+ "Image URL": "رابط الصورة",
+ "Additional Images": "صور إضافية",
+ "Image URLs (one per line)": "روابط الصور (رابط في كل سطر)",
+ "Product Description": "وصف المنتج",
+ "Save Product": "حفظ المنتج",
+ "Clear": "مسح",
+ "Out of Stock Products": "المنتجات النافدة",
+ "Create Category": "إنشاء تصنيف",
+ "Edit Category": "تعديل التصنيف",
+ "Category name": "اسم التصنيف",
+ "Select products for this category": "اختر منتجات هذا التصنيف",
+ "Save Category": "حفظ التصنيف",
+ "Create Coupon": "إنشاء كوبون",
+ "Coupon Code": "كود الكوبون",
+ "Discount %": "نسبة الخصم %",
+ "Save Coupon": "حفظ الكوبون",
+ "Today's Orders": "طلبات اليوم",
+ "This Week's Orders": "طلبات هذا الأسبوع",
+ "More Than a Week": "أكثر من أسبوع",
+ "Search by Customer Name...": "بحث باسم العميل...",
+ "Product Priority Banner": "شريط أولوية المنتج",
+ "Give a product a priority ribbon with a custom text that shows on top of its card everywhere in the store, and pushes it to the very top of the listings.": "امنح المنتج شريط أولوية بنص مخصص يظهر أعلى بطاقته في كل المتجر ويدفعه لأعلى القوائم.",
+ "Search product by name...": "ابحث عن منتج بالاسم...",
+ "Customer Accounts": "حسابات العملاء",
+ "Suspend an account for a set number of days, ban it entirely, or delete it.": "علّق حسابًا لعدد أيام محدد، أو احظره نهائيًا، أو احذفه.",
+ "Search by username or email...": "ابحث باسم المستخدم أو البريد...",
+ "Store Status": "حالة المتجر",
+ "Enable or disable placing new orders.": "تفعيل أو تعطيل استقبال الطلبات الجديدة.",
+ "Toggle Store Status": "تبديل حالة المتجر",
+ "Shipping & Delivery Prices": "أسعار الشحن والتوصيل",
+ "Update the delivery price shown for each shipping zone (in EGP).": "حدّث سعر التوصيل المعروض لكل منطقة شحن (بالجنيه).",
+ "Save Shipping Prices": "حفظ أسعار الشحن",
+ "Change Login Credentials": "تغيير بيانات الدخول",
+ "New Username": "اسم مستخدم جديد",
+ "New Password": "كلمة مرور جديدة",
+ "Save": "حفظ",
+ "Close Store (Disable Orders)": "إغلاق المتجر (تعطيل الطلبات)",
+ "Open Store (Enable Orders)": "فتح المتجر (تفعيل الطلبات)",
+ "Featured": "مميز",
+ "Edit": "تعديل",
+ "Delete": "حذف",
+ "All products are in stock!": "كل المنتجات متوفرة!",
+ "Restock": "إعادة تخزين",
+ "No orders found.": "لا توجد طلبات.",
+ "Order Details": "تفاصيل الطلب",
+ "WhatsApp:": "واتساب:",
+ "Email:": "البريد:",
+ "Items:": "المنتجات:",
+ "Customizable": "قابل للتخصيص",
+ "Mark as Done": "تحديد كمكتمل",
+ "Contact": "تواصل",
+ "No categories yet.": "لا توجد تصنيفات بعد.",
+ "Apply Priority": "تطبيق الأولوية",
+ "Remove": "إزالة",
+ "No accounts found.": "لا توجد حسابات.",
+ "Banned": "محظور",
+ "Active": "نشط",
+ "Unsuspend": "إلغاء التعليق",
+ "Suspend": "تعليق",
+ "Unban": "إلغاء الحظر",
+ "Ban": "حظر",
+ "Unlimited": "غير محدود",
+ "Unnamed": "بدون اسم",
+ "Processing...": "جاري المعالجة...",
+ "Saving...": "جاري الحفظ...",
+ "Submitting...": "جاري الإرسال...",
+ "Signing in...": "جاري تسجيل الدخول...",
+ "Creating account...": "جاري إنشاء الحساب...",
+ "Orders are currently closed.": "الطلبات مغلقة حاليًا.",
+ "Images saved!": "تم حفظ الصور!",
+ "Error updating store status.": "حدث خطأ أثناء تحديث حالة المتجر.",
+ "Some items were removed from your wishlist.": "تمت إزالة بعض العناصر من المفضلة.",
+ "Link copied!": "تم نسخ الرابط!",
+ "Removed from wishlist": "تمت الإزالة من المفضلة",
+ "Added to wishlist!": "تمت الإضافة للمفضلة!",
+ "Orders are closed right now.": "الطلبات مغلقة الآن.",
+ "Sorry, this item is out of stock.": "عذرًا، هذا المنتج نفد من المخزون.",
+ "Not enough stock.": "لا يوجد مخزون كافٍ.",
+ "Added to cart!": "تمت الإضافة للسلة!",
+ "Some items from your cart are no longer available and were removed.": "بعض عناصر السلة لم تعد متاحة وتمت إزالتها.",
+ "Cart is empty!": "السلة فارغة!",
+ "You have a pending order. Please wait for it to be completed.": "لديك طلب قيد الانتظار. من فضلك انتظر حتى يكتمل.",
+ "You already placed an order. Please wait for it to be completed.": "لقد أرسلت طلبًا بالفعل. من فضلك انتظر حتى يكتمل.",
+ "Invalid coupon code": "كود الخصم غير صحيح",
+ "Coupon expired": "انتهت صلاحية الكوبون",
+ "Please fill all required fields": "من فضلك املأ جميع الحقول المطلوبة",
+ "Your cart is empty or invalid.": "سلتك فارغة أو غير صالحة.",
+ "Please select a rating": "من فضلك اختر تقييمًا",
+ "Name and price are required": "الاسم والسعر مطلوبان",
+ "Saved successfully!": "تم الحفظ بنجاح!",
+ "Product deleted": "تم حذف المنتج",
+ "Enter a valid quantity": "أدخل كمية صحيحة",
+ "Product restocked successfully!": "تمت إعادة تخزين المنتج بنجاح!",
+ "Fill all coupon fields": "املأ جميع حقول الكوبون",
+ "Coupon saved": "تم حفظ الكوبون",
+ "Coupon deleted": "تم حذف الكوبون",
+ "Order marked as done": "تم تحديد الطلب كمكتمل",
+ "Order deleted": "تم حذف الطلب",
+ "Please enter username and password": "من فضلك أدخل اسم المستخدم وكلمة المرور",
+ "Credentials updated successfully!": "تم تحديث بيانات الدخول بنجاح!",
+ "Enter a valid email": "أدخل بريدًا إلكترونيًا صحيحًا",
+ "We'll email you when it's back!": "سنراسلك عند توفره مجددًا!",
+ "Please enter valid shipping prices": "من فضلك أدخل أسعار شحن صحيحة",
+ "Shipping prices updated successfully!": "تم تحديث أسعار الشحن بنجاح!",
+ "Category name is required": "اسم التصنيف مطلوب",
+ "Category saved!": "تم حفظ التصنيف!",
+ "Category deleted": "تم حذف التصنيف",
+ "Please enter a priority banner text": "من فضلك أدخل نص شريط الأولوية",
+ "Priority applied!": "تم تطبيق الأولوية!",
+ "Priority removed": "تمت إزالة الأولوية",
+ "Enter your username and password": "أدخل اسم المستخدم وكلمة المرور",
+ "Please fill all fields": "من فضلك املأ جميع الحقول",
+ "Profile photo updated!": "تم تحديث صورة الملف الشخصي!",
+ "Account suspended": "تم تعليق الحساب",
+ "Suspension removed": "تمت إزالة التعليق",
+ "Account banned": "تم حظر الحساب",
+ "Account unbanned": "تم إلغاء الحظر",
+ "Account deleted": "تم حذف الحساب",
+ "Sign in failed": "فشل تسجيل الدخول",
+ "Sign up failed": "فشل إنشاء الحساب",
+ "Invalid username or password.": "اسم المستخدم أو كلمة المرور غير صحيحة.",
+ "That username is already taken.": "اسم المستخدم مستخدم بالفعل.",
+ "This account has been banned.": "تم حظر هذا الحساب.",
+ "Not signed in.": "لم يتم تسجيل الدخول.",
+ "username, password, email and phone are all required.": "اسم المستخدم وكلمة المرور والبريد والموبايل كلها مطلوبة.",
+ "Delete this product permanently?": "هل تريد حذف هذا المنتج نهائيًا؟",
+ "Delete this order permanently?": "هل تريد حذف هذا الطلب نهائيًا؟",
+ "Delete this category? Its products will become uncategorized.": "هل تريد حذف هذا التصنيف؟ ستصبح منتجاته بدون تصنيف.",
+ "Suspend this account for how many days?": "تعليق هذا الحساب لكم يوم؟",
+ "Ban this account?": "هل تريد حظر هذا الحساب؟",
+ "Delete this account permanently?": "هل تريد حذف هذا الحساب نهائيًا؟",
+ "Cairo": "القاهرة",
+ "Giza": "الجيزة",
+ "Alexandria": "الإسكندرية",
+ "Dakahlia": "الدقهلية",
+ "Sharqia": "الشرقية",
+ "Monufia": "المنوفية",
+ "Gharbia": "الغربية",
+ "Qalyubia": "القليوبية",
+ "Kafr El Sheikh": "كفر الشيخ",
+ "Damietta": "دمياط",
+ "Port Said": "بورسعيد",
+ "Ismailia": "الإسماعيلية",
+ "Suez": "السويس",
+ "North Sinai": "شمال سيناء",
+ "South Sinai": "جنوب سيناء",
+ "Faiyum": "الفيوم",
+ "Beni Suef": "بني سويف",
+ "Minya": "المنيا",
+ "Asyut": "أسيوط",
+ "Sohag": "سوهاج",
+ "Qena": "قنا",
+ "Luxor": "الأقصر",
+ "Aswan": "أسوان",
+ "Red Sea": "البحر الأحمر",
+ "New Valley": "الوادي الجديد",
+ "Matrouh": "مطروح"
+};
+
+        const _num = (s) => s; // digits are left as Western numerals
+        const AR_PATTERNS = [
+            [/^You are viewing this page from (.+)\.$/, m => `أنت تتصفح هذه الصفحة من ${m[1]}.`],
+            [/^Found (\d+) products$/, m => `تم العثور على ${m[1]} منتج`],
+            [/^(\d+) products?$/, m => `${m[1]} منتج`],
+            [/^(\d+) orders? completed$/, m => `${m[1]} طلب مكتمل`],
+            [/^In stock: (\d+)$/, m => `متوفر: ${m[1]}`],
+            [/^Stock: (.+)$/, m => `المخزون: ${translateCore(m[1]) || m[1]}`],
+            [/^More products \((\d+)\)$/, m => `المزيد من المنتجات (${m[1]})`],
+            [/^Order #(\w+)$/, m => `طلب #${m[1]}`],
+            [/^ID: (.+)$/, m => `المعرف: ${m[1]}`],
+            [/^Qty: (\d+)$/, m => `الكمية: ${m[1]}`],
+            [/^Valid until: (.+)$/, m => `صالح حتى: ${m[1]}`],
+            [/^(\d+)% Discount$/, m => `خصم ${m[1]}%`],
+            [/^Suspended until (.+)$/, m => `معلق حتى ${m[1]}`],
+            [/^([\d.,]+|N\/A) EGP$/, m => `${m[1]} جنيه`],
+            [/^(.+) \((\d+)x\)$/, m => `${m[1]} (${m[2]}×)`],
+            [/^(?=.*(?:Min|Max|Available): \d)(Min: \d+)?\s*(Max: \d+)?\s*(Available: \d+)?$/, m =>
+                [m[1] && m[1].replace('Min:', 'الحد الأدنى:'), m[2] && m[2].replace('Max:', 'الحد الأقصى:'), m[3] && m[3].replace('Available:', 'المتاح:')].filter(Boolean).join(' ')],
+            [/^(Kafr El Sheikh|North Sinai|South Sinai|Alexandria|New Valley|Port Said|Beni Suef|Dakahlia|Qalyubia|Damietta|Ismailia|Sharqia|Monufia|Gharbia|Red Sea|Matrouh|Faiyum|Cairo|Minya|Asyut|Sohag|Luxor|Aswan|Giza|Suez|Qena) - (.*)$/, m => `${AR_EXACT[m[1]] || m[1]} - ${m[2]}`],
+            // toasts with values
+            [/^Please select exactly (\d+) image\(s\) for this item\.$/, m => `من فضلك اختر ${m[1]} صورة بالضبط لهذا المنتج.`],
+            [/^Please upload exactly (\d+) image\(s\) for this item\.$/, m => `من فضلك ارفع ${m[1]} صورة بالضبط لهذا المنتج.`],
+            [/^Please upload exactly (\d+) image\(s\) for all customizable items\.$/, m => `من فضلك ارفع ${m[1]} صورة بالضبط لكل المنتجات القابلة للتخصيص.`],
+            [/^Only (\d+)\/(\d+) uploaded for this item\.$/, m => `تم رفع ${m[1]} من ${m[2]} فقط لهذا المنتج.`],
+            [/^Store has been (opened|closed)!$/, m => m[1] === 'opened' ? 'تم فتح المتجر!' : 'تم إغلاق المتجر!'],
+            [/^New order received! \((\d+) pending\)$/, m => `وصل طلب جديد! (${m[1]} قيد الانتظار)`],
+            [/^Max quantity for (.+) is (\d+)$/, m => `أقصى كمية لـ ${m[1]} هي ${m[2]}`],
+            [/^Max quantity is (\d+)$/, m => `أقصى كمية هي ${m[1]}`],
+            [/^Only (\d+) items left in stock\.$/, m => `المتبقي ${m[1]} فقط في المخزون.`],
+            [/^Only (\d+) items available in stock\.$/, m => `المتاح ${m[1]} فقط في المخزون.`],
+            [/^Minimum quantity is (\d+)\. Use the trash icon to remove it\.$/, m => `أقل كمية هي ${m[1]}. استخدم أيقونة السلة للحذف.`],
+            [/^Minimum quantity for (.+) is (\d+)$/, m => `أقل كمية لـ ${m[1]} هي ${m[2]}`],
+            [/^Not enough stock for (.+)\.$/, m => `لا يوجد مخزون كافٍ لـ ${m[1]}.`],
+            [/^(\d+)% discount applied!$/, m => `تم تطبيق خصم ${m[1]}%!`],
+            [/^Please upload the required images for "(.+)" before placing your order\.$/, m => `من فضلك ارفع الصور المطلوبة لـ "${m[1]}" قبل إتمام طلبك.`],
+            [/^Sending (\d+) email notifications\.\.\.$/, m => `جاري إرسال ${m[1]} إشعار بريدي...`],
+            [/^Restocked! (\d+) sent, (\d+) failed\. Check EmailJS logs or Spam folder\.$/, m => `تمت إعادة التخزين! تم إرسال ${m[1]} وفشل ${m[2]}. راجع سجلات EmailJS أو مجلد الرسائل المزعجة.`],
+            [/^Restocked & (\d+) emails sent! Check Spam folder if not received\.$/, m => `تمت إعادة التخزين وإرسال ${m[1]} رسالة! راجع مجلد الرسائل المزعجة إن لم تصل.`],
+            [/^Welcome back, (.+)!$/, m => `أهلًا بعودتك، ${m[1]}!`],
+            [/^Welcome, (.+)!$/, m => `أهلًا، ${m[1]}!`],
+            [/^We'll email you at (.+) when it's back!$/, m => `سنراسلك على ${m[1]} عند توفره مجددًا!`],
+            [/^This account is suspended until (.+)\.$/, m => `هذا الحساب معلق حتى ${m[1]}.`],
+            [/^Error: (.+)$/, m => `خطأ: ${translateCore(m[1]) || m[1]}`],
+            [/^Image upload failed: (.+)$/, m => `فشل رفع الصورة: ${m[1]}`],
+            [/^Upload failed: (.+)$/, m => `فشل الرفع: ${translateCore(m[1]) || m[1]}`],
+            [/^Error restocking: (.+)$/, m => `خطأ في إعادة التخزين: ${m[1]}`],
+            [/^Error submitting review: (.+)$/, m => `خطأ في إرسال التقييم: ${m[1]}`],
+        ];
+
+        let currentLang = 'en';
+        try { currentLang = localStorage.getItem('lang') || 'en'; } catch (e) {}
+        const _origText = new Map(); // text node -> original English
+        const _origAttr = new Map(); // element -> { attr: original English }
+        let _langObserver = null;
+
+        function translateCore(core) {
+            if (Object.prototype.hasOwnProperty.call(AR_EXACT, core)) return AR_EXACT[core];
+            for (const [re, fn] of AR_PATTERNS) { const m = core.match(re); if (m) return fn(m); }
+            return null;
+        }
+        // Translate a string if Arabic is active (used by confirm/prompt dialogs and the DOM walker)
+        function trStr(str) {
+            if (currentLang !== 'ar' || typeof str !== 'string') return str;
+            const core = str.trim(); if (!core) return str;
+            const out = translateCore(core);
+            if (out === null) return str;
+            return str.slice(0, str.indexOf(core)) + out + str.slice(str.indexOf(core) + core.length);
+        }
+
+        function translateTextNode(n) {
+            const v = n.nodeValue; if (!v || !v.trim()) return;
+            const parent = n.parentNode; if (!parent) return;
+            const tag = parent.nodeName;
+            if (tag === 'SCRIPT' || tag === 'STYLE' || tag === 'TEXTAREA') return;
+            const out = trStr(v);
+            if (out !== v) { if (!_origText.has(n)) _origText.set(n, v); n.nodeValue = out; }
+        }
+        function translateAttrs(el) {
+            ['placeholder', 'title', 'alt'].forEach(attr => {
+                const val = el.getAttribute && el.getAttribute(attr);
+                if (!val) return;
+                const out = trStr(val);
+                if (out !== val) {
+                    const saved = _origAttr.get(el) || {};
+                    if (!(attr in saved)) saved[attr] = val;
+                    _origAttr.set(el, saved);
+                    el.setAttribute(attr, out);
+                }
+            });
+        }
+        function translateTree(root) {
+            if (!root) return;
+            if (root.nodeType === 3) { translateTextNode(root); return; }
+            if (root.nodeType !== 1) return;
+            translateAttrs(root);
+            root.querySelectorAll('[placeholder],[title],[alt]').forEach(translateAttrs);
+            const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+            let n; while ((n = w.nextNode())) translateTextNode(n);
+        }
+        function pruneTranslationCache() {
+            _origText.forEach((_, n) => { if (!n.isConnected) _origText.delete(n); });
+            _origAttr.forEach((_, el) => { if (!el.isConnected) _origAttr.delete(el); });
+        }
+        function startLangObserver() {
+            if (_langObserver) return;
+            _langObserver = new MutationObserver(muts => {
+                if (currentLang !== 'ar') return;
+                muts.forEach(m => m.addedNodes.forEach(translateTree));
+                if (_origText.size > 4000) pruneTranslationCache();
+            });
+            _langObserver.observe(document.body, { childList: true, subtree: true });
+        }
+        function restoreEnglish() {
+            _origText.forEach((orig, n) => { if (n.isConnected) n.nodeValue = orig; });
+            _origText.clear();
+            _origAttr.forEach((attrs, el) => { Object.keys(attrs).forEach(k => el.setAttribute(k, attrs[k])); });
+            _origAttr.clear();
+        }
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            try { localStorage.setItem('lang', lang); } catch (e) {}
+            const root = document.documentElement;
+            root.setAttribute('lang', lang);
+            root.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
+            document.querySelectorAll('.lang-toggle-btn').forEach(b => { b.textContent = lang === 'ar' ? 'EN' : 'AR'; });
+            const arrow = $('back-arrow-icon');
+            if (arrow) arrow.className = lang === 'ar' ? 'fas fa-arrow-right' : 'fas fa-arrow-left';
+            if (lang === 'ar') { translateTree(document.body); startLangObserver(); }
+            else { restoreEnglish(); }
+            if (isOwner) { try { renderOrders(); renderCharts(); } catch (e) {} }
+        }
+        function toggleLanguage() { setLanguage(currentLang === 'ar' ? 'en' : 'ar'); }
+
+        // ---------------- Theme ----------------
+        function applyTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            try { localStorage.setItem('theme', theme); } catch (e) {}
+            document.querySelectorAll('.theme-toggle-icon').forEach(icon => { icon.className = 'theme-toggle-icon ' + (theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon'); }); // shows the mode you would switch TO
+            const meta = document.querySelector('meta[name="theme-color"]');
+            if (meta) meta.setAttribute('content', theme === 'dark' ? '#08080a' : '#f6f3f7');
+            if (isOwner) { try { renderCharts(); } catch (e) {} }
+        }
+        function toggleTheme() {
+            applyTheme(document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light');
+        }
+
+        function initLanguageAndTheme() {
+            applyTheme(document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark');
+            setLanguage(currentLang);
+        }
+        initLanguageAndTheme();
+
+        window.onload = () => {
+            AOS.init({ duration: 800, once: true });
+            $('order-governorate').innerHTML = '<option value="">Select Governorate</option>' + govs.map(g => `<option value="${g}">${g}</option>`).join('');
+            $('wish-count').innerText = wishlist.length;
+            $('wish-count-mobile').innerText = wishlist.length;
+            initAuth();
+            if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,3989 @@
+[
+  {
+    "id": "01TfsmwuPFcW3RhS7BND",
+    "comment": "IT WAS AWESOME",
+    "rating": 5,
+    "total": "300.00",
+    "name": "Basma Elkott",
+    "createdAt": "2026-09-13T16:55:38.470Z",
+    "items": [
+      {
+        "qty": 1,
+        "id": "dQoAu5QO7AFhWLMI3gM0",
+        "hasStock": true,
+        "price": 250,
+        "name": "Skull scenegirl gloves",
+        "img": "images/uploads/83cdb85cf154542242be76f9718c74c7.jpg"
+      },
+      {
+        "id": "s7sfEWiDVPW3YzdyfABM",
+        "img": "images/uploads/8115d730cd3a7e5242d5841e65eb94e2.jpg",
+        "name": "Punk wrist Accessoires",
+        "price": 50,
+        "qty": 1,
+        "hasStock": true
+      }
+    ]
+  },
+  {
+    "id": "1UmoQ14Dkho8jz7KvtZZ",
+    "rating": 5,
+    "comment": "",
+    "total": "125.00",
+    "items": [
+      {
+        "qty": 5,
+        "name": "Custome Photocards",
+        "id": "i3KGJFbBWiGLviTO3doR",
+        "hasStock": false,
+        "price": 5,
+        "img": "images/uploads/1eec6341b4cf7f28e0220fd9e7c98fc5.jpg"
+      },
+      {
+        "hasStock": false,
+        "qty": 5,
+        "price": 20,
+        "name": "Custome Pins",
+        "img": "images/uploads/69b794a9a2284d9dc9ab987df2a9fd3d.jpg",
+        "id": "xWyixPYEuPS2UlXVfWZK"
+      }
+    ],
+    "name": "Carol Amgad",
+    "createdAt": "2026-09-06T11:28:13.194Z"
+  },
+  {
+    "id": "2elN6COD4kehApBQdHAP",
+    "items": [
+      {
+        "price": 22,
+        "qty": 9,
+        "id": "xWyixPYEuPS2UlXVfWZK",
+        "name": "Custome Pins",
+        "hasStock": false,
+        "img": "images/uploads/69b794a9a2284d9dc9ab987df2a9fd3d.jpg"
+      },
+      {
+        "img": "images/uploads/63c939c146e24e6637acbc337fae00cb.jpg",
+        "name": "Custome Plastic keychain",
+        "hasStock": false,
+        "qty": 3,
+        "price": 25,
+        "id": "ugjLpEErh9MISpwcRlcq"
+      }
+    ],
+    "comment": "",
+    "rating": 4,
+    "name": "Boshra Ahmed",
+    "total": "348.00",
+    "createdAt": "2026-10-01T19:01:17.649Z"
+  },
+  {
+    "id": "3INxJmGXY6boFJHim6XK",
+    "total": "285.00",
+    "rating": 5,
+    "name": "khadija alsarraj",
+    "comment": "كيوت",
+    "items": [
+      {
+        "img": "images/uploads/69b794a9a2284d9dc9ab987df2a9fd3d.jpg",
+        "name": "Custome Pins",
+        "price": 20,
+        "qty": 5,
+        "hasStock": false,
+        "id": "xWyixPYEuPS2UlXVfWZK"
+      },
+      {
+        "img": "images/uploads/d0c18d930dcb5e3d69c4a449ddb09fa7.jpg",
+        "hasStock": true,
+        "name": "Silver necklaces",
+        "id": "EhWmltlsqbIq7W2e3qle",
+        "qty": 1,
+        "price": 100
+      },
+      {
+        "id": "U7tS8VDzDgtKYahjgHFJ",
+        "hasStock": true,
+        "img": "images/uploads/84a5f183c9508ceccdbfccf64fcf25c1.jpg",
+        "qty": 1,
+        "price": 25,
+        "name": "Gothic rings"
+      },
+      {
+        "img": "images/uploads/b231c339ece2fab4dcbcab18127dc7f4.jpg",
+        "hasStock": true,
+        "price": 35,
+        "id": "xtkNOUqPKvLMvIh49Kej",
+        "name": "Silver skull ring",
+        "qty": 1
+      },
+      {
+        "hasStock": false,
+        "img": "images/uploads/63c939c146e24e6637acbc337fae00cb.jpg",
+        "name": "Custome Plastic keychain",
+        "id": "ugjLpEErh9MISpwcRlcq",
+        "price": 25,
+        "qty": 1
+      }
+    ],
+    "createdAt": "2026-08-20T08:40:02.573Z"
+  },
+  {
+    "id": "3fwIo4CWuJW8rKBuA6TI",
+    "items": [
+      {
+        "qty": 10,
+        "id": "xWyixPYEuPS2UlXVfWZK",
+        "price": 20,
+        "name": "Custome Pins",
+        "hasStock": false,
+        "img": "images/uploads/69b794a9a2284d9dc9ab987df2a9fd3d.jpg"
+      },
+      {
+        "price": 50,
+        "qty": 1,
+        "hasStock": true,
+        "name": "Punk wrist Accessoires",
+        "img": "images/uploads/8115d730cd3a7e5242d5841e65eb94e2.jpg",
+        "id": "s7sfEWiDVPW3YzdyfABM"
+      },
+      {
+        "qty": 1,
+        "name": "Custome Plastic keychain",
+        "id": "ugjLpEErh9MISpwcRlcq",
+        "hasStock": false,
+        "price": 25,
+        "img": "images/uploads/63c939c146e24e6637acbc337fae00cb.jpg"
+      }
+    ],
+    "comment": "",
+    "rating": 4,
+    "name": "Mohamed Farah",
+    "createdAt": "2026-08-17T07:02:00.396Z",
+    "total": "275.00"
+  },
+  {
+    "id": "6KhpuncJUJ8m2CAUL4gX",
+    "total": "387.00",
+    "items": [
+      {
+        "id": "i3KGJFbBWiGLviTO3doR",
+        "img": "images/uploads/1eec6341b4cf7f28e0220fd9e7c98fc5.jpg",
+        "price": 5,
+        "name": "Custome Photocards",
+        "hasStock": false,
+        "qty": 5
+      },
+      {
+        "id": "j6GCSxNnJF1QtRaLkhLr",
+        "img": "images/uploads/4041c11bce73fd844e1031b083a0a58d.jpg",
+        "name": "Custome Big Poster",
+        "hasStock": false,
+        "qty": 4,
+        "price": 25
+      },
+      {
+        "qty": 9,
+        "id": "ugjLpEErh9MISpwcRlcq",
+        "price": 25,
+        "name": "Custome Plastic keychain",
+        "img": "images/uploads/63c939c146e24e6637acbc337fae00cb.jpg",
+        "hasStock": false
+      },
+      {
+        "id": "8pTkPMOCv1DpuJYABOv1",
+        "img": "images/uploads/69fb18a1691452e5563323686efb2d12.jpg",
+        "name": "Custome crochet 🧶 (make your own)",
+        "price": 1,
+        "qty": 2,
+        "hasStock": false
+      },
+      {
+        "hasStock": true,
+        "id": "zy23AWY1Yf3IGxksjKTE",
+        "img": "images/uploads/1ee3c6d576918ebb317e42f6babccd53.jpg",
+        "price": 15,
+        "name": "Apple clip 🍎",
+        "qty": 1
+      },
+      {
+        "price": 20,
+        "qty": 1,
+        "id": "31Oyr46ioi1qdf2apWCf",
+        "hasStock": true,
+        "name": "Hatsune Miku sticker sheet",
+        "img": "images/uploads/a16c5a7fe60fad8447ae79dddaba089c.jpg"
+      }
+    ],
+    "rating": 4,
+    "comment": "The website is good but I think we need  customised stickers and the new collection is fire btw thanks Nona and the team <3",
+    "createdAt": "2026-08-17T03:30:52.260Z",
+    "name": "Farida M"
+  },
+  {
+    "id": "7IWG4ck9ESjxczEcdtr6",
+    "rating": 5,
+    "createdAt": "2026-08-19T22:01:13.816Z",
+    "total": "200.00",
+    "name": "ريماس حازم احمد البديوي البديوي",
+    "comment": "",
+    "items": [
+      {
+        "qty": 10,
+        "hasStock": false,
+        "id": "i3KGJFbBWiGLviTO3doR",
+        "price": 5,
+        "name": "Custome Photocards",
+        "img": "images/uploads/1eec6341b4cf7f28e0220fd9e7c98fc5.jpg"
+      },
+      {
+        "qty": 2,
+        "price": 25,
+        "hasStock": false,
+        "id": "ugjLpEErh9MISpwcRlcq",
+        "name": "Custome Plastic keychain",
+        "img": "images/uploads/63c939c146e24e6637acbc337fae00cb.jpg"
+      },
+      {
+        "hasStock": false,
+        "price": 20,
+        "img": "images/uploads/69b794a9a2284d9dc9ab987df2a9fd3d.jpg",
+        "id": "xWyixPYEuPS2UlXVfWZK",
+        "qty": 5,
+        "name": "Custome Pins"
+      }
+    ]
+  },
+  {
+    "id": "7Mg4M5Ev3czMk7tRq7eY",
+    "name": "H Hj",
+    "total": "75.00",
+    "rating": 5,
+    "comment": "Amazing store ong!!!!",
+    "createdAt": "2026-08-14T15:52:27.231Z",
+    "items": [
+      {
+        "img": "images/uploads/72afab4f6c6d2e7364b8f97e8f83e505.jpg",
+        "name": "Alien cat Keychain",
+        "hasStock": true,
+        "id": "zQFe9JzHgaoCGn1SGqRb",
+        "price": 35,
+        "qty": 1
+      },
+      {
+        "id": "AQxsHkyyAT756JMKn97M",
+        "img": "images/uploads/62270d6b0ea24c10c1da26d78c153eaf.jpg",
+        "name": "Custome Mini Posters",
+        "price": 10,
+        "hasStock": false,
+        "qty": 4
+      }
+    ]
+  },
+  {
+    "id": "8TSLzvpJtJhxgpk35N3n",
+    "rating": 4,
+    "total": "330.00",
+    "name": "Sama Tarek",
+    "comment": "Pretty",
+    "items": [
+      {
+        "hasStock": true,
+        "price": 30,
+        "qty": 1,
+        "img": "images/uploads/49472ff5a9d0e5d82eae32ccc3a0acfc.jpg",
+        "name": "Nerd cat keychain",
+        "id": "7tKPcDzHWBqHkF5lvqre"
+      },
+      {
+        "qty": 1,
+        "price": 30,
+        "id": "EgexqMbAJtZy3WuuepEn",
+        "name": "Music cat keychain",
+        "hasStock": true,
+        "img": "images/uploads/ed88825345bde4e58d1a9fff6e2a65dc.jpg"
+      },
+      {
+        "id": "tmYAtlPWpZgrkryDm7Gd",
+        "img": "images/uploads/cf51119073992ea05ecd00e965a5af8b.jpg",
+        "price": 35,
+        "name": "Strawberry keychain",
+        "hasStock": true,
+        "qty": 1
+      },
+      {
+        "img": "images/uploads/69b794a9a2284d9dc9ab987df2a9fd3d.jpg",
+        "name": "Custome Pins",
+        "hasStock": false,
+        "id": "xWyixPYEuPS2UlXVfWZK",
+        "qty": 5,
+        "price": 22
+      },
+      {
+        "name": "Ivan sticker sheet",
+        "hasStock": true,
+        "qty": 1,
+        "price": 20,
+        "img": "images/uploads/dc12d32445b405de5fb37a99d6cbb523.jpg",
+        "id": "yXzJVuxtkzJ5s2ANqRy0"
+      },
+      {
+        "id": "w3pwf8jHPPJXq9fpLn1E",
+        "name": "Rich cat Keychain",
+        "qty": 1,
+        "price": 35,
+        "hasStock": true,
+        "img": "images/uploads/a7fad875172e696cc62104a48111fba8.jpg"
+      }
+    ],
+    "createdAt": "2026-09-30T20:22:58.812Z"
+  },
+  {
+    "id": "8jiyaCJjfyh0d6e2Qj3A",
+    "comment": "!IT WAS AWESOME",
+    "rating": 5,
+    "createdAt": "2026-09-30T19:41:46.058Z",
+    "total": "385.00",
+    "items": [
+      {
+        "name": "⭐Nona keychain⭐",
+        "qty": 1,
+        "img": "images/uploads/202e4e08605a6263415d647b075988cd.jpg",
+        "id": "iFRtdMlRGB5OM8mqohZj",
+        "hasStock": true,
+        "price": 45
+      },
+      {
+        "img": "images/uploads/ed88825345bde4e58d1a9fff6e2a65dc.jpg",
+        "id": "EgexqMbAJtZy3WuuepEn",
+        "price": 30,
+        "name": "Music cat keychain",
+        "hasStock": true,
+        "qty": 1
+      },
+      {
+        "img": "images/uploads/0c2c599f51cffc2fb48cc9e44b33e8ee.jpg",
+        "hasStock": true,
+        "price": 50,
+        "name": "Round studs punk accessories",
+        "qty": 1,
+        "id": "JNhTPp7s2k8QVLpj0qaG"
+      },
+      {
+        "name": "Sleepy cat keychain",
+        "hasStock": true,
+        "qty": 1,
+        "price": 30,
+        "img": "images/uploads/7411de61532635ea08f929ee61e08fca.jpg",
+        "id": "RGLNdqxTdF6g7SDybhGD"
+      },
+      {
+        "id": "n1rhrwcjOvTeV5Ej1ufJ",
+        "name": "Square studs punk accessories",
+        "qty": 1,
+        "price": 50,
+        "hasStock": true,
+        "img": "images/uploads/1882f254debac5d92abdc94b65a65115.jpg"
+      },
+      {
+        "qty": 5,
+        "hasStock": false,
+        "name": "Custome Pins",
+        "id": "xWyixPYEuPS2UlXVfWZK",
+        "price": 22,
+        "img": "images/uploads/69b794a9a2284d9dc9ab987df2a9fd3d.jpg"
+      }
+    ],
+    "name": "لي لي احمد"
+  },
+  {
+    "id": "94VqdeH7gQYI4nkefUee",
+    "total": "360.00",
+    "comment": "",
+    "name": "Fatma Mahmoud Dodo",
+    "rating": 5,
+    "createdAt": "2026-10-02T12:27:56.197Z",
+    "items": [
+      {
+        "qty": 1,
+        "price": 50,
+        "name": "Star studs punk accessories",
+        "hasStock": true,
+        "img": "images/uploads/ade653625df38eabdb1267be9d6161cf.jpg",
+        "id": "LNzFUe0hQOs1lWKQPyRy"
+      },
+      {
+        "img": "images/uploads/1eec6341b4cf7f28e0220fd9e7c98fc5.jpg",
+        "price": 5,
+        "id": "i3KGJFbBWiGLviTO3doR",
+        "hasStock": false,
+        "name": "Custome Photocards",
+        "qty": 6
+      },
+      {
+        "name": "Custome Big Poster",
+        "qty": 2,
+        "img": "images/uploads/4041c11bce73fd844e1031b083a0a58d.jpg",
+        "id": "j6GCSxNnJF1QtRaLkhLr",
+        "price": 25,
+        "hasStock": false
+      },
+      {
+        "id": "tgeRJRHpY49ZhDkJPunB",
+        "img": "images/uploads/4f2c9a342305cb909499169214a734cc.jpg",
+        "hasStock": true,
+        "qty": 1,
+        "price": 25,
+        "name": "Aesthetic rolls"
+      },
+      {
+        "id": "ugjLpEErh9MISpwcRlcq",
+        "img": "images/uploads/63c939c146e24e6637acbc337fae00cb.jpg",
+        "name": "Custome Plastic keychain",
+        "qty": 1,
+        "hasStock": false,
+        "price": 25
+      },
+      {
+        "name": "Custome Pins",
+        "qty": 5,
+        "hasStock": false,
+        "img": "images/uploads/69b794a9a2284d9dc9ab987df2a9fd3d.jpg",
+        "id": "xWyixPYEuPS2UlXVfWZK",
+        "price": 22
+      }
+    ]
+  },
+  {
+    "id": "98cLFoQPwmvnFAtEJDgo",
+    "name": "يمنى محمد",
+    "createdAt": "2026-09-02T13:01:46.038Z",
+    "items": [
+      {
+        "id": "8pTkPMOCv1DpuJYABOv1",
+        "price": 1,
+        "hasStock": false,
+        "img": "images/uploads/69fb18a1691452e5563323686efb2d12.jpg",
+        "qty": 1,
+        "name": "Custome crochet 🧶 (make your own)"
+      },
+      {
+        "price": 25,
+        "qty": 3,
+        "id": "ugjLpEErh9MISpwcRlcq",
+        "img": "images/uploads/63c939c146e24e6637acbc337fae00cb.jpg",
+        "name": "Custome Plastic keychain",
+        "hasStock": false
+      },
+      {
+        "hasStock": false,
+        "id": "xWyixPYEuPS2UlXVfWZK",
+        "qty": 10,
+        "price": 20,
+        "name": "Custome Pins",
+        "img": "images/uploads/69b794a9a2284d9dc9ab987df2a9fd3d.jpg"
+      }
+    ],
+    "total": "276.00",
+    "comment": "",
+    "rating": 5
+  },
+  {
+    "id": "9Qj85ovZppyBkydFKn8V",
+    "total": "315.00",
+    "items": [
+      {
+        "img": "images/uploads/63c939c146e24e6637acbc337fae00cb.jpg",
+        "hasStock": false,
+        "name": "Custome Plastic keychain",
+        "price": 25,
+        "qty": 2,
+        "id": "ugjLpEErh9MISpwcRlcq"
+      },
+      {
+        "img": "images/uploads/33dd45690b1d371c590ce704d7a6cdd7.jpg",
+        "id": "K7ZZ5TSRpvvEV3xChTRh",
+        "price": 150,
+        "name": "Trendy crying glasses",
+        "hasStock": true,
+        "qty": 1
+      },
+      {
+        "name": "Silver necklaces",
+        "hasStock": true,
+        "qty": 1,
+        "img": "images/uploads/d0c18d930dcb5e3d69c4a449ddb09fa7.jpg",
+        "price": 100,
+        "id": "EhWmltlsqbIq7W2e3qle"
+      },
+      {
+        "img": "images/uploads/1ee3c6d576918ebb317e42f6babccd53.jpg",
+        "price": 15,
+        "hasStock": true,
+        "qty": 1,
+        "name": "Apple clip 🍎",
+        "id": "zy23AWY1Yf3IGxksjKTE"
+      }
+    ],
+    "rating": 4,
+    "createdAt": "2026-08-22T12:57:30.114Z",
+    "name": "عاليا محمد",
+    "comment": ""
+  },
+  {
+    "id": "9bQCUpJ69WG5ZBqI5FYo",
+    "name": "Nadeen Bahjat Al-Shakhs",
+    "total": "100.00",
+    "createdAt": "2026-09-04T10:09:54.762Z",
+    "rating": 5,
+    "items": [
+      {
+        "qty": 5,
+        "price": 20,
+        "id": "xWyixPYEuPS2UlXVfWZK",
+        "name": "Custome Pins",
+        "hasStock": false,
+        "img": "images/uploads/69b794a9a2284d9dc9ab987df2a9fd3d.jpg"
+      }
+    ],
+    "comment": "This is my first time"
+  },
+  {
+    "id": "A7An0xIi6aZIAGwkdTZv",
+    "name": "رنا محمد",
+    "items": [
+      {
+        "img": "images/uploads/1ee3c6d576918ebb317e42f6babccd53.jpg",
+        "price": 15,
+        "id": "zy23AWY1Yf3IGxksjKTE",
+        "hasStock": true,
+        "name": "Apple clip 🍎",
+        "qty": 1
+      },
+      {
+        "name": "Alien cat Keychain",
+        "qty": 1,
+        "hasStock": true,
+        "img": "images/uploads/72afab4f6c6d2e7364b8f97e8f83e505.jpg",
+        "id": "zQFe9JzHgaoCGn1SGqRb",
+        "price": 35
+      },
+      {
+        "id": "xWyixPYEuPS2UlXVfWZK",
+        "qty": 10,
+        "price": 20,
+        "name": "Custome Pins",
+        "img": "images/uploads/69b794a9a2284d9dc9ab987df2a9fd3d.jpg",
+        "hasStock": false
+      },
+      {
+        "hasStock": false,
+        "qty": 1,
+        "price": 25,
+        "name": "Custome Plastic keychain",
+        "img": "images/uploads/63c939c146e24e6637acbc337fae00cb.jpg",
+        "id": "ugjLpEErh9MISpwcRlcq"
+      },
+      {
+        "hasStock": false,
+        "img": "images/uploads/1eec6341b4cf7f28e0220fd9e7c98fc5.jpg",
+        "price": 5,
+        "qty": 5,
+        "id": "i3KGJFbBWiGLviTO3doR",
+        "name": "Custome Photocards"
+      }
+    ],
+    "comment": "",
+    "createdAt": "2026-08-23T22:49:27.713Z",
+    "total": "300.00",
+    "rating": 5
+  },
+  {
+    "id": "AEpAWfqBF5yVgYjfmNmi",
+    "name": "Farida Khaled",
+    "items": [
+      {
+        "name": "Mini poser",
+        "hasStock": true,
+        "qty": 1,
+        "img": "images/uploads/bc3ed577c59a7f096fa44e4ad7fdb109.jpg",
+        "price": 10,
+        "id": "Zxw9nGeNVZyRyRW3V78S"
+      },
+      {
+        "name": "Custome Photocards",
+        "hasStock": false,
+        "price": 5,
+        "qty": 16,
+        "id": "i3KGJFbBWiGLviTO3doR",
+        "img": "images/uploads/1eec6341b4cf7f28e0220fd9e7c98fc5.jpg"
+      },
+      {
+        "id": "xWyixPYEuPS2UlXVfWZK",
+        "hasStock": false,
+        "img": "images/uploads/69b794a9a2284d9dc9ab987df2a9fd3d.jpg",
+        "name": "Custome Pins",
+        "price": 20,
+        "qty": 17
+      }
+    ],
+    "createdAt": "2026-09-03T17:52:34.911Z",
+    "comment": "",
+    "total": "430.00",
+    "rating": 5
+  },
+  {
+    "id": "BFYZtvZnYr0J6LE2fbI4",
+    "rating": 5,
+    "total": "230.00",
+    "items": [
+      {
+        "img": "images/uploads/84a5f183c9508ceccdbfccf64fcf25c1.jpg",
+        "name": "Gothic rings",
+        "price": 25,
+        "id": "U7tS8VDzDgtKYahjgHFJ",
+        "hasStock": true,
+        "qty": 1
+      },
+      {
+        "hasStock": false,
+        "id": "ugjLpEErh9MISpwcRlcq",
+        "img": "images/uploads/63c939c146e24e6637acbc337fae00cb.jpg",
+        "name": "Custome Plastic keychain",
+        "qty": 1,
+        "price": 25
+      },
+      {
+        "hasStock": false,
+        "qty": 5,
+        "price": 22,
+        "name": "Custome Pins",
+        "img": "images/uploads/69b794a9a2284d9dc9ab987df2a9fd3d.jpg",
+        "id": "xWyixPYEuPS2UlXVfWZK"
+      }
+    ],
+    "comment": "",
+    "createdAt": "2026-09-30T21:06:24.755Z",
+    "name": "Lara Tarek"
+  },
+  {
+    "id": "BbszwPevDyHfgmD3T9cA",
+    "createdAt": "2026-09-30T19:47:48.163Z",
+    "name": "Khalid Khadija",
+    "comment": "amazing!",
+    "items": [
+      {
+        "id": "ezsLWvWY0VzoAUbta6LF",
+        "img": "images/uploads/0ba3b4dcb4589264b641e847d557994f.jpg",
+        "qty": 3,
+        "price": 50,
+        "hasStock": true,
+        "name": "Short spikes punk accessories"
+      }
+    ],
+    "total": "220.00",
+    "rating": 5
+  },
+  {
+    "id": "C6SohJ8KpYhk3MLGSXin",
+    "items": [
+      {
+        "qty": 5,
+        "name": "Custome Pins",
+        "price": 20,
+        "id": "xWyixPYEuPS2UlXVfWZK",
+        "hasStock": false,
+        "img": "images/uploads/69b794a9a2284d9dc9ab987df2a9fd3d.jpg"
+      }
+    ],
+    "rating": 4,
+    "comment": "",
+    "name": "Noha Jana",
+    "createdAt": "2026-08-26T17:59:33.924Z",
+    "total": "100.00"
+  },
+  {
+    "id": "CeM4Zwln6PlgEyAAaDAp",
+    "createdAt": "2026-08-17T03:30:50.495Z",
+    "rating": 4,
+    "total": "387.00",
+    "comment": "The website is good but I think we need  customised stickers and the new collection is fire btw thanks Nona and the team <3",
+    "items": [
+      {
+        "name": "Custome Photocards",
+        "hasStock": false,
+        "id": "i3KGJFbBWiGLviTO3doR",
+        "img": "images/uploads/1eec6341b4cf7f28e0220fd9e7c98fc5.jpg",
+        "price": 5,
+        "qty": 5
+      },
+      {
+        "img": "images/uploads/4041c11bce73fd844e1031b083a0a58d.jpg",
+        "hasStock": false,
+        "id": "j6GCSxNnJF1QtRaLkhLr",
+        "price": 25,
+        "name": "Custome Big Poster",
+        "qty": 4
+      },
+      {
+        "qty": 9,
+        "name": "Custome Plastic keychain",
+        "price": 25,
+        "id": "ugjLpEErh9MISpwcRlcq",
+        "hasStock": false,
+        "img": "images/uploads/63c939c146e24e6637acbc337fae00cb.jpg"
+      },
+      {
+        "price": 1,
+        "qty": 2,
+        "name": "Custome crochet 🧶 (make your own)",
+        "img": "images/uploads/69fb18a1691452e5563323686efb2d12.jpg",
+        "id": "8pTkPMOCv1DpuJYABOv1",
+        "hasStock": false
+      },
+      {
+        "name": "Apple clip 🍎",
+        "hasStock": true,
+        "qty": 1,
+        "price": 15,
+        "img": "images/uploads/1ee3c6d576918ebb317e42f6babccd53.jpg",
+        "id": "zy23AWY1Yf3IGxksjKTE"
+      },
+      {
+        "price": 20,
+        "qty": 1,
+        "id": "31Oyr46ioi1qdf2apWCf",
+        "name": "Hatsune Miku sticker sheet",
+        "hasStock": true,
+        "img": "images/uploads/a16c5a7fe60fad8447ae79dddaba089c.jpg"
+      }
+    ],
+    "name": "Farida M"
+  },
+  {
+    "id": "Ck7b8HUxyXQRd5RhFSBZ",
+    "name": "لمياء ايمن",
+    "items": [
+      {
+        "id": "4RuOLRFOdb5r2F8XHqi9",
+        "qty": 1,
+        "price": 400,
+        "name": "Gojo plushie",
+        "img": "images/uploads/d1fff97f49768f5aeffbc37ee9390cf4.jpg",
+        "hasStock": true
+      }
+    ],
+    "total": "470.00",
+    "createdAt": "2026-09-30T19:28:07.505Z",
+    "rating": 5,
+    "comment": ""
+  },
+  {
+    "id": "DBy1gFMu2VEV242JmL3T",
+    "items": [
+      {
+        "id": "xWyixPYEuPS2UlXVfWZK",
+        "qty": 6,
+        "hasStock": false,
+        "price": 22,
+        "name": "Custome Pins",
+        "img": "images/uploads/69b794a9a2284d9dc9ab987df2a9fd3d.jpg"
+      }
+    ],
+    "createdAt": "2026-09-14T17:11:10.436Z",
+    "comment": "",
+    "name": "Nada Ahmed",
+    "rating": 5,
+    "total": "132.00"
+  },
+  {
+    "id": "EXMHdVWTcuvXaSYeEgmI",
+    "items": [
+      {
+        "qty": 12,
+        "name": "Custome Pins",
+        "hasStock": false,
+        "id": "xWyixPYEuPS2UlXVfWZK",
+        "price": 22,
+        "img": "images/uploads/69b794a9a2284d9dc9ab987df2a9fd3d.jpg"
+      }
+    ],
+    "comment": "",
+    "createdAt": "2026-09-13T20:07:16.863Z",
+    "name": "Fayrouz Waled",
+    "total": "264.00",
+    "rating": 1
+  },
+  {
+    "id": "Fm0SJ2S8IbKk9tji1Ij0",
+    "createdAt": "2026-09-30T19:32:55.908Z",
+    "name": "Malak Amr",
+    "items": [
+      {
+        "img": "images/uploads/69b794a9a2284d9dc9ab987df2a9fd3d.jpg",
+        "name": "Custome Pins",
+        "price": 22,
+        "qty": 5,
+        "id": "xWyixPYEuPS2UlXVfWZK",
+        "hasStock": false
+      },
+      {
+        "price": 50,
+        "qty": 1,
+        "id": "LNzFUe0hQOs1lWKQPyRy",
+        "hasStock": true,
+        "name": "Star studs punk accessories",
+        "img": "images/uploads/ade653625df38eabdb1267be9d6161cf.jpg"
+      },
+      {
+        "id": "n1rhrwcjOvTeV5Ej1ufJ",
+        "qty": 1,
+        "price": 50,
+        "hasStock": true,
+        "name": "Square studs punk accessories",
+        "img": "images/uploads/1882f254debac5d92abdc94b65a65115.jpg"
+      }
+    ],
+    "total": "280.00",
+    "rating": 5,
+    "comment": ""
+  },
+  {
+    "id": "Gh85OJMa4p0rY7ov5zcb",
+    "createdAt": "2026-10-03T16:21:03.994Z",
+    "name": "ايسل محمد",
+    "items": [
+      {
+        "qty": 1,
+        "price": 150,
+        "id": "P0Mk2lVSEdnXQehOrqjj",
+        "hasStock": true,
+        "name": "Pink glasses with wings",
+        "img": "images/uploads/2b212d26267b7176c688f00fb16d69a8.jpg"
+      },
+      {
+        "hasStock": false,
+        "img": "images/uploads/69b794a9a2284d9dc9ab987df2a9fd3d.jpg",
+        "price": 22,
+        "qty": 5,
+        "name": "Custome Pins",
+        "id": "xWyixPYEuPS2UlXVfWZK"
+      },
+      {
+        "id": "RGLNdqxTdF6g7SDybhGD",
+        "price": 30,
+        "qty": 1,
+        "name": "Sleepy cat keychain",
+        "hasStock": true,
+        "img": "images/uploads/7411de61532635ea08f929ee61e08fca.jpg"
+      }
+    ],
+    "total": "360.00",
+    "comment": "",
+    "rating": 5
+  },
+  {
+    "id": "GnIpY2CJp3gFudvmV4b6",
+    "comment": "",
+    "rating": 5,
+    "name": "khadija alsarraj",
+    "items": [
+      {
+        "qty": 5,
+        "hasStock": false,
+        "id": "xWyixPYEuPS2UlXVfWZK",
+        "price": 20,
+        "name": "Custome Pins",
+        "img": "images/uploads/69b794a9a2284d9dc9ab987df2a9fd3d.jpg"
+      },
+      {
+        "img": "images/uploads/d0c18d930dcb5e3d69c4a449ddb09fa7.jpg",
+        "name": "Silver necklaces",
+        "price": 100,
+        "qty": 1,
+        "id": "EhWmltlsqbIq7W2e3qle",
+        "hasStock": true
+      },
+      {
+        "price": 25,
+        "qty": 1,
+        "id": "U7tS8VDzDgtKYahjgHFJ",
+        "hasStock": true,
+        "name": "Gothic rings",
+        "img": "images/uploads/84a5f183c9508ceccdbfccf64fcf25c1.jpg"
+      },
+      {
+        "id": "xtkNOUqPKvLMvIh49Kej",
+        "img": "images/uploads/b231c339ece2fab4dcbcab18127dc7f4.jpg",
+        "name": "Silver skull ring",
+        "price": 35,
+        "qty": 1,
+        "hasStock": true
+      },
+      {
+        "img": "images/uploads/63c939c146e24e6637acbc337fae00cb.jpg",
+        "hasStock": false,
+        "id": "ugjLpEErh9MISpwcRlcq",
+        "price": 25,
+        "name": "Custome Plastic keychain",
+        "qty": 1
+      }
+    ],
+    "total": "285.00",
+    "createdAt": "2026-08-20T08:39:50.029Z"
+  },
+  {
+    "id": "HB0EA0hVqxH0Su52LWsg",
+    "items": [
+      {
+        "id": "xWyixPYEuPS2UlXVfWZK",
+        "hasStock": false,
+        "img": "images/uploads/69b794a9a2284d9dc9ab987df2a9fd3d.jpg",
+        "name": "Custome Pins",
+        "price": 22,
+        "qty": 6
+      },
+      {
+        "id": "zQFe9JzHgaoCGn1SGqRb",
+        "price": 35,
+        "qty": 1,
+        "name": "Alien cat Keychain",
+        "img": "images/uploads/72afab4f6c6d2e7364b8f97e8f83e505.jpg",
+        "hasStock": true
+      },
+      {
+        "price": 25,
+        "qty": 2,
+        "id": "ugjLpEErh9MISpwcRlcq",
+        "name": "Custome Plastic keychain",
+        "hasStock": false,
+        "img": "images/uploads/63c939c146e24e6637acbc337fae00cb.jpg"
+      }
+    ],
+    "createdAt": "2026-09-13T17:21:45.771Z",
+    "rating": 4,
+    "comment": "",
+    "total": "217.00",
+    "name": "Takwa Ahmed"
+  },
+  {
+    "id": "HBUlSFkf5zjZ2rUpxiq8",
+    "createdAt": "2026-09-30T19:57:05.056Z",
+    "rating": 1,
+    "total": "661.00",
+    "name": "toota sabry",
+    "items": [
+      {
+        "price": 22,
+        "qty": 13,
+        "id": "xWyixPYEuPS2UlXVfWZK",
+        "name": "Custome Pins",
+        "img": "images/uploads/69b794a9a2284d9dc9ab987df2a9fd3d.jpg",
+        "hasStock": false
+      },
+      {
+        "id": "ugjLpEErh9MISpwcRlcq",
+        "qty": 5,
+        "price": 25,
+        "name": "Custome Plastic keychain",
+        "img": "images/uploads/63c939c146e24e6637acbc337fae00cb.jpg",
+        "hasStock": false
+      },
+      {
+        "hasStock": true,
+        "id": "UgAx0EQf3HjgvRBo9zV9",
+        "img": "images/uploads/887a5fe0cd04ec5356132de2c33ace81.jpg",
+        "price": 90,
+        "name": "Yellow star photocard holder",
+        "qty": 1
+      },
+      {
+        "id": "AQxsHkyyAT756JMKn97M",
+        "img": "images/uploads/62270d6b0ea24c10c1da26d78c153eaf.jpg",
+        "price": 10,
+        "qty": 4,
+        "hasStock": false,
+        "name": "Custome Mini Posters"
+      },
+      {
+        "id": "LNzFUe0hQOs1lWKQPyRy",
+        "img": "images/uploads/ade653625df38eabdb1267be9d6161cf.jpg",
+        "name": "Star studs punk accessories",
+        "price": 50,
+        "hasStock": true,
+        "qty": 1
+      }
+    ],
+    "comment": "tuhfaas"
+  },
+  {
+    "id": "HEH5hJh6jnfdu6W12hw8",
+    "rating": 5,
+    "total": "455.00",
+    "name": "Hend tark",
+    "createdAt": "2026-09-30T21:07:43.085Z",
+    "comment": "",
+    "items": [
+      {
+        "hasStock": false,
+        "id": "xWyixPYEuPS2UlXVfWZK",
+        "price": 22,
+        "img": "images/uploads/69b794a9a2284d9dc9ab987df2a9fd3d.jpg",
+        "qty": 5,
+        "name": "Custome Pins"
+      },
+      {
+        "hasStock": true,
+        "img": "images/uploads/72afab4f6c6d2e7364b8f97e8f83e505.jpg",
+        "price": 35,
+        "qty": 1,
+        "id": "zQFe9JzHgaoCGn1SGqRb",
+        "name": "Alien cat Keychain"
+      },
+      {
+        "img": "images/uploads/63c939c146e24e6637acbc337fae00cb.jpg",
+        "hasStock": false,
+        "name": "Custome Plastic keychain",
+        "price": 25,
+        "id": "ugjLpEErh9MISpwcRlcq",
+        "qty": 4
+      },
+      {
+        "price": 5,
+        "id": "i3KGJFbBWiGLviTO3doR",
+        "img": "images/uploads/1eec6341b4cf7f28e0220fd9e7c98fc5.jpg",
+        "qty": 5,
+        "hasStock": false,
+        "name": "Custome Photocards"
+      },
+      {
+        "hasStock": true,
+        "img": "images/uploads/7411de61532635ea08f929ee61e08fca.jpg",
+        "name": "Sleepy cat keychain",
+        "id": "RGLNdqxTdF6g7SDybhGD",
+        "qty": 1,
+        "price": 30
+      },
+      {
+        "id": "EgexqMbAJtZy3WuuepEn",
+        "price": 30,
+        "img": "images/uploads/ed88825345bde4e58d1a9fff6e2a65dc.jpg",
+        "qty": 1,
+        "hasStock": true,
+        "name": "Music cat keychain"
+      },
+      {
+        "img": "images/uploads/62270d6b0ea24c10c1da26d78c153eaf.jpg",
+        "hasStock": false,
+        "name": "Custome Mini Posters",
+        "id": "AQxsHkyyAT756JMKn97M",
+        "price": 10,
+        "qty": 4
+      }
+    ]
+  },
+  {
+    "id": "J42QUP6e9SrDI5VU93iq",
+    "total": "175.00",
+    "name": "hana mohamed",
+    "createdAt": "2026-09-30T19:33:02.654Z",
+    "rating": 5,
+    "items": [
+      {
+        "qty": 1,
+        "name": "Square studs punk accessories",
+        "id": "n1rhrwcjOvTeV5Ej1ufJ",
+        "hasStock": true,
+        "img": "images/uploads/1882f254debac5d92abdc94b65a65115.jpg",
+        "price": 50
+      },
+      {
+        "name": "Star studs punk accessories",
+        "qty": 1,
+        "hasStock": true,
+        "img": "images/uploads/ade653625df38eabdb1267be9d6161cf.jpg",
+        "id": "LNzFUe0hQOs1lWKQPyRy",
+        "price": 50
+      }
+    ],
+    "comment": ""
+  },
+  {
+    "id": "JaboDg54pKtntc6TUktr",
+    "comment": "",
+    "createdAt": "2026-09-13T16:52:05.021Z",
+    "total": "170.00",
+    "items": [
+      {
+        "name": "Trendy crying glasses",
+        "qty": 1,
+        "img": "images/uploads/33dd45690b1d371c590ce704d7a6cdd7.jpg",
+        "id": "K7ZZ5TSRpvvEV3xChTRh",
+        "price": 150,
+        "hasStock": true
+      },
+      {
+        "name": "Ivan sticker sheet",
+        "price": 20,
+        "qty": 1,
+        "hasStock": true,
+        "img": "images/uploads/dc12d32445b405de5fb37a99d6cbb523.jpg",
+        "id": "yXzJVuxtkzJ5s2ANqRy0"
+      }
+    ],
+    "rating": 5,
+    "name": "لمياء ايمن"
+  },
+  {
+    "id": "Js8mLbUHI6ofnzsjyQ7q",
+    "createdAt": "2026-09-03T18:30:30.413Z",
+    "items": [
+      {
+        "img": "images/uploads/63c939c146e24e6637acbc337fae00cb.jpg",
+        "hasStock": false,
+        "price": 25,
+        "id": "ugjLpEErh9MISpwcRlcq",
+        "qty": 2,
+        "name": "Custome Plastic keychain"
+      },
+      {
+        "name": "Custome Pins",
+        "qty": 15,
+        "price": 20,
+        "hasStock": false,
+        "img": "images/uploads/69b794a9a2284d9dc9ab987df2a9fd3d.jpg",
+        "id": "xWyixPYEuPS2UlXVfWZK"
+      },
+      {
+        "hasStock": false,
+        "img": "images/uploads/4041c11bce73fd844e1031b083a0a58d.jpg",
+        "price": 25,
+        "name": "Custome Big Poster",
+        "qty": 2,
+        "id": "j6GCSxNnJF1QtRaLkhLr"
+      }
+    ],
+    "rating": 5,
+    "comment": "",
+    "name": "Mariam Ahmed",
+    "total": "400.00"
+  },
+  {
+    "id": "KV4O3k2SASW84ksA7WzD",
+    "createdAt": "2026-09-30T20:47:56.021Z",
+    "name": "مريم سعيد",
+    "items": [
+      {
+        "qty": 1,
+        "name": "Geto plushie",
+        "hasStock": true,
+        "price": 400,
+        "img": "images/uploads/e7b4dd9e645c943a380d86743181aad3.jpg",
+        "id": "fJouh515wvzpDUygZeMz"
+      }
+    ],
+    "total": "400.00",
+    "rating": 5,
+    "comment": ""
+  },
+  {
+    "id": "KdVLYLJ5JWfYDvOw6LaA",
+    "name": "Habiba Elbehairy",
+    "createdAt": "2026-08-18T18:00:09.070Z",
+    "items": [
+      {
+        "name": "Custome Plastic keychain",
+        "qty": 2,
+        "hasStock": false,
+        "img": "images/uploads/63c939c146e24e6637acbc337fae00cb.jpg",
+        "id": "ugjLpEErh9MISpwcRlcq",
+        "price": 25
+      },
+      {
+        "name": "Custome Pins",
+        "qty": 5,
+        "hasStock": false,
+        "img": "images/uploads/69b794a9a2284d9dc9ab987df2a9fd3d.jpg",
+        "price": 20,
+        "id": "xWyixPYEuPS2UlXVfWZK"
+      },
+      {
+        "id": "j6GCSxNnJF1QtRaLkhLr",
+        "name": "Custome Big Poster",
+        "qty": 2,
+        "hasStock": false,
+        "img": "images/uploads/4041c11bce73fd844e1031b083a0a58d.jpg",
+        "price": 25
+      }
+    ],
+    "comment": "",
+    "total": "200.00",
+    "rating": 5
+  },
+  {
+    "id": "KqgDklRmZm7gVpk7vCsq",
+    "rating": 5,
+    "createdAt": "2026-09-05T11:58:40.052Z",
+    "total": "200.00",
+    "name": "Khadija Abdullah",
+    "comment": "I'm excited to receive the order :-D",
+    "items": [
+      {
+        "img": "images/uploads/69b794a9a2284d9dc9ab987df2a9fd3d.jpg",
+        "price": 20,
+        "id": "xWyixPYEuPS2UlXVfWZK",
+        "name": "Custome Pins",
+        "hasStock": false,
+        "qty": 5
+      },
+      {
+        "qty": 1,
+        "price": 100,
+        "name": "Silver necklaces",
+        "img": "images/uploads/d0c18d930dcb5e3d69c4a449ddb09fa7.jpg",
+        "id": "EhWmltlsqbIq7W2e3qle",
+        "hasStock": true
+      }
+    ]
+  },
+  {
+    "id": "LsAOuD47OkdyRYiHpU54",
+    "comment": "THIS WILL NOT BE THE LAST TIME!!",
+    "total": "470.00",
+    "items": [
+      {
+        "price": 400,
+        "id": "fJouh515wvzpDUygZeMz",
+        "qty": 1,
+        "name": "Geto plushie",
+        "hasStock": true,
+        "img": "images/uploads/e7b4dd9e645c943a380d86743181aad3.jpg"
+      }
+    ],
+    "name": "Mariam Said",
+    "rating": 5,
+    "createdAt": "2026-10-01T18:27:55.099Z"
+  },
+  {
+    "id": "M1XS50TDeD0bdYVtaCrr",
+    "createdAt": "2026-08-23T22:49:25.003Z",
+    "total": "300.00",
+    "name": "رنا محمد",
+    "comment": "",
+    "rating": 5,
+    "items": [
+      {
+        "img": "images/uploads/1ee3c6d576918ebb317e42f6babccd53.jpg",
+        "hasStock": true,
+        "price": 15,
+        "name": "Apple clip 🍎",
+        "qty": 1,
+        "id": "zy23AWY1Yf3IGxksjKTE"
+      },
+      {
+        "img": "images/uploads/72afab4f6c6d2e7364b8f97e8f83e505.jpg",
+        "name": "Alien cat Keychain",
+        "hasStock": true,
+        "qty": 1,
+        "id": "zQFe9JzHgaoCGn1SGqRb",
+        "price": 35
+      },
+      {
+        "qty": 10,
+        "name": "Custome Pins",
+        "price": 20,
+        "id": "xWyixPYEuPS2UlXVfWZK",
+        "hasStock": false,
+        "img": "images/uploads/69b794a9a2284d9dc9ab987df2a9fd3d.jpg"
+      },
+      {
+        "img": "images/uploads/63c939c146e24e6637acbc337fae00cb.jpg",
+        "name": "Custome Plastic keychain",
+        "price": 25,
+        "hasStock": false,
+        "id": "ugjLpEErh9MISpwcRlcq",
+        "qty": 1
+      },
+      {
+        "id": "i3KGJFbBWiGLviTO3doR",
+        "img": "images/uploads/1eec6341b4cf7f28e0220fd9e7c98fc5.jpg",
+        "name": "Custome Photocards",
+        "hasStock": false,
+        "price": 5,
+        "qty": 5
+      }
+    ]
+  },
+  {
+    "id": "M1mWo4uvu9zEKyflBdat",
+    "createdAt": "2026-09-30T19:44:59.072Z",
+    "total": "135.00",
+    "items": [
+      {
+        "img": "images/uploads/ed88825345bde4e58d1a9fff6e2a65dc.jpg",
+        "hasStock": true,
+        "id": "EgexqMbAJtZy3WuuepEn",
+        "price": 30,
+        "name": "Music cat keychain",
+        "qty": 1
+      },
+      {
+        "hasStock": true,
+        "qty": 1,
+        "img": "images/uploads/7411de61532635ea08f929ee61e08fca.jpg",
+        "price": 30,
+        "id": "RGLNdqxTdF6g7SDybhGD",
+        "name": "Sleepy cat keychain"
+      }
+    ],
+    "rating": 5,
+    "comment": "",
+    "name": "Haneen Samee"
+  },
+  {
+    "id": "N0RZDQKFZUya3GyQqtEu",
+    "createdAt": "2026-09-04T21:47:27.614Z",
+    "total": "100.00",
+    "items": [
+      {
+        "img": "images/uploads/69b794a9a2284d9dc9ab987df2a9fd3d.jpg",
+        "price": 20,
+        "name": "Custome Pins",
+        "qty": 5,
+        "id": "xWyixPYEuPS2UlXVfWZK",
+        "hasStock": false
+      }
+    ],
+    "name": "Sarah Mohamed",
+    "rating": 5,
+    "comment": "So easy to navigate the website and u are sooooo sweet <3"
+  },
+  {
+    "id": "NFed3QTMSBsMgPGTcuIX",
+    "createdAt": "2026-09-13T17:03:20.810Z",
+    "items": [
+      {
+        "qty": 6,
+        "img": "images/uploads/69b794a9a2284d9dc9ab987df2a9fd3d.jpg",
+        "name": "Custome Pins",
+        "price": 22,
+        "id": "xWyixPYEuPS2UlXVfWZK",
+        "hasStock": false
+      },
+      {
+        "name": "Strawberry keychain",
+        "hasStock": true,
+        "price": 35,
+        "qty": 2,
+        "img": "images/uploads/cf51119073992ea05ecd00e965a5af8b.jpg",
+        "id": "tmYAtlPWpZgrkryDm7Gd"
+      }
+    ],
+    "name": "ملك محمود",
+    "total": "202.00",
+    "rating": 5,
+    "comment": ""
+  },
+  {
+    "id": "NOkEVn9MVXe3fH3zfxF8",
+    "total": "85.00",
+    "createdAt": "2026-08-19T20:21:04.325Z",
+    "comment": "",
+    "items": [
+      {
+        "id": "ugjLpEErh9MISpwcRlcq",
+        "qty": 2,
+        "name": "Custome Plastic keychain",
+        "hasStock": false,
+        "img": "images/uploads/63c939c146e24e6637acbc337fae00cb.jpg",
+        "price": 25
+      },
+      {
+        "id": "j7AwfJlLyxqreso6STvc",
+        "img": "images/uploads/982505a183f81771e74402fb9f984a66.jpg",
+        "hasStock": true,
+        "name": "Heart cat Keychain",
+        "qty": 1,
+        "price": 35
+      }
+    ],
+    "rating": 5,
+    "name": "رشا احمد"
+  },
+  {
+    "id": "O4GsH272VAvws428UDsk",
+    "comment": "",
+    "total": "470.00",
+    "rating": 5,
+    "name": "حسام محمد",
+    "createdAt": "2026-08-19T22:24:41.172Z",
+    "items": [
+      {
+        "img": "images/uploads/69b794a9a2284d9dc9ab987df2a9fd3d.jpg",
+        "name": "Custome Pins",
+        "id": "xWyixPYEuPS2UlXVfWZK",
+        "qty": 6,
+        "price": 20,
+        "hasStock": false
+      },
+      {
+        "name": "Custome Mini Posters",
+        "qty": 5,
+        "img": "images/uploads/62270d6b0ea24c10c1da26d78c153eaf.jpg",
+        "hasStock": false,
+        "id": "AQxsHkyyAT756JMKn97M",
+        "price": 10
+      },
+      {
+        "img": "images/uploads/4041c11bce73fd844e1031b083a0a58d.jpg",
+        "name": "Custome Big Poster",
+        "hasStock": false,
+        "id": "j6GCSxNnJF1QtRaLkhLr",
+        "price": 25,
+        "qty": 11
+      },
+      {
+        "price": 25,
+        "qty": 1,
+        "id": "ugjLpEErh9MISpwcRlcq",
+        "hasStock": false,
+        "name": "Custome Plastic keychain",
+        "img": "images/uploads/63c939c146e24e6637acbc337fae00cb.jpg"
+      }
+    ]
+  },
+  {
+    "id": "ORcjIvRfXxBTWmubDGUz",
+    "comment": "I'm so excited and so happy!! ^^",
+    "items": [
+      {
+        "hasStock": false,
+        "id": "xWyixPYEuPS2UlXVfWZK",
+        "img": "images/uploads/69b794a9a2284d9dc9ab987df2a9fd3d.jpg",
+        "qty": 5,
+        "price": 20,
+        "name": "Custome Pins"
+      },
+      {
+        "id": "ugjLpEErh9MISpwcRlcq",
+        "price": 25,
+        "img": "images/uploads/63c939c146e24e6637acbc337fae00cb.jpg",
+        "qty": 1,
+        "hasStock": false,
+        "name": "Custome Plastic keychain"
+      },
+      {
+        "img": "images/uploads/1eec6341b4cf7f28e0220fd9e7c98fc5.jpg",
+        "name": "Custome Photocards",
+        "id": "i3KGJFbBWiGLviTO3doR",
+        "qty": 5,
+        "hasStock": false,
+        "price": 5
+      },
+      {
+        "qty": 2,
+        "name": "Custome Big Poster",
+        "price": 25,
+        "img": "images/uploads/4041c11bce73fd844e1031b083a0a58d.jpg",
+        "id": "j6GCSxNnJF1QtRaLkhLr",
+        "hasStock": false
+      },
+      {
+        "id": "AQxsHkyyAT756JMKn97M",
+        "img": "images/uploads/62270d6b0ea24c10c1da26d78c153eaf.jpg",
+        "qty": 4,
+        "price": 10,
+        "hasStock": false,
+        "name": "Custome Mini Posters"
+      },
+      {
+        "name": "Mini poser",
+        "qty": 1,
+        "hasStock": true,
+        "img": "images/uploads/8268bd3d6ae196badc92f42e4901a601.jpg",
+        "price": 10,
+        "id": "QDzbJq5NlNWhHwEuJ693"
+      },
+      {
+        "img": "images/uploads/450211e53a403afaca0dfc34d0756452.jpg",
+        "price": 35,
+        "id": "c37Tsv2OVMdppSLSYKR4",
+        "name": "Jeans kitty Keychain",
+        "qty": 1,
+        "hasStock": true
+      },
+      {
+        "img": "images/uploads/a7fad875172e696cc62104a48111fba8.jpg",
+        "price": 35,
+        "hasStock": true,
+        "id": "w3pwf8jHPPJXq9fpLn1E",
+        "name": "Rich cat Keychain",
+        "qty": 1
+      }
+    ],
+    "createdAt": "2026-09-06T16:37:52.865Z",
+    "total": "320.00",
+    "name": "Merna Anwer",
+    "rating": 5
+  },
+  {
+    "id": "OVQmhp6ifSAT2vmYkg19",
+    "total": "110.00",
+    "items": [
+      {
+        "name": "Strawberry keychain",
+        "qty": 1,
+        "hasStock": true,
+        "img": "images/uploads/cf51119073992ea05ecd00e965a5af8b.jpg",
+        "id": "tmYAtlPWpZgrkryDm7Gd",
+        "price": 35
+      }
+    ],
+    "name": "Samer Haneen",
+    "rating": 5,
+    "createdAt": "2026-09-30T22:05:12.930Z",
+    "comment": "Third time I place an order from this collection from how good it is 10000000 stars out of 10 literally so peak THAT ONE STAR DOES NOT COUNT IT WAS A MISTAKE!!!  Keep it up 🥹💞"
+  },
+  {
+    "id": "PMceVQJu5FVqmv0CBQqt",
+    "rating": 5,
+    "total": "100.00",
+    "comment": "",
+    "name": "يوسف هاني",
+    "createdAt": "2026-09-13T18:29:14.446Z",
+    "items": [
+      {
+        "img": "images/uploads/8115d730cd3a7e5242d5841e65eb94e2.jpg",
+        "price": 50,
+        "hasStock": true,
+        "id": "s7sfEWiDVPW3YzdyfABM",
+        "name": "Punk wrist Accessoires",
+        "qty": 2
+      }
+    ]
+  },
+  {
+    "id": "PZN1FlcIYKxnykdigSEW",
+    "items": [
+      {
+        "name": "Custome Pins",
+        "hasStock": false,
+        "qty": 6,
+        "img": "images/uploads/69b794a9a2284d9dc9ab987df2a9fd3d.jpg",
+        "id": "xWyixPYEuPS2UlXVfWZK",
+        "price": 22
+      },
+      {
+        "id": "tmYAtlPWpZgrkryDm7Gd",
+        "img": "images/uploads/cf51119073992ea05ecd00e965a5af8b.jpg",
+        "qty": 1,
+        "price": 35,
+        "hasStock": true,
+        "name": "Strawberry keychain"
+      }
+    ],
+    "createdAt": "2026-09-13T17:01:31.155Z",
+    "name": "Malak Amr",
+    "comment": "",
+    "total": "167.00",
+    "rating": 5
+  },
+  {
+    "id": "PgQgdSdxW919QUeXtzRS",
+    "rating": 5,
+    "total": "285.00",
+    "items": [
+      {
+        "img": "images/uploads/69b794a9a2284d9dc9ab987df2a9fd3d.jpg",
+        "name": "Custome Pins",
+        "price": 20,
+        "id": "xWyixPYEuPS2UlXVfWZK",
+        "qty": 5,
+        "hasStock": false
+      },
+      {
+        "id": "EhWmltlsqbIq7W2e3qle",
+        "name": "Silver necklaces",
+        "img": "images/uploads/d0c18d930dcb5e3d69c4a449ddb09fa7.jpg",
+        "qty": 1,
+        "hasStock": true,
+        "price": 100
+      },
+      {
+        "name": "Gothic rings",
+        "qty": 1,
+        "img": "images/uploads/84a5f183c9508ceccdbfccf64fcf25c1.jpg",
+        "hasStock": true,
+        "id": "U7tS8VDzDgtKYahjgHFJ",
+        "price": 25
+      },
+      {
+        "img": "images/uploads/b231c339ece2fab4dcbcab18127dc7f4.jpg",
+        "name": "Silver skull ring",
+        "qty": 1,
+        "price": 35,
+        "id": "xtkNOUqPKvLMvIh49Kej",
+        "hasStock": true
+      },
+      {
+        "qty": 1,
+        "hasStock": false,
+        "price": 25,
+        "name": "Custome Plastic keychain",
+        "img": "images/uploads/63c939c146e24e6637acbc337fae00cb.jpg",
+        "id": "ugjLpEErh9MISpwcRlcq"
+      }
+    ],
+    "comment": "",
+    "name": "khadija alsarraj",
+    "createdAt": "2026-08-20T08:39:46.790Z"
+  },
+  {
+    "id": "PiwnRo5oBFDfFK7B8NbV",
+    "name": "Malak Abdelrhman",
+    "rating": 4,
+    "items": [
+      {
+        "qty": 6,
+        "name": "Custome Pins",
+        "img": "images/uploads/69b794a9a2284d9dc9ab987df2a9fd3d.jpg",
+        "hasStock": false,
+        "price": 20,
+        "id": "xWyixPYEuPS2UlXVfWZK"
+      },
+      {
+        "img": "images/uploads/63c939c146e24e6637acbc337fae00cb.jpg",
+        "name": "Custome Plastic keychain",
+        "id": "ugjLpEErh9MISpwcRlcq",
+        "qty": 1,
+        "price": 25,
+        "hasStock": false
+      }
+    ],
+    "createdAt": "2026-09-05T15:55:11.050Z",
+    "comment": "",
+    "total": "145.00"
+  },
+  {
+    "id": "PyT3Ll6jzfE1n03LnLTP",
+    "items": [
+      {
+        "id": "xWyixPYEuPS2UlXVfWZK",
+        "img": "images/uploads/69b794a9a2284d9dc9ab987df2a9fd3d.jpg",
+        "name": "Custome Pins",
+        "qty": 10,
+        "hasStock": false,
+        "price": 20
+      },
+      {
+        "price": 25,
+        "img": "images/uploads/63c939c146e24e6637acbc337fae00cb.jpg",
+        "id": "ugjLpEErh9MISpwcRlcq",
+        "hasStock": false,
+        "qty": 2,
+        "name": "Custome Plastic keychain"
+      },
+      {
+        "qty": 1,
+        "name": "Sticker sheet",
+        "price": 25,
+        "id": "6cFTueLULti9sQ2CgNrw",
+        "hasStock": true,
+        "img": "images/uploads/41a2e839771a69ca5262775f0ce1ff5d.jpg"
+      }
+    ],
+    "comment": "",
+    "name": "jana ahmed",
+    "createdAt": "2026-09-02T20:34:33.969Z",
+    "total": "275.00",
+    "rating": 5
+  },
+  {
+    "id": "QQcE10AoqKrPiG1CXIuj",
+    "comment": "",
+    "items": [
+      {
+        "hasStock": true,
+        "name": "Heart cat Keychain",
+        "price": 35,
+        "qty": 1,
+        "img": "images/uploads/982505a183f81771e74402fb9f984a66.jpg",
+        "id": "j7AwfJlLyxqreso6STvc"
+      },
+      {
+        "img": "images/uploads/63c939c146e24e6637acbc337fae00cb.jpg",
+        "id": "ugjLpEErh9MISpwcRlcq",
+        "price": 25,
+        "name": "Custome Plastic keychain",
+        "hasStock": false,
+        "qty": 2
+      },
+      {
+        "qty": 1,
+        "name": "Strawberry cat Keychain",
+        "id": "cC6QCkryzm717yJMMoDG",
+        "price": 35,
+        "hasStock": true,
+        "img": "images/uploads/5cb5297fb46813df169b2d6edd74ee03.jpg"
+      }
+    ],
+    "rating": 5,
+    "createdAt": "2026-08-19T20:30:04.061Z",
+    "name": "رشا احمد",
+    "total": "120.00"
+  },
+  {
+    "id": "QXPpSNSDNZZUv29tZGpO",
+    "comment": "",
+    "rating": 5,
+    "total": "160.00",
+    "items": [
+      {
+        "id": "xWyixPYEuPS2UlXVfWZK",
+        "qty": 8,
+        "hasStock": false,
+        "price": 20,
+        "name": "Custome Pins",
+        "img": "images/uploads/69b794a9a2284d9dc9ab987df2a9fd3d.jpg"
+      }
+    ],
+    "createdAt": "2026-08-24T22:26:37.307Z",
+    "name": "Lily Sabry"
+  },
+  {
+    "id": "SSN2YKszRTHkmK1nDPZv",
+    "comment": "",
+    "rating": 5,
+    "total": "210.00",
+    "items": [
+      {
+        "img": "images/uploads/1eec6341b4cf7f28e0220fd9e7c98fc5.jpg",
+        "name": "Custome Photocards",
+        "id": "i3KGJFbBWiGLviTO3doR",
+        "price": 5,
+        "qty": 17,
+        "hasStock": false
+      },
+      {
+        "id": "xWyixPYEuPS2UlXVfWZK",
+        "name": "Custome Pins",
+        "qty": 5,
+        "hasStock": false,
+        "price": 20,
+        "img": "images/uploads/69b794a9a2284d9dc9ab987df2a9fd3d.jpg"
+      },
+      {
+        "price": 25,
+        "qty": 1,
+        "id": "ugjLpEErh9MISpwcRlcq",
+        "hasStock": false,
+        "name": "Custome Plastic keychain",
+        "img": "images/uploads/63c939c146e24e6637acbc337fae00cb.jpg"
+      }
+    ],
+    "name": "روان امجد محمد غانم",
+    "createdAt": "2026-08-23T19:15:19.492Z"
+  },
+  {
+    "id": "Sp7V8PG6QbKkjtFMSVjs",
+    "createdAt": "2026-09-13T19:08:35.116Z",
+    "rating": 5,
+    "total": "282.00",
+    "comment": "",
+    "items": [
+      {
+        "id": "j6GCSxNnJF1QtRaLkhLr",
+        "qty": 2,
+        "name": "Custome Big Poster",
+        "hasStock": false,
+        "img": "images/uploads/4041c11bce73fd844e1031b083a0a58d.jpg",
+        "price": 25
+      },
+      {
+        "price": 22,
+        "img": "images/uploads/69b794a9a2284d9dc9ab987df2a9fd3d.jpg",
+        "qty": 6,
+        "name": "Custome Pins",
+        "id": "xWyixPYEuPS2UlXVfWZK",
+        "hasStock": false
+      },
+      {
+        "qty": 4,
+        "name": "Custome Plastic keychain",
+        "id": "ugjLpEErh9MISpwcRlcq",
+        "hasStock": false,
+        "price": 25,
+        "img": "images/uploads/63c939c146e24e6637acbc337fae00cb.jpg"
+      }
+    ],
+    "name": "رقية كمال"
+  },
+  {
+    "id": "TYzcTvu6lpwaZAUZElYk",
+    "createdAt": "2026-09-02T22:04:32.008Z",
+    "rating": 5,
+    "total": "325.00",
+    "comment": "",
+    "items": [
+      {
+        "id": "xWyixPYEuPS2UlXVfWZK",
+        "img": "images/uploads/69b794a9a2284d9dc9ab987df2a9fd3d.jpg",
+        "price": 20,
+        "name": "Custome Pins",
+        "qty": 13,
+        "hasStock": false
+      },
+      {
+        "id": "AQxsHkyyAT756JMKn97M",
+        "hasStock": false,
+        "img": "images/uploads/62270d6b0ea24c10c1da26d78c153eaf.jpg",
+        "qty": 4,
+        "price": 10,
+        "name": "Custome Mini Posters"
+      },
+      {
+        "price": 25,
+        "qty": 1,
+        "name": "Sticker sheet",
+        "hasStock": true,
+        "img": "images/uploads/007ac52de0cacebe1a40556604d28e73.jpg",
+        "id": "v8jMDOp5KGB8HlRB9j4R"
+      }
+    ],
+    "name": "jana haytham"
+  },
+  {
+    "id": "TbbmVGzz7xzW8ovMQQkM",
+    "name": "Merna Anwer",
+    "items": [
+      {
+        "qty": 4,
+        "id": "AQxsHkyyAT756JMKn97M",
+        "name": "Custome Mini Posters",
+        "hasStock": false,
+        "img": "images/uploads/62270d6b0ea24c10c1da26d78c153eaf.jpg",
+        "price": 10
+      },
+      {
+        "price": 10,
+        "qty": 1,
+        "hasStock": true,
+        "name": "Mini poser",
+        "img": "images/uploads/8268bd3d6ae196badc92f42e4901a601.jpg",
+        "id": "QDzbJq5NlNWhHwEuJ693"
+      },
+      {
+        "qty": 5,
+        "hasStock": false,
+        "id": "i3KGJFbBWiGLviTO3doR",
+        "price": 5,
+        "name": "Custome Photocards",
+        "img": "images/uploads/1eec6341b4cf7f28e0220fd9e7c98fc5.jpg"
+      },
+      {
+        "id": "j6GCSxNnJF1QtRaLkhLr",
+        "img": "images/uploads/4041c11bce73fd844e1031b083a0a58d.jpg",
+        "qty": 2,
+        "price": 25,
+        "hasStock": false,
+        "name": "Custome Big Poster"
+      },
+      {
+        "qty": 1,
+        "hasStock": false,
+        "img": "images/uploads/63c939c146e24e6637acbc337fae00cb.jpg",
+        "name": "Custome Plastic keychain",
+        "price": 25,
+        "id": "ugjLpEErh9MISpwcRlcq"
+      },
+      {
+        "img": "images/uploads/69b794a9a2284d9dc9ab987df2a9fd3d.jpg",
+        "name": "Custome Pins",
+        "hasStock": false,
+        "id": "xWyixPYEuPS2UlXVfWZK",
+        "qty": 5,
+        "price": 20
+      },
+      {
+        "price": 35,
+        "qty": 1,
+        "id": "w3pwf8jHPPJXq9fpLn1E",
+        "name": "Rich cat Keychain",
+        "hasStock": true,
+        "img": "images/uploads/a7fad875172e696cc62104a48111fba8.jpg"
+      }
+    ],
+    "rating": 5,
+    "total": "285.00",
+    "comment": "Just so happy >^<",
+    "createdAt": "2026-09-06T16:48:29.532Z"
+  },
+  {
+    "id": "Te9ZFctwUUrrdnsKB6y1",
+    "createdAt": "2026-09-30T19:28:41.253Z",
+    "total": "805.00",
+    "rating": 1,
+    "items": [
+      {
+        "hasStock": true,
+        "name": "Strawberry pencilcase",
+        "qty": 1,
+        "img": "images/uploads/7435b155bafb1ac5df573195c3fd059b.jpg",
+        "id": "EV0tO7GdkPbvDQlpEVmz",
+        "price": 350
+      },
+      {
+        "price": 380,
+        "qty": 1,
+        "id": "UF0IUwaG65IZ5C29xF6Z",
+        "img": "images/uploads/1ab19b95126bd0cb762be2c056b2f5b4.jpg",
+        "name": "Kitty hat (fur)",
+        "hasStock": true
+      }
+    ],
+    "name": "Haneen R",
+    "comment": ""
+  },
+  {
+    "id": "U3e9IhA3PvwigpJg54IZ",
+    "createdAt": "2026-09-04T15:35:39.952Z",
+    "name": "Jody Islam",
+    "items": [
+      {
+        "qty": 1,
+        "name": "Custome Plastic keychain",
+        "id": "ugjLpEErh9MISpwcRlcq",
+        "hasStock": false,
+        "price": 25,
+        "img": "images/uploads/63c939c146e24e6637acbc337fae00cb.jpg"
+      },
+      {
+        "name": "Custome Pins",
+        "price": 20,
+        "qty": 6,
+        "img": "images/uploads/69b794a9a2284d9dc9ab987df2a9fd3d.jpg",
+        "id": "xWyixPYEuPS2UlXVfWZK",
+        "hasStock": false
+      }
+    ],
+    "rating": 5,
+    "total": "145.00",
+    "comment": ""
+  },
+  {
+    "id": "UTD3XP4Yw9g1y6MLakNo",
+    "rating": 5,
+    "total": "100.00",
+    "name": "Jana Wifi",
+    "createdAt": "2026-09-13T17:06:03.392Z",
+    "items": [
+      {
+        "hasStock": true,
+        "img": "images/uploads/84a5f183c9508ceccdbfccf64fcf25c1.jpg",
+        "price": 25,
+        "name": "Gothic rings",
+        "id": "U7tS8VDzDgtKYahjgHFJ",
+        "qty": 1
+      },
+      {
+        "qty": 1,
+        "name": "Strawberry keychain",
+        "id": "tmYAtlPWpZgrkryDm7Gd",
+        "img": "images/uploads/cf51119073992ea05ecd00e965a5af8b.jpg",
+        "hasStock": true,
+        "price": 35
+      },
+      {
+        "hasStock": false,
+        "id": "ugjLpEErh9MISpwcRlcq",
+        "name": "Custome Plastic keychain",
+        "img": "images/uploads/63c939c146e24e6637acbc337fae00cb.jpg",
+        "qty": 1,
+        "price": 25
+      },
+      {
+        "name": "Apple clip 🍎",
+        "price": 15,
+        "qty": 1,
+        "img": "images/uploads/1ee3c6d576918ebb317e42f6babccd53.jpg",
+        "hasStock": true,
+        "id": "zy23AWY1Yf3IGxksjKTE"
+      }
+    ],
+    "comment": "Love you nona 💗"
+  },
+  {
+    "id": "UVgPm7oqCnL7NTxDPHiz",
+    "rating": 5,
+    "total": "525.00",
+    "comment": "i love kuromi store so much the products are soo good",
+    "name": "محمد هاشم",
+    "createdAt": "2026-08-16T22:30:35.276Z",
+    "items": [
+      {
+        "img": "images/uploads/4041c11bce73fd844e1031b083a0a58d.jpg",
+        "name": "Custome Big Poster",
+        "id": "j6GCSxNnJF1QtRaLkhLr",
+        "hasStock": false,
+        "qty": 6,
+        "price": 25
+      },
+      {
+        "hasStock": false,
+        "name": "Custome Photocards",
+        "id": "i3KGJFbBWiGLviTO3doR",
+        "img": "images/uploads/1eec6341b4cf7f28e0220fd9e7c98fc5.jpg",
+        "qty": 10,
+        "price": 5
+      },
+      {
+        "qty": 1,
+        "name": "Anya Figure",
+        "price": 300,
+        "img": "images/uploads/540bae0860c1450b4083854adff9a8c3.jpg",
+        "id": "LbCFdOKoco5MTwzvj1Ns",
+        "hasStock": true
+      },
+      {
+        "qty": 1,
+        "id": "ugjLpEErh9MISpwcRlcq",
+        "price": 25,
+        "name": "Custome Plastic keychain",
+        "hasStock": false,
+        "img": "images/uploads/63c939c146e24e6637acbc337fae00cb.jpg"
+      }
+    ]
+  },
+  {
+    "id": "VC1AOaHsHWGSGrrYyZJ7",
+    "items": [
+      {
+        "id": "xWyixPYEuPS2UlXVfWZK",
+        "hasStock": false,
+        "img": "images/uploads/69b794a9a2284d9dc9ab987df2a9fd3d.jpg",
+        "name": "Custome Pins",
+        "price": 20,
+        "qty": 7
+      },
+      {
+        "hasStock": false,
+        "img": "images/uploads/63c939c146e24e6637acbc337fae00cb.jpg",
+        "name": "Custome Plastic keychain",
+        "price": 25,
+        "id": "ugjLpEErh9MISpwcRlcq",
+        "qty": 2
+      }
+    ],
+    "comment": "",
+    "rating": 5,
+    "createdAt": "2026-09-03T17:24:05.942Z",
+    "name": "Reno Fayez",
+    "total": "190.00"
+  },
+  {
+    "id": "VO7eviTdZJcQ9KClmeNr",
+    "rating": 5,
+    "total": "210.00",
+    "name": "Aisha Hesham",
+    "comment": "",
+    "createdAt": "2026-09-03T20:51:59.445Z",
+    "items": [
+      {
+        "qty": 1,
+        "img": "images/uploads/c1fdbb050d7ef270d50a4594b0388770.jpg",
+        "price": 25,
+        "name": "Sticker sheet",
+        "id": "cC3AxyIG8C1R4RbqrxV0",
+        "hasStock": true
+      },
+      {
+        "qty": 5,
+        "id": "i3KGJFbBWiGLviTO3doR",
+        "price": 5,
+        "name": "Custome Photocards",
+        "hasStock": false,
+        "img": "images/uploads/1eec6341b4cf7f28e0220fd9e7c98fc5.jpg"
+      },
+      {
+        "img": "images/uploads/63c939c146e24e6637acbc337fae00cb.jpg",
+        "id": "ugjLpEErh9MISpwcRlcq",
+        "price": 25,
+        "name": "Custome Plastic keychain",
+        "qty": 1,
+        "hasStock": false
+      },
+      {
+        "img": "images/uploads/72afab4f6c6d2e7364b8f97e8f83e505.jpg",
+        "hasStock": true,
+        "name": "Alien cat Keychain",
+        "price": 35,
+        "id": "zQFe9JzHgaoCGn1SGqRb",
+        "qty": 1
+      },
+      {
+        "id": "xWyixPYEuPS2UlXVfWZK",
+        "hasStock": false,
+        "img": "images/uploads/69b794a9a2284d9dc9ab987df2a9fd3d.jpg",
+        "price": 20,
+        "name": "Custome Pins",
+        "qty": 5
+      }
+    ]
+  },
+  {
+    "id": "VevuHcMkpeVzziFGziFe",
+    "comment": "Really good!!",
+    "rating": 5,
+    "total": "320.00",
+    "name": "Omar Sara",
+    "items": [
+      {
+        "id": "ugjLpEErh9MISpwcRlcq",
+        "name": "Custome Plastic keychain",
+        "qty": 2,
+        "price": 25,
+        "hasStock": false,
+        "img": "images/uploads/63c939c146e24e6637acbc337fae00cb.jpg"
+      },
+      {
+        "qty": 11,
+        "name": "Custome Pins",
+        "id": "xWyixPYEuPS2UlXVfWZK",
+        "price": 20,
+        "hasStock": false,
+        "img": "images/uploads/69b794a9a2284d9dc9ab987df2a9fd3d.jpg"
+      },
+      {
+        "price": 25,
+        "hasStock": false,
+        "qty": 2,
+        "img": "images/uploads/4041c11bce73fd844e1031b083a0a58d.jpg",
+        "name": "Custome Big Poster",
+        "id": "j6GCSxNnJF1QtRaLkhLr"
+      }
+    ],
+    "createdAt": "2026-08-29T00:09:52.795Z"
+  },
+  {
+    "id": "Yx9GBa2r6rPtNvegVb8f",
+    "comment": "",
+    "name": "Abdelrahman Elmhalawy",
+    "createdAt": "2026-09-06T18:20:12.480Z",
+    "items": [
+      {
+        "name": "Custome Pins",
+        "qty": 20,
+        "hasStock": false,
+        "img": "images/uploads/69b794a9a2284d9dc9ab987df2a9fd3d.jpg",
+        "id": "xWyixPYEuPS2UlXVfWZK",
+        "price": 20
+      }
+    ],
+    "total": "400.00",
+    "rating": 5
+  },
+  {
+    "id": "Z3yfkEDgBKYniYri0n6t",
+    "total": "1.00",
+    "name": "Nadeen Bahjat Al-Shakhs",
+    "rating": 5,
+    "createdAt": "2026-09-30T19:39:46.147Z",
+    "comment": "Thanks, I really loved the price",
+    "items": [
+      {
+        "hasStock": false,
+        "id": "8pTkPMOCv1DpuJYABOv1",
+        "name": "Custome crochet 🧶 (make your own)",
+        "price": 1,
+        "img": "images/uploads/69fb18a1691452e5563323686efb2d12.jpg",
+        "qty": 1
+      }
+    ]
+  },
+  {
+    "id": "Z61T0KOmXeydCERBR6ya",
+    "comment": "Good",
+    "createdAt": "2026-09-03T17:26:23.647Z",
+    "total": "10.00",
+    "rating": 5,
+    "items": [
+      {
+        "qty": 1,
+        "name": "Mini poster",
+        "id": "0pr2Wg67y7xPpUxRHEeD",
+        "price": 10,
+        "img": "images/uploads/4054b995ece4e1b9bf43312af599e922.jpg",
+        "hasStock": true
+      }
+    ],
+    "name": "Rika Hyugin"
+  },
+  {
+    "id": "Z7PZfpkuomsseFsxjuAL",
+    "comment": "",
+    "createdAt": "2026-08-28T14:40:20.941Z",
+    "rating": 5,
+    "total": "120.00",
+    "items": [
+      {
+        "img": "images/uploads/69b794a9a2284d9dc9ab987df2a9fd3d.jpg",
+        "name": "Custome Pins",
+        "hasStock": false,
+        "qty": 6,
+        "price": 20,
+        "id": "xWyixPYEuPS2UlXVfWZK"
+      }
+    ],
+    "name": "Jana Haitham"
+  },
+  {
+    "id": "ZRoMZsB4bvnbg0xjmaoU",
+    "total": "387.00",
+    "comment": "The website is good but I think we need  customised stickers and the new collection is fire btw thanks Nona and the team <3",
+    "createdAt": "2026-08-17T03:30:52.410Z",
+    "items": [
+      {
+        "price": 5,
+        "id": "i3KGJFbBWiGLviTO3doR",
+        "qty": 5,
+        "hasStock": false,
+        "name": "Custome Photocards",
+        "img": "images/uploads/1eec6341b4cf7f28e0220fd9e7c98fc5.jpg"
+      },
+      {
+        "qty": 4,
+        "name": "Custome Big Poster",
+        "id": "j6GCSxNnJF1QtRaLkhLr",
+        "price": 25,
+        "hasStock": false,
+        "img": "images/uploads/4041c11bce73fd844e1031b083a0a58d.jpg"
+      },
+      {
+        "qty": 9,
+        "price": 25,
+        "name": "Custome Plastic keychain",
+        "hasStock": false,
+        "img": "images/uploads/63c939c146e24e6637acbc337fae00cb.jpg",
+        "id": "ugjLpEErh9MISpwcRlcq"
+      },
+      {
+        "id": "8pTkPMOCv1DpuJYABOv1",
+        "img": "images/uploads/69fb18a1691452e5563323686efb2d12.jpg",
+        "name": "Custome crochet 🧶 (make your own)",
+        "hasStock": false,
+        "qty": 2,
+        "price": 1
+      },
+      {
+        "img": "images/uploads/1ee3c6d576918ebb317e42f6babccd53.jpg",
+        "price": 15,
+        "hasStock": true,
+        "qty": 1,
+        "name": "Apple clip 🍎",
+        "id": "zy23AWY1Yf3IGxksjKTE"
+      },
+      {
+        "id": "31Oyr46ioi1qdf2apWCf",
+        "hasStock": true,
+        "img": "images/uploads/a16c5a7fe60fad8447ae79dddaba089c.jpg",
+        "name": "Hatsune Miku sticker sheet",
+        "qty": 1,
+        "price": 20
+      }
+    ],
+    "name": "Farida M",
+    "rating": 4
+  },
+  {
+    "id": "a1GKC1vnqPPtbaG0Y6nU",
+    "rating": 5,
+    "total": "190.00",
+    "name": "رضوان أحمد",
+    "comment": "",
+    "createdAt": "2026-09-14T03:29:32.921Z",
+    "items": [
+      {
+        "img": "images/uploads/95e8c70bbbfcb11b4741a8117dfb96fc.jpg",
+        "hasStock": true,
+        "price": 90,
+        "id": "NWDj1H0btsA8dcPfnJyb",
+        "name": "Blue star photocard holder",
+        "qty": 1
+      },
+      {
+        "hasStock": true,
+        "img": "images/uploads/8115d730cd3a7e5242d5841e65eb94e2.jpg",
+        "name": "Punk wrist Accessoires",
+        "price": 50,
+        "qty": 2,
+        "id": "s7sfEWiDVPW3YzdyfABM"
+      }
+    ]
+  },
+  {
+    "id": "a53mrWXDP7xaLjd3f9eM",
+    "comment": "",
+    "total": "700.00",
+    "name": "Haneen Samr",
+    "rating": 5,
+    "items": [
+      {
+        "img": "images/uploads/cd20e42a82f91c2ecfbf3ccb87f107bf.jpg",
+        "price": 400,
+        "hasStock": true,
+        "id": "cCRrizTTBXUDuylyDwuO",
+        "name": "Strawberry pink little purse/bag",
+        "qty": 1
+      },
+      {
+        "name": "Hello kitty cap",
+        "qty": 1,
+        "img": "images/uploads/8295fe62bac04e40e27802d0a4804304.jpg",
+        "price": 300,
+        "id": "vD0mFAdA5s4WxSwiWCQx",
+        "hasStock": true
+      }
+    ],
+    "createdAt": "2026-09-13T16:39:52.633Z"
+  },
+  {
+    "id": "b6UflcljJPE1tady8tw3",
+    "name": "هبه جوهر",
+    "items": [
+      {
+        "qty": 1,
+        "hasStock": true,
+        "id": "EgexqMbAJtZy3WuuepEn",
+        "price": 30,
+        "name": "Music cat keychain",
+        "img": "images/uploads/ed88825345bde4e58d1a9fff6e2a65dc.jpg"
+      },
+      {
+        "hasStock": false,
+        "id": "i3KGJFbBWiGLviTO3doR",
+        "img": "images/uploads/1eec6341b4cf7f28e0220fd9e7c98fc5.jpg",
+        "qty": 5,
+        "price": 5,
+        "name": "Custome Photocards"
+      },
+      {
+        "img": "images/uploads/63c939c146e24e6637acbc337fae00cb.jpg",
+        "name": "Custome Plastic keychain",
+        "hasStock": false,
+        "qty": 1,
+        "price": 25,
+        "id": "ugjLpEErh9MISpwcRlcq"
+      }
+    ],
+    "total": "165.00",
+    "createdAt": "2026-10-02T13:33:21.953Z",
+    "rating": 5,
+    "comment": "I am very happy and excited!!!"
+  },
+  {
+    "id": "bARBbHMFW017MolFpihQ",
+    "total": "150.00",
+    "createdAt": "2026-09-02T13:00:51.677Z",
+    "name": "Wafaa Ahmed",
+    "comment": "LOVE THE STOREEEE SO CUTEEE",
+    "rating": 5,
+    "items": [
+      {
+        "name": "Custome Pins",
+        "price": 20,
+        "qty": 5,
+        "hasStock": false,
+        "img": "images/uploads/69b794a9a2284d9dc9ab987df2a9fd3d.jpg",
+        "id": "xWyixPYEuPS2UlXVfWZK"
+      },
+      {
+        "name": "Custome Plastic keychain",
+        "qty": 2,
+        "price": 25,
+        "img": "images/uploads/63c939c146e24e6637acbc337fae00cb.jpg",
+        "hasStock": false,
+        "id": "ugjLpEErh9MISpwcRlcq"
+      }
+    ]
+  },
+  {
+    "id": "c1CZ6Ddp6uYiHjxPXWjT",
+    "rating": 5,
+    "comment": "",
+    "total": "255.00",
+    "createdAt": "2026-08-18T18:02:27.673Z",
+    "name": "Ahmed Fathi",
+    "items": [
+      {
+        "qty": 2,
+        "name": "Custome Plastic keychain",
+        "price": 25,
+        "img": "images/uploads/63c939c146e24e6637acbc337fae00cb.jpg",
+        "hasStock": false,
+        "id": "ugjLpEErh9MISpwcRlcq"
+      },
+      {
+        "img": "images/uploads/a7fad875172e696cc62104a48111fba8.jpg",
+        "name": "Rich cat Keychain",
+        "price": 35,
+        "hasStock": true,
+        "qty": 2,
+        "id": "w3pwf8jHPPJXq9fpLn1E"
+      },
+      {
+        "name": "Custome Pins",
+        "hasStock": false,
+        "qty": 5,
+        "img": "images/uploads/69b794a9a2284d9dc9ab987df2a9fd3d.jpg",
+        "id": "xWyixPYEuPS2UlXVfWZK",
+        "price": 20
+      },
+      {
+        "name": "Heart cat Keychain",
+        "hasStock": true,
+        "price": 35,
+        "qty": 1,
+        "img": "images/uploads/982505a183f81771e74402fb9f984a66.jpg",
+        "id": "j7AwfJlLyxqreso6STvc"
+      }
+    ]
+  },
+  {
+    "id": "cQAXWA4wAAyjYnmQWrcM",
+    "name": "زينه مصطفى",
+    "items": [
+      {
+        "hasStock": true,
+        "qty": 1,
+        "name": "Nerd cat keychain",
+        "id": "7tKPcDzHWBqHkF5lvqre",
+        "price": 30,
+        "img": "images/uploads/49472ff5a9d0e5d82eae32ccc3a0acfc.jpg"
+      },
+      {
+        "qty": 4,
+        "id": "AQxsHkyyAT756JMKn97M",
+        "price": 10,
+        "hasStock": false,
+        "name": "Custome Mini Posters",
+        "img": "images/uploads/62270d6b0ea24c10c1da26d78c153eaf.jpg"
+      },
+      {
+        "price": 22,
+        "hasStock": false,
+        "id": "xWyixPYEuPS2UlXVfWZK",
+        "img": "images/uploads/69b794a9a2284d9dc9ab987df2a9fd3d.jpg",
+        "qty": 5,
+        "name": "Custome Pins"
+      },
+      {
+        "price": 100,
+        "qty": 1,
+        "name": "Silver necklaces",
+        "img": "images/uploads/d0c18d930dcb5e3d69c4a449ddb09fa7.jpg",
+        "hasStock": true,
+        "id": "EhWmltlsqbIq7W2e3qle"
+      }
+    ],
+    "comment": "بيخرجني كل شويه من سايت لو رجعت",
+    "createdAt": "2026-10-03T13:38:06.482Z",
+    "total": "350.00",
+    "rating": 3
+  },
+  {
+    "id": "ccocYBguZG1v4tTIMHoK",
+    "createdAt": "2026-09-06T18:08:34.319Z",
+    "comment": "",
+    "items": [
+      {
+        "price": 20,
+        "qty": 7,
+        "id": "xWyixPYEuPS2UlXVfWZK",
+        "hasStock": false,
+        "name": "Custome Pins",
+        "img": "images/uploads/69b794a9a2284d9dc9ab987df2a9fd3d.jpg"
+      }
+    ],
+    "name": "عبلة نور الدين",
+    "total": "140.00",
+    "rating": 5
+  },
+  {
+    "id": "cyeUnjXRO7uyMQDdKGoK",
+    "comment": "",
+    "rating": 4,
+    "createdAt": "2026-09-13T16:45:38.725Z",
+    "total": "100.00",
+    "items": [
+      {
+        "name": "Punk wrist Accessoires",
+        "qty": 2,
+        "hasStock": true,
+        "img": "images/uploads/8115d730cd3a7e5242d5841e65eb94e2.jpg",
+        "price": 50,
+        "id": "s7sfEWiDVPW3YzdyfABM"
+      }
+    ],
+    "name": "hana mohamed"
+  },
+  {
+    "id": "d2WbxOYl3J1zRX286XXY",
+    "total": "40.00",
+    "name": "Aya Waleed",
+    "comment": "",
+    "rating": 5,
+    "items": [
+      {
+        "price": 10,
+        "img": "images/uploads/62270d6b0ea24c10c1da26d78c153eaf.jpg",
+        "id": "AQxsHkyyAT756JMKn97M",
+        "hasStock": false,
+        "qty": 4,
+        "name": "Custome Mini Posters"
+      }
+    ],
+    "createdAt": "2026-08-17T15:52:22.793Z"
+  },
+  {
+    "id": "dOdcqZxvemHGV2y5J5sM",
+    "items": [
+      {
+        "price": 20,
+        "id": "xWyixPYEuPS2UlXVfWZK",
+        "img": "images/uploads/69b794a9a2284d9dc9ab987df2a9fd3d.jpg",
+        "qty": 5,
+        "name": "Custome Pins",
+        "hasStock": false
+      }
+    ],
+    "rating": 5,
+    "comment": "",
+    "createdAt": "2026-08-18T13:41:53.351Z",
+    "total": "100.00",
+    "name": "مروه اسامه بدر الدين"
+  },
+  {
+    "id": "ebxyy3aDZ9uDBfNGFeyM",
+    "rating": 5,
+    "total": "230.00",
+    "items": [
+      {
+        "qty": 2,
+        "name": "Gothic rings",
+        "price": 25,
+        "id": "U7tS8VDzDgtKYahjgHFJ",
+        "hasStock": true,
+        "img": "images/uploads/84a5f183c9508ceccdbfccf64fcf25c1.jpg"
+      },
+      {
+        "id": "s7sfEWiDVPW3YzdyfABM",
+        "img": "images/uploads/8115d730cd3a7e5242d5841e65eb94e2.jpg",
+        "hasStock": true,
+        "name": "Punk wrist Accessoires",
+        "price": 50,
+        "qty": 1
+      },
+      {
+        "img": "images/uploads/69b794a9a2284d9dc9ab987df2a9fd3d.jpg",
+        "name": "Custome Pins",
+        "hasStock": false,
+        "id": "xWyixPYEuPS2UlXVfWZK",
+        "price": 20,
+        "qty": 5
+      },
+      {
+        "price": 15,
+        "id": "zy23AWY1Yf3IGxksjKTE",
+        "qty": 2,
+        "name": "Apple clip 🍎",
+        "img": "images/uploads/1ee3c6d576918ebb317e42f6babccd53.jpg",
+        "hasStock": true
+      }
+    ],
+    "name": "Merna Sherif",
+    "comment": "Amazing and cute stuff as always 🤤🤤",
+    "createdAt": "2026-08-16T22:55:45.114Z"
+  },
+  {
+    "id": "gE0OmcNZtekO6GaEJ588",
+    "items": [
+      {
+        "hasStock": false,
+        "img": "images/uploads/1eec6341b4cf7f28e0220fd9e7c98fc5.jpg",
+        "name": "Custome Photocards",
+        "price": 5,
+        "id": "i3KGJFbBWiGLviTO3doR",
+        "qty": 5
+      },
+      {
+        "img": "images/uploads/4041c11bce73fd844e1031b083a0a58d.jpg",
+        "name": "Custome Big Poster",
+        "price": 25,
+        "id": "j6GCSxNnJF1QtRaLkhLr",
+        "hasStock": false,
+        "qty": 4
+      },
+      {
+        "img": "images/uploads/63c939c146e24e6637acbc337fae00cb.jpg",
+        "name": "Custome Plastic keychain",
+        "hasStock": false,
+        "qty": 9,
+        "price": 25,
+        "id": "ugjLpEErh9MISpwcRlcq"
+      },
+      {
+        "img": "images/uploads/69fb18a1691452e5563323686efb2d12.jpg",
+        "name": "Custome crochet 🧶 (make your own)",
+        "id": "8pTkPMOCv1DpuJYABOv1",
+        "hasStock": false,
+        "qty": 2,
+        "price": 1
+      },
+      {
+        "id": "zy23AWY1Yf3IGxksjKTE",
+        "hasStock": true,
+        "name": "Apple clip 🍎",
+        "qty": 1,
+        "price": 15,
+        "img": "images/uploads/1ee3c6d576918ebb317e42f6babccd53.jpg"
+      },
+      {
+        "qty": 1,
+        "name": "Hatsune Miku sticker sheet",
+        "id": "31Oyr46ioi1qdf2apWCf",
+        "hasStock": true,
+        "price": 20,
+        "img": "images/uploads/a16c5a7fe60fad8447ae79dddaba089c.jpg"
+      }
+    ],
+    "comment": "The website is good but I think we need  customised stickers and the new collection is fire btw thanks Nona and the team <3",
+    "rating": 4,
+    "name": "Farida M",
+    "total": "387.00",
+    "createdAt": "2026-08-17T03:30:52.060Z"
+  },
+  {
+    "id": "guX6cN866lrDTj7YFhnO",
+    "comment": "Love you’re store so much ❤️🍓",
+    "total": "387.00",
+    "createdAt": "2026-09-30T20:12:08.530Z",
+    "items": [
+      {
+        "name": "Strawberry keychain",
+        "price": 35,
+        "qty": 1,
+        "img": "images/uploads/cf51119073992ea05ecd00e965a5af8b.jpg",
+        "id": "tmYAtlPWpZgrkryDm7Gd",
+        "hasStock": true
+      },
+      {
+        "img": "images/uploads/69b794a9a2284d9dc9ab987df2a9fd3d.jpg",
+        "hasStock": false,
+        "price": 22,
+        "id": "xWyixPYEuPS2UlXVfWZK",
+        "name": "Custome Pins",
+        "qty": 6
+      },
+      {
+        "hasStock": true,
+        "price": 30,
+        "qty": 1,
+        "name": "Music cat keychain",
+        "img": "images/uploads/ed88825345bde4e58d1a9fff6e2a65dc.jpg",
+        "id": "EgexqMbAJtZy3WuuepEn"
+      },
+      {
+        "hasStock": true,
+        "id": "RGLNdqxTdF6g7SDybhGD",
+        "img": "images/uploads/7411de61532635ea08f929ee61e08fca.jpg",
+        "name": "Sleepy cat keychain",
+        "price": 30,
+        "qty": 2
+      },
+      {
+        "name": "Custome Photocards",
+        "qty": 5,
+        "id": "i3KGJFbBWiGLviTO3doR",
+        "hasStock": false,
+        "img": "images/uploads/1eec6341b4cf7f28e0220fd9e7c98fc5.jpg",
+        "price": 5
+      },
+      {
+        "name": "Alien cat Keychain",
+        "qty": 1,
+        "hasStock": true,
+        "img": "images/uploads/72afab4f6c6d2e7364b8f97e8f83e505.jpg",
+        "id": "zQFe9JzHgaoCGn1SGqRb",
+        "price": 35
+      }
+    ],
+    "name": "Ahmed Fathi",
+    "rating": 5
+  },
+  {
+    "id": "h542cRhxEE7x4Kx0h6Za",
+    "createdAt": "2026-09-02T16:55:27.770Z",
+    "comment": "",
+    "rating": 5,
+    "items": [
+      {
+        "price": 100,
+        "hasStock": true,
+        "qty": 1,
+        "name": "Art (YCH)",
+        "img": "images/uploads/a796f3d69b03272e1285d43e7a094ad9.jpg",
+        "id": "ugq6wjhpZCVOzVMCt1qp"
+      }
+    ],
+    "name": "lily mahmoud",
+    "total": "100.00"
+  },
+  {
+    "id": "hmnz3VYqyHsyklJPl8JS",
+    "createdAt": "2026-08-17T19:00:32.549Z",
+    "items": [
+      {
+        "img": "images/uploads/69b794a9a2284d9dc9ab987df2a9fd3d.jpg",
+        "price": 20,
+        "id": "xWyixPYEuPS2UlXVfWZK",
+        "name": "Custome Pins",
+        "qty": 7,
+        "hasStock": false
+      }
+    ],
+    "comment": "",
+    "name": "Sandy Samir",
+    "rating": 5,
+    "total": "140.00"
+  },
+  {
+    "id": "hwrKXafuiwvRCsi2IEnT",
+    "comment": "",
+    "rating": 5,
+    "total": "330.00",
+    "items": [
+      {
+        "qty": 15,
+        "img": "images/uploads/69b794a9a2284d9dc9ab987df2a9fd3d.jpg",
+        "name": "Custome Pins",
+        "id": "xWyixPYEuPS2UlXVfWZK",
+        "hasStock": false,
+        "price": 22
+      }
+    ],
+    "name": "Basant Emarah",
+    "createdAt": "2026-09-15T15:26:13.189Z"
+  },
+  {
+    "id": "hyZIJz93C1V1u8NC81yf",
+    "createdAt": "2026-08-18T18:02:52.771Z",
+    "items": [
+      {
+        "id": "7nLHEISno5gj7DiHSaUe",
+        "price": 300,
+        "img": "images/uploads/8e5a096feffa2892dd848323cd6ad8cc.jpg",
+        "hasStock": true,
+        "qty": 1,
+        "name": "Chibi art (YCH)"
+      }
+    ],
+    "comment": "",
+    "rating": 5,
+    "total": "300.00",
+    "name": "Ahmed Sohaila"
+  },
+  {
+    "id": "iMUYWHXsybi9sHpTidPq",
+    "total": "145.00",
+    "name": "Mohamed Ahmed",
+    "rating": 5,
+    "comment": "",
+    "items": [
+      {
+        "img": "images/uploads/69b794a9a2284d9dc9ab987df2a9fd3d.jpg",
+        "name": "Custome Pins",
+        "id": "xWyixPYEuPS2UlXVfWZK",
+        "price": 22,
+        "qty": 5,
+        "hasStock": false
+      },
+      {
+        "name": "Strawberry keychain",
+        "qty": 1,
+        "id": "tmYAtlPWpZgrkryDm7Gd",
+        "price": 35,
+        "hasStock": true,
+        "img": "images/uploads/cf51119073992ea05ecd00e965a5af8b.jpg"
+      }
+    ],
+    "createdAt": "2026-09-13T22:43:34.985Z"
+  },
+  {
+    "id": "iVgWbddjQKisoxHjZUOq",
+    "items": [
+      {
+        "id": "ugjLpEErh9MISpwcRlcq",
+        "img": "images/uploads/63c939c146e24e6637acbc337fae00cb.jpg",
+        "qty": 4,
+        "price": 25,
+        "name": "Custome Plastic keychain",
+        "hasStock": false
+      },
+      {
+        "price": 5,
+        "id": "i3KGJFbBWiGLviTO3doR",
+        "img": "images/uploads/1eec6341b4cf7f28e0220fd9e7c98fc5.jpg",
+        "qty": 14,
+        "name": "Custome Photocards",
+        "hasStock": false
+      },
+      {
+        "id": "AQxsHkyyAT756JMKn97M",
+        "img": "images/uploads/62270d6b0ea24c10c1da26d78c153eaf.jpg",
+        "qty": 7,
+        "hasStock": false,
+        "price": 10,
+        "name": "Custome Mini Posters"
+      }
+    ],
+    "createdAt": "2026-09-05T23:00:34.602Z",
+    "name": "خفافيش عطارد",
+    "comment": "Idk first try , but am sure it well be good!",
+    "total": "240.00",
+    "rating": 2
+  },
+  {
+    "id": "iW0y48oJgd6phpcyGZ3u",
+    "createdAt": "2026-09-02T16:38:16.538Z",
+    "rating": 5,
+    "name": "Amina Omar",
+    "items": [
+      {
+        "id": "xWyixPYEuPS2UlXVfWZK",
+        "img": "images/uploads/69b794a9a2284d9dc9ab987df2a9fd3d.jpg",
+        "hasStock": false,
+        "qty": 5,
+        "price": 20,
+        "name": "Custome Pins"
+      },
+      {
+        "price": 25,
+        "img": "images/uploads/63c939c146e24e6637acbc337fae00cb.jpg",
+        "id": "ugjLpEErh9MISpwcRlcq",
+        "qty": 5,
+        "hasStock": false,
+        "name": "Custome Plastic keychain"
+      },
+      {
+        "qty": 5,
+        "name": "Custome Photocards",
+        "hasStock": false,
+        "id": "i3KGJFbBWiGLviTO3doR",
+        "price": 5,
+        "img": "images/uploads/1eec6341b4cf7f28e0220fd9e7c98fc5.jpg"
+      },
+      {
+        "name": "Custome Mini Posters",
+        "hasStock": false,
+        "qty": 5,
+        "img": "images/uploads/62270d6b0ea24c10c1da26d78c153eaf.jpg",
+        "id": "AQxsHkyyAT756JMKn97M",
+        "price": 10
+      }
+    ],
+    "total": "300.00",
+    "comment": "بحبكم"
+  },
+  {
+    "id": "iWtEUHp35AVLKwC7lwaK",
+    "total": "230.00",
+    "rating": 1,
+    "name": "Juri Saber",
+    "comment": "",
+    "createdAt": "2026-10-03T18:16:21.345Z",
+    "items": [
+      {
+        "id": "j6GCSxNnJF1QtRaLkhLr",
+        "img": "images/uploads/4041c11bce73fd844e1031b083a0a58d.jpg",
+        "qty": 2,
+        "hasStock": false,
+        "price": 25,
+        "name": "Custome Big Poster"
+      },
+      {
+        "qty": 5,
+        "name": "Custome Pins",
+        "id": "xWyixPYEuPS2UlXVfWZK",
+        "hasStock": false,
+        "price": 22,
+        "img": "images/uploads/69b794a9a2284d9dc9ab987df2a9fd3d.jpg"
+      }
+    ]
+  },
+  {
+    "id": "ikCyohqszc749GJCv8wJ",
+    "name": "435 35",
+    "items": [
+      {
+        "qty": 4,
+        "name": "Custome Mini Posters",
+        "hasStock": false,
+        "price": 10,
+        "id": "AQxsHkyyAT756JMKn97M",
+        "customImages": [
+          "images/uploads/947e1c95b3a6d05269257584382cc886.jpg",
+          "images/uploads/8c57db93147a36340a65e614c69ab3df.jpg",
+          "images/uploads/97812d72cd5bd6fee4e525d2bc5b3c50.jpg",
+          "images/uploads/b8dff0b755e197c7f449f830d6b4b373.jpg"
+        ],
+        "needsImages": true,
+        "img": "images/uploads/62270d6b0ea24c10c1da26d78c153eaf.jpg"
+      }
+    ],
+    "rating": 5,
+    "total": "110.00",
+    "createdAt": "2026-09-30T21:50:10.701Z",
+    "comment": ""
+  },
+  {
+    "id": "j4Y4qMpRdM704E8z7mco",
+    "comment": "",
+    "items": [
+      {
+        "name": "Ivan sticker sheet",
+        "price": 20,
+        "qty": 1,
+        "id": "yXzJVuxtkzJ5s2ANqRy0",
+        "img": "images/uploads/dc12d32445b405de5fb37a99d6cbb523.jpg",
+        "hasStock": true
+      },
+      {
+        "img": "images/uploads/69b794a9a2284d9dc9ab987df2a9fd3d.jpg",
+        "name": "Custome Pins",
+        "hasStock": false,
+        "id": "xWyixPYEuPS2UlXVfWZK",
+        "qty": 7,
+        "price": 20
+      }
+    ],
+    "name": "Mariam Assem",
+    "createdAt": "2026-09-03T22:38:48.795Z",
+    "total": "160.00",
+    "rating": 5
+  },
+  {
+    "id": "jRBTJWu0IhlhfhPCQjbB",
+    "total": "85.00",
+    "name": "Lora Yasser",
+    "comment": "Amazing I love everything thatt you sell",
+    "rating": 5,
+    "items": [
+      {
+        "img": "images/uploads/ee9005528bcc8c3ca5fae5dc3f20a760.jpg",
+        "price": 20,
+        "hasStock": true,
+        "name": "Creeper pin",
+        "qty": 1,
+        "id": "EIUYDGQE9Djptqwth8IB"
+      },
+      {
+        "qty": 1,
+        "price": 20,
+        "id": "bm4pUDtZvVbJFUPe3sJt",
+        "name": "Domo pin",
+        "img": "images/uploads/b013e1f38d9acdbcfb8e6f871c4713c4.jpg",
+        "hasStock": true
+      },
+      {
+        "qty": 1,
+        "hasStock": true,
+        "name": "Nyan cat pin",
+        "price": 20,
+        "img": "images/uploads/45f45d3cebbde673530db875802d39f8.jpg",
+        "id": "nTETB4ryXcrwTmjSVkLo"
+      },
+      {
+        "id": "1BlNhcLpaYOBPh2T1WeL",
+        "name": "Sticker sheet",
+        "qty": 1,
+        "price": 25,
+        "img": "images/uploads/37e830bef319b2042f995802727077b6.jpg",
+        "hasStock": true
+      }
+    ],
+    "createdAt": "2026-09-03T12:42:14.262Z"
+  },
+  {
+    "id": "k0AssjyxCL2pEoneAvR9",
+    "rating": 5,
+    "total": "200.00",
+    "items": [
+      {
+        "qty": 10,
+        "hasStock": false,
+        "img": "images/uploads/1eec6341b4cf7f28e0220fd9e7c98fc5.jpg",
+        "name": "Custome Photocards",
+        "id": "i3KGJFbBWiGLviTO3doR",
+        "price": 5
+      },
+      {
+        "price": 25,
+        "id": "ugjLpEErh9MISpwcRlcq",
+        "img": "images/uploads/63c939c146e24e6637acbc337fae00cb.jpg",
+        "qty": 2,
+        "name": "Custome Plastic keychain",
+        "hasStock": false
+      },
+      {
+        "name": "Custome Pins",
+        "qty": 5,
+        "img": "images/uploads/69b794a9a2284d9dc9ab987df2a9fd3d.jpg",
+        "price": 20,
+        "hasStock": false,
+        "id": "xWyixPYEuPS2UlXVfWZK"
+      }
+    ],
+    "name": "ريماس حازم احمد البديوي البديوي",
+    "comment": "",
+    "createdAt": "2026-08-19T22:01:14.863Z"
+  },
+  {
+    "id": "kGhfkvso182CWkq73GQU",
+    "items": [
+      {
+        "img": "images/uploads/63c939c146e24e6637acbc337fae00cb.jpg",
+        "price": 25,
+        "hasStock": false,
+        "id": "ugjLpEErh9MISpwcRlcq",
+        "name": "Custome Plastic keychain",
+        "qty": 2
+      },
+      {
+        "img": "images/uploads/ea3b7f2efc2a550139a2e4adc41f2208.jpg",
+        "hasStock": true,
+        "name": "Mini poster ",
+        "qty": 1,
+        "price": 10,
+        "id": "uqG1H8cRlZEBIrvECukN"
+      },
+      {
+        "qty": 8,
+        "name": "Custome Pins",
+        "id": "xWyixPYEuPS2UlXVfWZK",
+        "price": 22,
+        "hasStock": false,
+        "img": "images/uploads/69b794a9a2284d9dc9ab987df2a9fd3d.jpg"
+      }
+    ],
+    "comment": "",
+    "name": "renad Alaa",
+    "createdAt": "2026-09-14T02:22:27.632Z",
+    "total": "236.00",
+    "rating": 4
+  },
+  {
+    "id": "kv3OzG3x8ILNd5m0b6ev",
+    "comment": "",
+    "rating": 3,
+    "total": "100.00",
+    "items": [
+      {
+        "img": "images/uploads/1eec6341b4cf7f28e0220fd9e7c98fc5.jpg",
+        "name": "Custome Photocards",
+        "hasStock": false,
+        "qty": 20,
+        "id": "i3KGJFbBWiGLviTO3doR",
+        "price": 5
+      }
+    ],
+    "name": "هاجر عبد العزيز",
+    "createdAt": "2026-09-14T17:27:30.827Z"
+  },
+  {
+    "id": "l7zPSfSvpzgQJ4kbTCLy",
+    "createdAt": "2026-08-28T13:32:14.577Z",
+    "name": "Malak Amr",
+    "comment": "",
+    "items": [
+      {
+        "img": "images/uploads/69b794a9a2284d9dc9ab987df2a9fd3d.jpg",
+        "hasStock": false,
+        "price": 20,
+        "name": "Custome Pins",
+        "id": "xWyixPYEuPS2UlXVfWZK",
+        "qty": 7
+      }
+    ],
+    "total": "140.00",
+    "rating": 5
+  },
+  {
+    "id": "lDzvbisMUU63AXpu4bkc",
+    "comment": "",
+    "total": "200.00",
+    "name": "رنا محمد",
+    "createdAt": "2026-09-06T15:43:37.442Z",
+    "rating": 5,
+    "items": [
+      {
+        "name": "Custome Pins",
+        "qty": 10,
+        "img": "images/uploads/69b794a9a2284d9dc9ab987df2a9fd3d.jpg",
+        "id": "xWyixPYEuPS2UlXVfWZK",
+        "price": 20,
+        "hasStock": false
+      }
+    ]
+  },
+  {
+    "id": "lvt5qYrtproeham6ISZw",
+    "items": [
+      {
+        "price": 22,
+        "hasStock": false,
+        "id": "xWyixPYEuPS2UlXVfWZK",
+        "img": "images/uploads/69b794a9a2284d9dc9ab987df2a9fd3d.jpg",
+        "qty": 10,
+        "name": "Custome Pins"
+      }
+    ],
+    "comment": "",
+    "rating": 5,
+    "name": "رنا محمد",
+    "total": "290.00",
+    "createdAt": "2026-10-02T21:17:56.255Z"
+  },
+  {
+    "id": "mw2Mv6aPgNVHkI7gMd6v",
+    "items": [
+      {
+        "img": "images/uploads/d0c18d930dcb5e3d69c4a449ddb09fa7.jpg",
+        "name": "Silver necklaces",
+        "price": 100,
+        "id": "EhWmltlsqbIq7W2e3qle",
+        "qty": 1,
+        "hasStock": true
+      },
+      {
+        "img": "images/uploads/69b794a9a2284d9dc9ab987df2a9fd3d.jpg",
+        "name": "Custome Pins",
+        "price": 20,
+        "hasStock": false,
+        "id": "xWyixPYEuPS2UlXVfWZK",
+        "qty": 5
+      }
+    ],
+    "createdAt": "2026-09-05T14:54:58.811Z",
+    "comment": "",
+    "rating": 5,
+    "name": "Sara Mohamed",
+    "total": "200.00"
+  },
+  {
+    "id": "oNwsfnggwii1IY0qykgK",
+    "items": [
+      {
+        "id": "s7sfEWiDVPW3YzdyfABM",
+        "name": "Punk wrist Accessoires",
+        "hasStock": true,
+        "img": "images/uploads/8115d730cd3a7e5242d5841e65eb94e2.jpg",
+        "price": 50,
+        "qty": 3
+      }
+    ],
+    "createdAt": "2026-08-18T16:57:18.669Z",
+    "rating": 5,
+    "name": "hanaa tharwat",
+    "comment": "",
+    "total": "150.00"
+  },
+  {
+    "id": "pRLYpAD5265CVB2iJojs",
+    "rating": 4,
+    "comment": "",
+    "total": "252.00",
+    "name": "Sayed Sam",
+    "createdAt": "2026-10-01T17:46:25.804Z",
+    "items": [
+      {
+        "img": "images/uploads/69b794a9a2284d9dc9ab987df2a9fd3d.jpg",
+        "id": "xWyixPYEuPS2UlXVfWZK",
+        "qty": 6,
+        "price": 22,
+        "hasStock": false,
+        "name": "Custome Pins"
+      },
+      {
+        "qty": 2,
+        "name": "Custome Plastic keychain",
+        "id": "ugjLpEErh9MISpwcRlcq",
+        "hasStock": false,
+        "price": 25,
+        "img": "images/uploads/63c939c146e24e6637acbc337fae00cb.jpg"
+      }
+    ]
+  },
+  {
+    "id": "phtRiHV0oI4lBAtYvkMm",
+    "total": "387.00",
+    "createdAt": "2026-08-17T03:30:48.235Z",
+    "name": "Farida M",
+    "rating": 4,
+    "comment": "The website is good but I think we need  customised stickers and the new collection is fire btw thanks Nona and the team <3",
+    "items": [
+      {
+        "price": 5,
+        "qty": 5,
+        "id": "i3KGJFbBWiGLviTO3doR",
+        "hasStock": false,
+        "name": "Custome Photocards",
+        "img": "images/uploads/1eec6341b4cf7f28e0220fd9e7c98fc5.jpg"
+      },
+      {
+        "price": 25,
+        "qty": 4,
+        "hasStock": false,
+        "name": "Custome Big Poster",
+        "img": "images/uploads/4041c11bce73fd844e1031b083a0a58d.jpg",
+        "id": "j6GCSxNnJF1QtRaLkhLr"
+      },
+      {
+        "img": "images/uploads/63c939c146e24e6637acbc337fae00cb.jpg",
+        "hasStock": false,
+        "name": "Custome Plastic keychain",
+        "id": "ugjLpEErh9MISpwcRlcq",
+        "price": 25,
+        "qty": 9
+      },
+      {
+        "qty": 2,
+        "hasStock": false,
+        "price": 1,
+        "img": "images/uploads/69fb18a1691452e5563323686efb2d12.jpg",
+        "name": "Custome crochet 🧶 (make your own)",
+        "id": "8pTkPMOCv1DpuJYABOv1"
+      },
+      {
+        "name": "Apple clip 🍎",
+        "qty": 1,
+        "id": "zy23AWY1Yf3IGxksjKTE",
+        "img": "images/uploads/1ee3c6d576918ebb317e42f6babccd53.jpg",
+        "hasStock": true,
+        "price": 15
+      },
+      {
+        "qty": 1,
+        "id": "31Oyr46ioi1qdf2apWCf",
+        "name": "Hatsune Miku sticker sheet",
+        "price": 20,
+        "img": "images/uploads/a16c5a7fe60fad8447ae79dddaba089c.jpg",
+        "hasStock": true
+      }
+    ]
+  },
+  {
+    "id": "qCuFsZUFEfolFpSYzLWJ",
+    "total": "176.00",
+    "name": "Ahmed Hamed",
+    "createdAt": "2026-09-13T17:11:37.905Z",
+    "rating": 5,
+    "comment": "",
+    "items": [
+      {
+        "img": "images/uploads/69b794a9a2284d9dc9ab987df2a9fd3d.jpg",
+        "price": 22,
+        "name": "Custome Pins",
+        "qty": 8,
+        "id": "xWyixPYEuPS2UlXVfWZK",
+        "hasStock": false
+      }
+    ]
+  },
+  {
+    "id": "qHVZgi2S9T0fNjP0c5eT",
+    "items": [
+      {
+        "qty": 10,
+        "name": "Custome Pins",
+        "price": 22,
+        "img": "images/uploads/69b794a9a2284d9dc9ab987df2a9fd3d.jpg",
+        "hasStock": false,
+        "id": "xWyixPYEuPS2UlXVfWZK"
+      },
+      {
+        "img": "images/uploads/63c939c146e24e6637acbc337fae00cb.jpg",
+        "name": "Custome Plastic keychain",
+        "hasStock": false,
+        "qty": 1,
+        "id": "ugjLpEErh9MISpwcRlcq",
+        "price": 25
+      }
+    ],
+    "createdAt": "2026-09-14T19:42:45.944Z",
+    "rating": 5,
+    "comment": "",
+    "name": "Jasmine Williams",
+    "total": "245.00"
+  },
+  {
+    "id": "qVx3mgNQ071metWWDGXk",
+    "rating": 5,
+    "createdAt": "2026-09-13T16:48:16.038Z",
+    "name": "mariam mohamed",
+    "items": [
+      {
+        "id": "gFscnHhamUpkhyZNvFeY",
+        "img": "images/uploads/7eef3b67d3b60f950053393feba80862.jpg",
+        "hasStock": true,
+        "qty": 1,
+        "price": 350,
+        "name": "Madoka magical figure"
+      }
+    ],
+    "comment": "",
+    "total": "350.00"
+  },
+  {
+    "id": "qipstdc4SDXdblXOu3cC",
+    "items": [
+      {
+        "hasStock": true,
+        "qty": 1,
+        "id": "8Je99XjxR97g7SjmzNrK",
+        "price": 35,
+        "img": "images/uploads/bb9c2fb65459d923ea49a05de022c48b.jpg",
+        "name": "Silver bones ring"
+      },
+      {
+        "hasStock": true,
+        "id": "miSNkn3sczly5PppUQEr",
+        "img": "images/uploads/1270a45e27ea862c3f320d1643006ee3.jpg",
+        "qty": 1,
+        "price": 35,
+        "name": "Tanned kitty Keychain"
+      },
+      {
+        "id": "zy23AWY1Yf3IGxksjKTE",
+        "img": "images/uploads/1ee3c6d576918ebb317e42f6babccd53.jpg",
+        "hasStock": true,
+        "price": 15,
+        "qty": 2,
+        "name": "Apple clip 🍎"
+      }
+    ],
+    "comment": "",
+    "name": "Mai labib",
+    "rating": 5,
+    "createdAt": "2026-08-24T09:00:04.126Z",
+    "total": "100.00"
+  },
+  {
+    "id": "rFAqZE5JvtAPNGuufvdO",
+    "name": "Lou Hisham",
+    "items": [
+      {
+        "qty": 1,
+        "name": "Ivan sticker sheet",
+        "price": 20,
+        "hasStock": true,
+        "id": "yXzJVuxtkzJ5s2ANqRy0",
+        "img": "images/uploads/dc12d32445b405de5fb37a99d6cbb523.jpg"
+      },
+      {
+        "id": "ugjLpEErh9MISpwcRlcq",
+        "hasStock": false,
+        "name": "Custome Plastic keychain",
+        "qty": 1,
+        "img": "images/uploads/63c939c146e24e6637acbc337fae00cb.jpg",
+        "price": 25
+      },
+      {
+        "img": "images/uploads/69b794a9a2284d9dc9ab987df2a9fd3d.jpg",
+        "name": "Custome Pins",
+        "price": 20,
+        "id": "xWyixPYEuPS2UlXVfWZK",
+        "hasStock": false,
+        "qty": 7
+      }
+    ],
+    "comment": "Coollll",
+    "total": "185.00",
+    "rating": 1,
+    "createdAt": "2026-09-01T19:27:21.660Z"
+  },
+  {
+    "id": "s7Fwmj3CkYj3SYCBos8b",
+    "createdAt": "2026-09-30T19:28:11.096Z",
+    "items": [
+      {
+        "id": "OCJLfA6677krqwpvbyZk",
+        "img": "images/uploads/02079dcb8484193daa949219f107f23d.jpg",
+        "name": "UTAU Teto figure",
+        "qty": 1,
+        "hasStock": true,
+        "price": 550
+      }
+    ],
+    "rating": 1,
+    "comment": "",
+    "name": "Noureen Yasser",
+    "total": "620.00"
+  },
+  {
+    "id": "sBNLYBaDmUhK9MRXa55v",
+    "rating": 5,
+    "total": "120.00",
+    "comment": "",
+    "name": "Jana Haitham",
+    "createdAt": "2026-08-28T14:40:18.467Z",
+    "items": [
+      {
+        "id": "xWyixPYEuPS2UlXVfWZK",
+        "price": 20,
+        "img": "images/uploads/69b794a9a2284d9dc9ab987df2a9fd3d.jpg",
+        "name": "Custome Pins",
+        "qty": 6,
+        "hasStock": false
+      }
+    ]
+  },
+  {
+    "id": "tEEfHhyy2doxmiWP71J7",
+    "rating": 5,
+    "total": "200.00",
+    "comment": "",
+    "items": [
+      {
+        "name": "Custome Pins",
+        "img": "images/uploads/69b794a9a2284d9dc9ab987df2a9fd3d.jpg",
+        "id": "xWyixPYEuPS2UlXVfWZK",
+        "qty": 10,
+        "hasStock": false,
+        "price": 20
+      }
+    ],
+    "createdAt": "2026-09-06T14:38:28.268Z",
+    "name": "Jana Elsayed"
+  },
+  {
+    "id": "tIH49XrIiRCmouO1OOh3",
+    "comment": "الويبسايت تحفة اوي بجد ومتحمسة للاوردر جدا",
+    "rating": 5,
+    "name": "Toqa Abuelkhair",
+    "items": [
+      {
+        "name": "Custome Plastic keychain",
+        "qty": 2,
+        "img": "images/uploads/63c939c146e24e6637acbc337fae00cb.jpg",
+        "price": 25,
+        "hasStock": false,
+        "id": "ugjLpEErh9MISpwcRlcq"
+      },
+      {
+        "hasStock": false,
+        "id": "xWyixPYEuPS2UlXVfWZK",
+        "img": "images/uploads/69b794a9a2284d9dc9ab987df2a9fd3d.jpg",
+        "name": "Custome Pins",
+        "qty": 15,
+        "price": 20
+      }
+    ],
+    "total": "350.00",
+    "createdAt": "2026-09-06T19:15:16.834Z"
+  },
+  {
+    "id": "tkILHroz31zzl2ChzFGd",
+    "comment": "WAIT I WAS TUSTING DINT TAKE IT SRS I WAS CHECKING HOW MUCH SHIPPING PLZ DONT FRY MEE",
+    "items": [
+      {
+        "price": 10,
+        "hasStock": true,
+        "qty": 1,
+        "name": "Mini poster",
+        "img": "images/uploads/1ca873e3b69558a939245ba6276b7c5f.jpg",
+        "id": "67zI0sXvamryo9qT5SBX"
+      },
+      {
+        "name": "Scenegirl belt",
+        "qty": 1,
+        "img": "images/uploads/c0f83d1191e6258c3c6fbbb5e4d59769.jpg",
+        "hasStock": true,
+        "price": 300,
+        "id": "Pn5Y2n4YUrI8z9bLtM2u"
+      }
+    ],
+    "rating": 5,
+    "createdAt": "2026-09-15T03:38:16.174Z",
+    "name": "Hheje Hhe",
+    "total": "310.00"
+  },
+  {
+    "id": "uG15NA10jhXHK18IBsmW",
+    "items": [
+      {
+        "qty": 5,
+        "hasStock": false,
+        "price": 20,
+        "name": "Custome Pins",
+        "img": "images/uploads/69b794a9a2284d9dc9ab987df2a9fd3d.jpg",
+        "id": "xWyixPYEuPS2UlXVfWZK"
+      },
+      {
+        "img": "images/uploads/72afab4f6c6d2e7364b8f97e8f83e505.jpg",
+        "hasStock": true,
+        "price": 35,
+        "id": "zQFe9JzHgaoCGn1SGqRb",
+        "name": "Alien cat Keychain",
+        "qty": 1
+      },
+      {
+        "id": "ugjLpEErh9MISpwcRlcq",
+        "img": "images/uploads/63c939c146e24e6637acbc337fae00cb.jpg",
+        "name": "Custome Plastic keychain",
+        "qty": 1,
+        "hasStock": false,
+        "price": 25
+      }
+    ],
+    "comment": "",
+    "name": "Laila Ebrahim",
+    "createdAt": "2026-09-04T00:15:41.861Z",
+    "total": "160.00",
+    "rating": 5
+  },
+  {
+    "id": "vBldaLTO1uY3peJr9iu9",
+    "rating": 5,
+    "total": "255.00",
+    "name": "Carol Amgad",
+    "createdAt": "2026-08-19T13:24:35.168Z",
+    "comment": "",
+    "items": [
+      {
+        "hasStock": false,
+        "id": "xWyixPYEuPS2UlXVfWZK",
+        "name": "Custome Pins",
+        "qty": 6,
+        "price": 20,
+        "img": "images/uploads/69b794a9a2284d9dc9ab987df2a9fd3d.jpg"
+      },
+      {
+        "price": 35,
+        "id": "j7AwfJlLyxqreso6STvc",
+        "qty": 1,
+        "hasStock": true,
+        "name": "Heart cat Keychain",
+        "img": "images/uploads/982505a183f81771e74402fb9f984a66.jpg"
+      },
+      {
+        "qty": 1,
+        "price": 100,
+        "id": "7Gp0sWhcGyMmpXnbsXaq",
+        "hasStock": true,
+        "name": "Melody gift box",
+        "img": "images/uploads/91e266476aa7c51d48de4593d271419a.jpg"
+      }
+    ]
+  },
+  {
+    "id": "vPlseSu4PbFla2vDJr5n",
+    "name": "أحمد رضوان",
+    "comment": "",
+    "rating": 3,
+    "items": [
+      {
+        "qty": 5,
+        "id": "i3KGJFbBWiGLviTO3doR",
+        "price": 5,
+        "hasStock": false,
+        "name": "Custome Photocards",
+        "img": "images/uploads/1eec6341b4cf7f28e0220fd9e7c98fc5.jpg"
+      },
+      {
+        "name": "Custome Plastic keychain",
+        "id": "ugjLpEErh9MISpwcRlcq",
+        "img": "images/uploads/63c939c146e24e6637acbc337fae00cb.jpg",
+        "qty": 1,
+        "hasStock": false,
+        "price": 25
+      },
+      {
+        "img": "images/uploads/69b794a9a2284d9dc9ab987df2a9fd3d.jpg",
+        "hasStock": false,
+        "name": "Custome Pins",
+        "price": 20,
+        "id": "xWyixPYEuPS2UlXVfWZK",
+        "qty": 8
+      },
+      {
+        "qty": 1,
+        "hasStock": true,
+        "id": "zQFe9JzHgaoCGn1SGqRb",
+        "price": 35,
+        "name": "Alien cat Keychain",
+        "img": "images/uploads/72afab4f6c6d2e7364b8f97e8f83e505.jpg"
+      }
+    ],
+    "total": "245.00",
+    "createdAt": "2026-08-25T16:18:16.198Z"
+  },
+  {
+    "id": "vQaQkNVtmqoukiVEEp7g",
+    "createdAt": "2026-09-02T22:06:31.112Z",
+    "comment": "",
+    "total": "540.00",
+    "name": "shaza Chan",
+    "rating": 5,
+    "items": [
+      {
+        "qty": 2,
+        "name": "Custome Plastic keychain",
+        "id": "ugjLpEErh9MISpwcRlcq",
+        "price": 25,
+        "hasStock": false,
+        "img": "images/uploads/63c939c146e24e6637acbc337fae00cb.jpg"
+      },
+      {
+        "qty": 21,
+        "name": "Custome Pins",
+        "hasStock": false,
+        "id": "xWyixPYEuPS2UlXVfWZK",
+        "price": 20,
+        "img": "images/uploads/69b794a9a2284d9dc9ab987df2a9fd3d.jpg"
+      },
+      {
+        "id": "KSe6h6qu72Iyg96kS91h",
+        "img": "images/uploads/bf811f705e39e5ee9ba2ab7ff981807d.jpg",
+        "name": "Sticker sheet",
+        "qty": 1,
+        "hasStock": true,
+        "price": 20
+      },
+      {
+        "img": "images/uploads/1eec6341b4cf7f28e0220fd9e7c98fc5.jpg",
+        "name": "Custome Photocards",
+        "hasStock": false,
+        "qty": 10,
+        "price": 5,
+        "id": "i3KGJFbBWiGLviTO3doR"
+      }
+    ]
+  },
+  {
+    "id": "vaOck4mk7jE3s6m0TdIF",
+    "total": "150.00",
+    "name": "farida mahmoud",
+    "comment": "website is so unique and very easy to navigate through!!",
+    "rating": 5,
+    "createdAt": "2026-08-16T22:50:12.023Z",
+    "items": [
+      {
+        "name": "Needy girl overdose stand",
+        "price": 150,
+        "qty": 1,
+        "id": "PvWorAuK53P7dLIVKK5y",
+        "img": "images/uploads/7d5afa375710fa2e93acb55d3aa95339.jpg",
+        "hasStock": true
+      }
+    ]
+  },
+  {
+    "id": "whBwmaFmzZTiY2rVT97S",
+    "total": "100.00",
+    "name": "أسامه عبد المعطي",
+    "rating": 5,
+    "createdAt": "2026-09-06T15:56:37.571Z",
+    "comment": "",
+    "items": [
+      {
+        "img": "images/uploads/69b794a9a2284d9dc9ab987df2a9fd3d.jpg",
+        "hasStock": false,
+        "price": 20,
+        "qty": 5,
+        "name": "Custome Pins",
+        "id": "xWyixPYEuPS2UlXVfWZK"
+      }
+    ]
+  },
+  {
+    "id": "whJRR4fCLfc6YSj0okuQ",
+    "name": "Mahira Houta",
+    "total": "120.00",
+    "createdAt": "2026-08-17T22:12:22.034Z",
+    "rating": 5,
+    "items": [
+      {
+        "img": "images/uploads/69b794a9a2284d9dc9ab987df2a9fd3d.jpg",
+        "name": "Custome Pins",
+        "id": "xWyixPYEuPS2UlXVfWZK",
+        "hasStock": false,
+        "qty": 6,
+        "price": 20
+      }
+    ],
+    "comment": "THE CUTEST STORE EVER!!!"
+  },
+  {
+    "id": "wzvKn0LHFgFAvCRYUTz0",
+    "total": "145.00",
+    "name": "ترتيل هاني",
+    "rating": 5,
+    "createdAt": "2026-09-06T05:27:52.860Z",
+    "comment": "",
+    "items": [
+      {
+        "img": "images/uploads/69b794a9a2284d9dc9ab987df2a9fd3d.jpg",
+        "name": "Custome Pins",
+        "price": 20,
+        "hasStock": false,
+        "qty": 6,
+        "id": "xWyixPYEuPS2UlXVfWZK"
+      },
+      {
+        "qty": 1,
+        "id": "ugjLpEErh9MISpwcRlcq",
+        "price": 25,
+        "name": "Custome Plastic keychain",
+        "hasStock": false,
+        "img": "images/uploads/63c939c146e24e6637acbc337fae00cb.jpg"
+      }
+    ]
+  },
+  {
+    "id": "xWEWyMK0QtpupQthyjpF",
+    "createdAt": "2026-08-28T16:48:14.387Z",
+    "name": "Abougabal Ahmed",
+    "items": [
+      {
+        "qty": 1,
+        "price": 25,
+        "id": "ugjLpEErh9MISpwcRlcq",
+        "name": "Custome Plastic keychain",
+        "img": "images/uploads/63c939c146e24e6637acbc337fae00cb.jpg",
+        "hasStock": false
+      },
+      {
+        "id": "xWyixPYEuPS2UlXVfWZK",
+        "img": "images/uploads/69b794a9a2284d9dc9ab987df2a9fd3d.jpg",
+        "name": "Custome Pins",
+        "price": 20,
+        "hasStock": false,
+        "qty": 5
+      }
+    ],
+    "rating": 5,
+    "total": "125.00",
+    "comment": ""
+  },
+  {
+    "id": "yQobq1i0pXw4gaftU5Yj",
+    "comment": "",
+    "rating": 5,
+    "total": "470.00",
+    "items": [
+      {
+        "img": "images/uploads/69b794a9a2284d9dc9ab987df2a9fd3d.jpg",
+        "price": 20,
+        "id": "xWyixPYEuPS2UlXVfWZK",
+        "hasStock": false,
+        "name": "Custome Pins",
+        "qty": 6
+      },
+      {
+        "img": "images/uploads/62270d6b0ea24c10c1da26d78c153eaf.jpg",
+        "name": "Custome Mini Posters",
+        "hasStock": false,
+        "qty": 5,
+        "price": 10,
+        "id": "AQxsHkyyAT756JMKn97M"
+      },
+      {
+        "id": "j6GCSxNnJF1QtRaLkhLr",
+        "img": "images/uploads/4041c11bce73fd844e1031b083a0a58d.jpg",
+        "name": "Custome Big Poster",
+        "price": 25,
+        "hasStock": false,
+        "qty": 11
+      },
+      {
+        "id": "ugjLpEErh9MISpwcRlcq",
+        "img": "images/uploads/63c939c146e24e6637acbc337fae00cb.jpg",
+        "price": 25,
+        "name": "Custome Plastic keychain",
+        "qty": 1,
+        "hasStock": false
+      }
+    ],
+    "name": "حسام محمد",
+    "createdAt": "2026-08-19T22:24:36.249Z"
+  },
+  {
+    "id": "yn7uVZ8CHPaA5FErgGEq",
+    "createdAt": "2026-08-24T10:39:13.487Z",
+    "items": [
+      {
+        "qty": 2,
+        "name": "Custome Plastic keychain",
+        "img": "images/uploads/63c939c146e24e6637acbc337fae00cb.jpg",
+        "price": 25,
+        "hasStock": false,
+        "id": "ugjLpEErh9MISpwcRlcq"
+      },
+      {
+        "id": "xWyixPYEuPS2UlXVfWZK",
+        "name": "Custome Pins",
+        "qty": 18,
+        "price": 20,
+        "hasStock": false,
+        "img": "images/uploads/69b794a9a2284d9dc9ab987df2a9fd3d.jpg"
+      }
+    ],
+    "rating": 5,
+    "comment": "",
+    "name": "هنا محمد",
+    "total": "410.00"
+  },
+  {
+    "id": "yoX1EfHhwLtd9axbF7lX",
+    "createdAt": "2026-08-17T13:13:55.141Z",
+    "total": "25.00",
+    "comment": "",
+    "items": [
+      {
+        "id": "ugjLpEErh9MISpwcRlcq",
+        "img": "images/uploads/63c939c146e24e6637acbc337fae00cb.jpg",
+        "qty": 1,
+        "price": 25,
+        "name": "Custome Plastic keychain",
+        "hasStock": false
+      }
+    ],
+    "name": "Aya Waleed",
+    "rating": 5
+  },
+  {
+    "id": "z2UGE0RvDJ0mFwjz8eVb",
+    "rating": 5,
+    "total": "231.00",
+    "comment": "",
+    "items": [
+      {
+        "img": "images/uploads/3280e4016a90852c66df21ef8176b1be.jpg",
+        "price": 35,
+        "hasStock": true,
+        "qty": 1,
+        "name": "Silver snake ring",
+        "id": "7DnbHwXkyBF1pFOo0gGG"
+      },
+      {
+        "img": "images/uploads/69fb18a1691452e5563323686efb2d12.jpg",
+        "name": "Custome crochet 🧶 (make your own)",
+        "hasStock": false,
+        "qty": 1,
+        "id": "8pTkPMOCv1DpuJYABOv1",
+        "price": 1
+      },
+      {
+        "price": 50,
+        "id": "gOEMlZQfMW22GxgiJmkp",
+        "img": "images/uploads/ba36dc1c31a1cd68331f76a6701c3e51.jpg",
+        "qty": 1,
+        "hasStock": true,
+        "name": "Long spikes punk accessories"
+      },
+      {
+        "price": 25,
+        "qty": 1,
+        "img": "images/uploads/84a5f183c9508ceccdbfccf64fcf25c1.jpg",
+        "name": "Gothic rings",
+        "id": "U7tS8VDzDgtKYahjgHFJ",
+        "hasStock": true
+      },
+      {
+        "qty": 1,
+        "id": "HhOc7dMrp8PlaMaXeRzj",
+        "price": 35,
+        "name": "Silver hands ring",
+        "hasStock": true,
+        "img": "images/uploads/47b76c8c4cf380559db26272a92fc0fa.jpg"
+      }
+    ],
+    "createdAt": "2026-10-03T15:05:24.543Z",
+    "name": "Laila Elmansy"
+  },
+  {
+    "id": "zOIYt87OYO85qXHdTGp6",
+    "rating": 5,
+    "total": "150.00",
+    "name": "Haneen Rizk",
+    "comment": "peak and fire 🙏‼",
+    "createdAt": "2026-08-17T18:22:18.813Z",
+    "items": [
+      {
+        "price": 75,
+        "img": "images/uploads/a308b26970930164c86806aa80a43e16.jpg",
+        "id": "6eBNTtuVhV0q8R04XH25",
+        "qty": 1,
+        "hasStock": true,
+        "name": "Pixel melody keychain with ring"
+      },
+      {
+        "id": "qiH3OiRlZe7LYDnAimtf",
+        "hasStock": true,
+        "qty": 1,
+        "name": "Pixel kitty keychain with ring",
+        "price": 75,
+        "img": "images/uploads/91e46a94a36fd7fd457ffb20c647df6f.jpg"
+      }
+    ]
+  },
+  {
+    "id": "zzZKLccBeTFcnIDJxejt",
+    "items": [
+      {
+        "qty": 1,
+        "price": 50,
+        "name": "Punk wrist Accessoires",
+        "hasStock": true,
+        "img": "images/uploads/8115d730cd3a7e5242d5841e65eb94e2.jpg",
+        "id": "s7sfEWiDVPW3YzdyfABM"
+      },
+      {
+        "img": "images/uploads/4f2c9a342305cb909499169214a734cc.jpg",
+        "price": 25,
+        "qty": 2,
+        "name": "Aesthetic rolls",
+        "hasStock": true,
+        "id": "tgeRJRHpY49ZhDkJPunB"
+      },
+      {
+        "img": "images/uploads/cf51119073992ea05ecd00e965a5af8b.jpg",
+        "price": 35,
+        "id": "tmYAtlPWpZgrkryDm7Gd",
+        "name": "Strawberry keychain",
+        "hasStock": true,
+        "qty": 1
+      },
+      {
+        "hasStock": false,
+        "id": "ugjLpEErh9MISpwcRlcq",
+        "img": "images/uploads/63c939c146e24e6637acbc337fae00cb.jpg",
+        "qty": 1,
+        "price": 25,
+        "name": "Custome Plastic keychain"
+      },
+      {
+        "img": "images/uploads/69b794a9a2284d9dc9ab987df2a9fd3d.jpg",
+        "price": 22,
+        "id": "xWyixPYEuPS2UlXVfWZK",
+        "name": "Custome Pins",
+        "hasStock": false,
+        "qty": 5
+      }
+    ],
+    "rating": 5,
+    "createdAt": "2026-09-13T22:02:55.527Z",
+    "comment": "",
+    "name": "Hossam Mohamed",
+    "total": "270.00"
+  }
+]

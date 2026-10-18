@@ -1,0 +1,16 @@
+{
+  "name": "kuromi-store-server",
+  "version": "1.0.0",
+  "description": "Self-contained JSON-file backend for Kuromi Store (no Firebase).",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "cors": "^2.8.5"
+  },
+  "engines": {
+    "node": ">=16"
+  }
+}
